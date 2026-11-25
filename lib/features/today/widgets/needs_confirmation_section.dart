@@ -22,14 +22,15 @@ class NeedsConfirmationSection extends ConsumerWidget {
     final today = ref.watch(todayProvider);
     final wallets = ref.watch(plannerWalletsProvider).value ?? const [];
 
-    // The wallet confirming would use: the linked one, else the default.
+    // The wallet confirming would use: the linked one unless it is archived,
+    // else the default (same rule as the bill draft).
     String? walletName(String? id) {
+      String? fallback;
       for (final b in wallets) {
-        if (id == null ? b.wallet.isDefault : b.wallet.id == id) {
-          return b.wallet.name;
-        }
+        if (b.wallet.id == id && !b.wallet.isArchived) return b.wallet.name;
+        if (b.wallet.isDefault) fallback = b.wallet.name;
       }
-      return null;
+      return fallback;
     }
 
     String? billMeta(ActionItem item) {
