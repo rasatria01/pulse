@@ -1,20 +1,23 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shad/shad.dart';
 
+import '../features/settings/controllers/settings_providers.dart';
 import '../ui/theme.dart';
 import 'router.dart';
 
-class PulseApp extends StatefulWidget {
-  const PulseApp({super.key, this.themeMode = ShadThemeMode.system});
+class PulseApp extends ConsumerStatefulWidget {
+  const PulseApp({super.key, this.themeMode});
 
-  // The settings thread drives this from app_settings 'theme'.
-  final ShadThemeMode themeMode;
+  /// Overrides the stored 'theme' setting; for tests.
+  final ShadThemeMode? themeMode;
 
   @override
-  State<PulseApp> createState() => _PulseAppState();
+  ConsumerState<PulseApp> createState() => _PulseAppState();
 }
 
-class _PulseAppState extends State<PulseApp> {
+class _PulseAppState extends ConsumerState<PulseApp> {
   late final _router = buildRouter();
 
   @override
@@ -28,7 +31,17 @@ class _PulseAppState extends State<PulseApp> {
     title: 'Pulse',
     theme: pulseTheme(Brightness.light),
     darkTheme: pulseTheme(Brightness.dark),
-    themeMode: widget.themeMode,
+    themeMode:
+        widget.themeMode ??
+        ref.watch(themeModeProvider).value ??
+        ShadThemeMode.system,
     routerConfig: _router,
+    // The chosen theme may differ from the system's: match the bar icons.
+    builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+      value: ShadTheme.of(context).brightness == Brightness.dark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
+      child: child!,
+    ),
   );
 }
