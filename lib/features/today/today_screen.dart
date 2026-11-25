@@ -1,32 +1,43 @@
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shad/shad.dart';
 
-import '../../ui/tokens.dart';
+import '../../core/routes.dart';
+import '../../ui/strings.dart';
+import '../../ui/widgets/widgets.dart';
+import 'widgets/inbox_section.dart';
+import 'widgets/needs_confirmation_section.dart';
+import 'widgets/pulse_section.dart';
+import 'widgets/scratchpad_section.dart';
+import 'widgets/timeline_section.dart';
 
-/// Empty shell; sections arrive with their milestones.
+/// PRD F2. Each section is a sliver in its own file, so long lists stay lazy.
 class TodayScreen extends StatelessWidget {
   const TodayScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final colors = ShadTheme.of(context).colorScheme;
-    return ColoredBox(
-      color: colors.background,
-      child: SafeArea(
-        child: Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.all(PulseSpace.s4),
-            child: Semantics(
-              header: true,
-              child: Text(
-                'Today',
-                style: PulseText.titleLg.copyWith(color: colors.foreground),
-              ),
-            ),
-          ),
-        ),
+  Widget build(BuildContext context) => PScreen(
+    title: PulseStrings.today,
+    actions: [
+      PButton.ghost(
+        icon: LucideIcons.search,
+        semanticLabel: PulseStrings.search,
+        onPressed: () => context.push(Routes.search),
       ),
-    );
-  }
+      PButton.ghost(
+        icon: LucideIcons.settings,
+        semanticLabel: PulseStrings.settings,
+        onPressed: () => context.push(Routes.settings),
+      ),
+    ],
+    child: const CustomScrollView(
+      slivers: [
+        PulseSection(),
+        NeedsConfirmationSection(),
+        TimelineSection(),
+        InboxSection(),
+        ScratchpadSection(),
+      ],
+    ),
+  );
 }

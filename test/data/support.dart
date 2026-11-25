@@ -5,7 +5,12 @@ import 'package:pulse/core/local_date.dart';
 import 'package:pulse/core/rupiah.dart';
 import 'package:pulse/data/db/app_database.dart';
 import 'package:pulse/data/platform/uuid_id_generator.dart';
+import 'package:pulse/data/repositories/drift_action_item_repository.dart';
+import 'package:pulse/data/repositories/drift_budget_repository.dart';
 import 'package:pulse/data/repositories/drift_category_repository.dart';
+import 'package:pulse/data/repositories/drift_note_repository.dart';
+import 'package:pulse/data/repositories/drift_recurring_repository.dart';
+import 'package:pulse/data/repositories/drift_search_repository.dart';
 import 'package:pulse/data/repositories/drift_settings_repository.dart';
 import 'package:pulse/data/repositories/drift_tag_repository.dart';
 import 'package:pulse/data/repositories/drift_transaction_repository.dart';
@@ -50,6 +55,11 @@ class Harness {
   late final tags = DriftTagRepository(db, _clock, _ids);
   late final settings = DriftSettingsRepository(db, _clock);
   late final unitOfWork = DriftUnitOfWork(db);
+  late final items = DriftActionItemRepository(db, _clock, _ids);
+  late final notes = DriftNoteRepository(db, _clock, _ids);
+  late final budgets = DriftBudgetRepository(db, _clock, _ids);
+  late final recurring = DriftRecurringRepository(db, _clock, _ids);
+  late final search = DriftSearchRepository(db);
 
   Future<Wallet> cash() async => (await wallets.watchAll().first).first.wallet;
 
