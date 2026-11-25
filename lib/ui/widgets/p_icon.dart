@@ -14,6 +14,8 @@ const Map<String, IconData> pulseIcons = {
   'calendar-check': LucideIcons.calendarCheck,
   'check': LucideIcons.check,
   'chevron-right': LucideIcons.chevronRight,
+  'circle-help': LucideIcons.circleQuestionMark,
+  'receipt': LucideIcons.receipt,
   'circle-alert': LucideIcons.circleAlert,
   'circle-dashed': LucideIcons.circleDashed,
   'clock': LucideIcons.clock,
