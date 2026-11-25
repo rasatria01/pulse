@@ -12,13 +12,13 @@ void main() {
   test('a new database matches the frozen schema v1', () async {
     driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
     final verifier = SchemaVerifier(GeneratedHelper());
-    final db = AppDatabase((await verifier.startAt(1)).executor);
-    addTearDown(db.close);
-    await verifier.migrateAndValidate(db, 1);
-
-    // startAt() builds from the dump; this checks what onCreate builds.
+    // Runs onCreate, then compares the result with the frozen dump.
     final fresh = AppDatabase(NativeDatabase.memory());
     addTearDown(fresh.close);
-    await fresh.validateDatabaseSchema();
+    await verifier.migrateAndValidate(
+      fresh,
+      1,
+      options: const ValidationOptions(validateDropped: true),
+    );
   });
 }

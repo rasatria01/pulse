@@ -31,6 +31,9 @@ class AppDatabase extends _$AppDatabase {
         await m.createAll();
         await _seed();
         await customStatement('PRAGMA application_id = $applicationId');
+        // Drift writes this only after beforeOpen; a kill in between would
+        // rerun onCreate on a full database. Migration steps need it too.
+        await customStatement('PRAGMA user_version = $schemaVersion');
       });
     },
     beforeOpen: (_) async {

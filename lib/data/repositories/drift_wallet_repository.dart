@@ -11,21 +11,23 @@ import '../db/db_errors.dart';
 import '../mappers/wallet_mapper.dart';
 import 'input_checks.dart';
 
-/// Balance per wallet, always derived (D10).
+/// Balance per wallet, always derived (D10). Aggregates before joining so each
+/// side uses its wallet index; the PRD's OR join cannot.
 String _balances(String filter) =>
     '''
-SELECT w.*,
-       w.initial_balance + COALESCE(SUM(CASE
-         WHEN t.type = 'INCOME'   AND t.wallet_id    = w.id THEN  t.amount
-         WHEN t.type = 'OUTCOME'  AND t.wallet_id    = w.id THEN -t.amount
-         WHEN t.type = 'TRANSFER' AND t.wallet_id    = w.id THEN -t.amount
-         WHEN t.type = 'TRANSFER' AND t.to_wallet_id = w.id THEN  t.amount
-       END), 0) AS balance
+SELECT w.*, w.initial_balance + COALESCE(m.delta, 0) AS balance
 FROM wallets w
-LEFT JOIN transactions t
-  ON t.is_deleted = 0 AND (t.wallet_id = w.id OR t.to_wallet_id = w.id)
+LEFT JOIN (
+  SELECT wallet_id, SUM(delta) AS delta FROM (
+    SELECT wallet_id,
+           CASE type WHEN 'INCOME' THEN amount ELSE -amount END AS delta
+      FROM transactions WHERE is_deleted = 0
+    UNION ALL
+    SELECT to_wallet_id, amount
+      FROM transactions WHERE to_wallet_id IS NOT NULL AND is_deleted = 0
+  ) GROUP BY wallet_id
+) m ON m.wallet_id = w.id
 WHERE w.is_deleted = 0 $filter
-GROUP BY w.id
 ORDER BY w.sort_order, w.name, w.id''';
 
 final class DriftWalletRepository implements WalletRepository {
