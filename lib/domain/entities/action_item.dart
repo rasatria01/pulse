@@ -33,6 +33,8 @@ abstract class ActionItem with _$ActionItem {
     String? sourceBlockId,
     DateTime? completedAt,
     @Default(<String>[]) List<String> tagIds,
+    // True only from findBySourceNote(includeDeleted: true).
+    @Default(false) bool isDeleted,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _ActionItem;

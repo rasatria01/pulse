@@ -8,5 +8,7 @@ abstract interface class NoteRepository {
   Future<Note> ensureDaily(LocalDate date);
   Future<Note> create(NoteInput input);
   Future<Note> saveBody(String id, String body); // empty title = first line
+  Future<Note> update(String id, NotePatch patch);
   Future<void> softDelete(String id);
+  Future<void> undelete(String id);
 }

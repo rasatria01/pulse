@@ -43,3 +43,9 @@ abstract class NoteInput with _$NoteInput {
     @Default(false) bool isPinned,
   }) = _NoteInput;
 }
+
+/// Null field = unchanged. The body goes through saveBody.
+@freezed
+abstract class NotePatch with _$NotePatch {
+  const factory NotePatch({String? title, bool? isPinned}) = _NotePatch;
+}

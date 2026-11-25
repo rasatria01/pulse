@@ -18,7 +18,8 @@ abstract class BillDraft with _$BillDraft {
 }
 
 abstract interface class BillService {
-  BillDraft? draftFor(ActionItem item); // null when the item is not a bill
+  /// Null when the item is not a bill. Async: defaults and #bill need lookups.
+  Future<BillDraft?> draftFor(ActionItem item);
   Future<void> confirm(String actionItemId, BillDraft draft); // atomic
   Future<void> defer(String actionItemId); // done + bill_status pending
   Future<void> skip(String actionItemId); // done + bill_status skipped

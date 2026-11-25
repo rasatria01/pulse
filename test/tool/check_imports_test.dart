@@ -28,6 +28,32 @@ void main() {
     expect(count('features/today/a.dart', "export '../../data/x.dart';"), 1);
   });
 
+  test('evasions fail', () {
+    const feature = 'features/today/a.dart';
+    expect(
+      count(
+        feature,
+        "import 'x.dart'\n    if (dart.library.io) '../../data/x.dart';",
+      ),
+      1,
+    );
+    expect(
+      count(feature, "import 'package:pulse/features/today/../tasks/b.dart';"),
+      1,
+    );
+    expect(count(feature, "part '../tasks/b.dart';"), 1);
+    expect(count('features/today/widgets/a.dart', "part of '../b.dart';"), 0);
+    expect(count('domain/a.dart', "import 'dart:io';"), 1);
+    expect(count('shared/a.dart', ''), 1);
+    expect(
+      count('data/a.dart', "const u = 'http://x'; var t = DateTime.now();"),
+      1,
+    );
+    expect(count('data/a.dart', "/* DateTime.now() */"), 0);
+    expect(count('domain/a.dart', "const s = 'double tap';"), 0);
+    expect(count('domain/a.dart', 'final x = n.toDouble();'), 1);
+  });
+
   test('wall clock and money doubles fail', () {
     expect(count('data/a.dart', 'final t = DateTime.now();'), 1);
     expect(count('data/a.dart', 'final t = DateTime.timestamp;'), 1);

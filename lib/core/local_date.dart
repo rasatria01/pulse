@@ -31,6 +31,19 @@ final class LocalDate implements Comparable<LocalDate> {
 
   LocalMonth get monthOf => LocalMonth(year, month);
 
+  /// ISO weekday, 1 = Monday.
+  int get weekday => DateTime.utc(year, month, day).weekday;
+
+  /// Whole days from this date to [other]; negative if [other] is earlier.
+  int daysUntil(LocalDate other) => DateTime.utc(
+    other.year,
+    other.month,
+    other.day,
+  ).difference(DateTime.utc(year, month, day)).inDays;
+
+  bool isBefore(LocalDate other) => compareTo(other) < 0;
+  bool isAfter(LocalDate other) => compareTo(other) > 0;
+
   /// Local 00:00 as a UTC instant, in the device timezone (D18).
   // ponytail: the PRD signature takes a tz name, but core/ may only import
   // dart:*, which has no timezone database. Device zone is what D18 asks for.
@@ -64,6 +77,14 @@ final class LocalMonth implements Comparable<LocalMonth> {
   String toIso() => '${_pad(year, 4)}-${_pad(month, 2)}';
 
   LocalDate get firstDay => LocalDate(year, month, 1);
+
+  LocalMonth addMonths(int n) =>
+      LocalDate.fromDateTime(DateTime.utc(year, month + n)).monthOf;
+
+  /// Day [d] of this month, clamped to its length (31 Feb -> 28 or 29 Feb).
+  LocalDate day(int d) =>
+      LocalDate(year, month, d < lastDay.day ? d : lastDay.day);
+
   LocalDate get lastDay =>
       LocalDate.fromDateTime(DateTime.utc(year, month + 1, 0));
 

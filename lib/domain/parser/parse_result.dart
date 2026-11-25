@@ -109,6 +109,7 @@ final class ActionItemDraft extends ParseResult {
   final LocalDate? dueDate;
   final DateTime? scheduledStart, scheduledEnd;
   final int? linkedAmount;
+  final String? linkedWalletId, linkedCategoryId;
   final List<String> tagSlugs;
   bool get isBill => linkedAmount != null || tagSlugs.contains('bill');
   const ActionItemDraft(
@@ -121,6 +122,8 @@ final class ActionItemDraft extends ParseResult {
     this.scheduledStart,
     this.scheduledEnd,
     this.linkedAmount,
+    this.linkedWalletId,
+    this.linkedCategoryId,
     this.tagSlugs = const [],
   });
 }

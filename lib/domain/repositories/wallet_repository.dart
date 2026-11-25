@@ -2,7 +2,8 @@ import '../../core/rupiah.dart';
 import '../entities/wallet.dart';
 
 /// For every repository: reads return a Stream, one-off lookups a Future, writes
-/// return the saved entity or throw an AppFailure. Soft-deleted rows never show.
+/// return the saved entity or throw an AppFailure. Soft-deleted rows never show,
+/// except where a method takes includeDeleted.
 abstract interface class WalletRepository {
   Stream<List<WalletBalance>> watchAll({bool includeArchived = false});
   Stream<Rupiah> watchLiquidTotal();

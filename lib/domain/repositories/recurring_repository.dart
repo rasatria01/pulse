@@ -6,6 +6,8 @@ abstract interface class RecurringRepository {
   Stream<List<RecurringRule>> watchRules();
   Stream<List<PendingOccurrence>> watchPending();
   Future<List<RecurringRule>> dueOnOrBefore(LocalDate day);
+  Future<RecurringRule?> find(String id);
+  Future<void> softDelete(String id);
   Future<RecurringRule> create(RecurringRuleInput input);
   Future<RecurringRule> update(String id, RecurringRulePatch patch);
 

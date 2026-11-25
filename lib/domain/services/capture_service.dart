@@ -19,4 +19,7 @@ abstract interface class CaptureService {
   /// Persists a parsed draft (tags, reminders included).
   /// Throws ValidationFailure if !draft.canSave.
   Future<CaptureOutcome> commit(ParseResult draft);
+
+  /// Snackbar Undo: removes the entity, its taggings and any tag left orphaned.
+  Future<void> undo(CaptureOutcome outcome);
 }

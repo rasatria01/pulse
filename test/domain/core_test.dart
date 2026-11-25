@@ -17,6 +17,18 @@ void main() {
     );
   });
 
+  test('LocalDate helpers for recurring and safe-to-spend', () {
+    const nov25 = LocalDate(2026, 11, 25);
+    expect(nov25.weekday, DateTime.wednesday);
+    expect(nov25.daysUntil(const LocalDate(2026, 11, 30)), 5);
+    expect(nov25.isBefore(const LocalDate(2026, 12, 1)), isTrue);
+    expect(
+      const LocalMonth(2027, 1).addMonths(1).day(31).toIso(),
+      '2027-02-28',
+    );
+    expect(const LocalMonth(2026, 1).addMonths(-1).toIso(), '2025-12');
+  });
+
   test('LocalDate rejects impossible and malformed dates', () {
     for (final bad in ['2026-02-30', '2026-13-01', '26-01-01', 'today']) {
       expect(() => LocalDate.parse(bad), throwsFormatException, reason: bad);

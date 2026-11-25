@@ -17,19 +17,34 @@ const _featureBannedPackages = {
 };
 
 final _directive = RegExp(
-  r'''^\s*(?:import|export)\s+['"]([^'"]+)['"]''',
+  r'^\s*(?:import|export|part)\s+(?!of\b)[^;]*;',
   multiLine: true,
 );
+final _quoted = RegExp(r'''['"]([^'"]+)['"]''');
 final _wallClock = RegExp(r'\bDateTime\s*\.\s*(now|timestamp)\b');
-final _double = RegExp(r'\bdouble\b');
-final _lineComment = RegExp(r'//.*$', multiLine: true);
+final _double = RegExp(r'\bdouble\b|\btoDouble\b');
+// Strings and both comment forms in one pass, so '//' in a string is not a comment.
+final _comment = r'//[^\n]*|/\*[\s\S]*?\*/';
+final _string =
+    r'''\'\'\'[\s\S]*?\'\'\'|"{3}[\s\S]*?"{3}|'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"''';
+final _noise = RegExp('($_comment)|$_string');
+const _platformLibs = {'dart:io', 'dart:ffi', 'dart:ui'};
+const _layers = {'app', 'core', 'domain', 'data', 'ui', 'features'};
 
 /// Violations in one file. [path] is relative to lib/, with forward slashes.
 List<String> violations(String path, String source) {
   final found = <String>[];
   final layer = path.contains('/') ? path.split('/').first : 'app';
-  final code = source.replaceAll(_lineComment, '');
+  final code = source.replaceAll(_noise, ' ');
+  // Comments out, strings kept: directive URIs are strings.
+  final uncommented = source.replaceAllMapped(
+    _noise,
+    (m) => m[1] == null ? m[0]! : ' ',
+  );
 
+  if (!_layers.contains(layer)) {
+    return ['$path: unknown layer $layer/; use one of ${_layers.join(', ')}'];
+  }
   if (path != 'core/clock.dart' && _wallClock.hasMatch(code)) {
     found.add('$path: reads the wall clock; use the injected Clock');
   }
@@ -38,14 +53,27 @@ List<String> violations(String path, String source) {
     found.add('$path: double is banned in money paths');
   }
 
-  for (final m in _directive.allMatches(source)) {
-    final uri = m[1]!;
-    if (uri.startsWith('dart:')) continue;
+  final uris = _directive
+      .allMatches(uncommented)
+      .expand((d) => _quoted.allMatches(d[0]!))
+      .map((m) => m[1]!)
+      // `if (dart.library.io == 'true')` carries a value, not a URI.
+      .where((u) => u.endsWith('.dart') || u.contains(':'));
+  for (final uri in uris) {
+    if (uri.startsWith('dart:')) {
+      if ((layer == 'core' || layer == 'domain') &&
+          _platformLibs.contains(uri)) {
+        found.add('$path: $layer/ may not import $uri');
+      }
+      continue;
+    }
 
     String? target; // lib-relative path, null for an external package
     String? package;
     if (uri.startsWith('package:pulse/')) {
-      target = uri.substring('package:pulse/'.length);
+      target = Uri.parse(uri.substring('package:pulse/'.length))
+          .normalizePath()
+          .path;
     } else if (uri.startsWith('package:')) {
       package = uri.substring('package:'.length).split('/').first;
     } else {

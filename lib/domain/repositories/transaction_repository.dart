@@ -15,6 +15,7 @@ abstract interface class TransactionRepository {
     LocalDate to,
   ); // no transfers
   Stream<Map<String, Rupiah>> watchOutcomeByCategory(LocalMonth month);
+  Future<Transaction?> find(String id);
   Future<Transaction?> findBySourceActionItem(String actionItemId);
   Future<Transaction> create(TransactionInput input);
   Future<Transaction> update(String id, TransactionInput input);
