@@ -88,8 +88,17 @@ class PulseCard extends StatelessWidget {
                 ),
                 _remaining(context, safe, muted),
               ]),
-            ] else if (showBudgetHint)
+            ] else if (showBudgetHint) ...[
               Text(PulseStrings.setBudget, style: muted),
+              _spread([
+                Text(PulseStrings.spentToday, style: muted),
+                AmountText(
+                  todaySpend,
+                  type: AmountType.balance,
+                  size: AmountSize.sm,
+                ),
+              ]),
+            ],
             _spread([
               Text(PulseStrings.liquidBalance, style: muted),
               AmountText(liquid, type: AmountType.balance, size: AmountSize.sm),
