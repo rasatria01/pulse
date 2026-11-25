@@ -35,6 +35,15 @@ final reminderSchedulerProvider = Provider<ReminderScheduler>(
         ),
 );
 
+/// Replaces the database with a checked backup and starts the app again.
+/// Overridden by bootstrap, which owns the database and the root scope.
+final restoreRunnerProvider = Provider<Future<void> Function(String path)>(
+  (ref) => throw UnimplementedError('override restoreRunnerProvider'),
+);
+
+/// Set on the start that follows a restore: true if the data was replaced.
+final restoreResultProvider = Provider<bool?>((ref) => null);
+
 final backupGatewayProvider = Provider<BackupGateway>(
   (ref) => FileBackupGateway(
     ref.watch(appDatabaseProvider),
