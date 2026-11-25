@@ -1,0 +1,244 @@
+-- lib/data/db/schema.drift — schemaVersion 1
+
+CREATE TABLE wallets (
+  id               TEXT    NOT NULL PRIMARY KEY,
+  name             TEXT    NOT NULL,
+  slug             TEXT    NOT NULL,                 -- @mention handle
+  aliases          TEXT    NOT NULL DEFAULT '',      -- comma-separated slugs
+  kind             TEXT    NOT NULL CHECK (kind IN ('cash','bank','ewallet','other')),
+  initial_balance  INTEGER NOT NULL DEFAULT 0,       -- may be negative
+  color            INTEGER NOT NULL,                 -- ARGB
+  icon             TEXT    NOT NULL,
+  include_in_total INTEGER NOT NULL DEFAULT 1 CHECK (include_in_total IN (0,1)),
+  is_default       INTEGER NOT NULL DEFAULT 0 CHECK (is_default IN (0,1)),
+  is_archived      INTEGER NOT NULL DEFAULT 0 CHECK (is_archived IN (0,1)),
+  sort_order       INTEGER NOT NULL DEFAULT 0,
+  created_at       INTEGER NOT NULL,
+  updated_at       INTEGER NOT NULL,
+  is_deleted       INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0,1))
+) AS WalletRow;
+CREATE UNIQUE INDEX ux_wallets_slug    ON wallets(slug)       WHERE is_deleted = 0;
+CREATE UNIQUE INDEX ux_wallets_default ON wallets(is_default) WHERE is_default = 1 AND is_deleted = 0;
+
+CREATE TABLE categories (
+  id          TEXT    NOT NULL PRIMARY KEY,
+  name        TEXT    NOT NULL,
+  slug        TEXT    NOT NULL,
+  aliases     TEXT    NOT NULL DEFAULT '',
+  kind        TEXT    NOT NULL CHECK (kind IN ('income','outcome')),
+  color       INTEGER NOT NULL,
+  icon        TEXT    NOT NULL,
+  is_system   INTEGER NOT NULL DEFAULT 0 CHECK (is_system IN (0,1)),   -- the two Uncategorized rows
+  is_archived INTEGER NOT NULL DEFAULT 0 CHECK (is_archived IN (0,1)),
+  sort_order  INTEGER NOT NULL DEFAULT 0,
+  created_at  INTEGER NOT NULL,
+  updated_at  INTEGER NOT NULL,
+  is_deleted  INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0,1))
+) AS CategoryRow;
+CREATE UNIQUE INDEX ux_categories_kind_slug ON categories(kind, slug) WHERE is_deleted = 0;
+
+CREATE TABLE notes (
+  id         TEXT    NOT NULL PRIMARY KEY,
+  title      TEXT    NOT NULL DEFAULT '',
+  body       TEXT    NOT NULL DEFAULT '',           -- Markdown source
+  kind       TEXT    NOT NULL DEFAULT 'note' CHECK (kind IN ('note','daily')),
+  daily_date TEXT,                                  -- set only for the daily scratchpad
+  is_pinned  INTEGER NOT NULL DEFAULT 0 CHECK (is_pinned IN (0,1)),
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL,
+  is_deleted INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0,1)),
+  CHECK ((kind = 'daily') = (daily_date IS NOT NULL))
+) AS NoteRow;
+CREATE UNIQUE INDEX ux_notes_daily   ON notes(daily_date) WHERE kind = 'daily' AND is_deleted = 0;
+CREATE INDEX        ix_notes_updated ON notes(updated_at) WHERE is_deleted = 0;
+
+CREATE TABLE action_items (
+  id                  TEXT    NOT NULL PRIMARY KEY,
+  title               TEXT    NOT NULL CHECK (length(trim(title)) > 0),
+  body                TEXT    NOT NULL DEFAULT '',
+  status              TEXT    NOT NULL DEFAULT 'open' CHECK (status IN ('open','done','cancelled')),
+  priority            INTEGER NOT NULL DEFAULT 0 CHECK (priority BETWEEN 0 AND 3),
+  due_date            TEXT,                         -- local date; drives inbox + Due lane
+  scheduled_start     INTEGER,                      -- NULL = Tasks, set = Calendar
+  scheduled_end       INTEGER,
+  reminder_offset_min INTEGER CHECK (reminder_offset_min IS NULL OR reminder_offset_min >= 0),
+  notif_id            INTEGER,                      -- int32 alarm id from app_settings.next_notif_id
+  linked_amount       INTEGER CHECK (linked_amount IS NULL OR linked_amount > 0),
+  linked_wallet_id    TEXT    REFERENCES wallets(id),
+  linked_category_id  TEXT    REFERENCES categories(id),
+  bill_status         TEXT    CHECK (bill_status IN ('pending','recorded','skipped')),
+  source_note_id      TEXT    REFERENCES notes(id),
+  source_block_id     TEXT,                         -- the ^t token in the note line
+  completed_at        INTEGER,
+  raw_input           TEXT,
+  created_at          INTEGER NOT NULL,
+  updated_at          INTEGER NOT NULL,
+  is_deleted          INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0,1)),
+  CHECK (scheduled_end IS NULL OR (scheduled_start IS NOT NULL AND scheduled_end > scheduled_start)),
+  CHECK ((source_note_id IS NULL) = (source_block_id IS NULL))
+) AS ActionItemRow;
+CREATE INDEX ix_ai_scheduled ON action_items(scheduled_start)
+  WHERE scheduled_start IS NOT NULL AND is_deleted = 0;
+CREATE INDEX ix_ai_inbox ON action_items(status, due_date, priority)
+  WHERE scheduled_start IS NULL AND is_deleted = 0;
+-- no is_deleted filter: a restored note line can undelete its item
+CREATE UNIQUE INDEX ux_ai_block ON action_items(source_note_id, source_block_id) WHERE source_note_id IS NOT NULL;
+CREATE UNIQUE INDEX ux_ai_notif ON action_items(notif_id) WHERE notif_id IS NOT NULL;
+
+CREATE TABLE transactions (
+  id                    TEXT    NOT NULL PRIMARY KEY,
+  type                  TEXT    NOT NULL CHECK (type IN ('INCOME','OUTCOME','TRANSFER')),
+  amount                INTEGER NOT NULL CHECK (amount > 0),
+  wallet_id             TEXT    NOT NULL REFERENCES wallets(id),
+  to_wallet_id          TEXT    REFERENCES wallets(id),
+  category_id           TEXT    REFERENCES categories(id),
+  description           TEXT    NOT NULL DEFAULT '',
+  occurred_at           INTEGER NOT NULL,
+  occurred_on           TEXT    NOT NULL,           -- local date at write time
+  parent_transaction_id TEXT    REFERENCES transactions(id),   -- fee -> its transfer
+  source_action_item_id TEXT    REFERENCES action_items(id),   -- bill trigger (one-way link)
+  raw_input             TEXT,
+  created_at            INTEGER NOT NULL,
+  updated_at            INTEGER NOT NULL,
+  is_deleted            INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0,1)),
+  CHECK ( (type = 'TRANSFER' AND to_wallet_id IS NOT NULL AND to_wallet_id <> wallet_id AND category_id IS NULL)
+       OR (type <> 'TRANSFER' AND to_wallet_id IS NULL AND category_id IS NOT NULL) )
+) AS TransactionRow;
+CREATE INDEX ix_tx_occurred_on ON transactions(occurred_on)              WHERE is_deleted = 0;
+CREATE INDEX ix_tx_wallet      ON transactions(wallet_id)                WHERE is_deleted = 0;
+CREATE INDEX ix_tx_to_wallet   ON transactions(to_wallet_id)             WHERE to_wallet_id IS NOT NULL AND is_deleted = 0;
+CREATE INDEX ix_tx_category    ON transactions(category_id, occurred_on) WHERE is_deleted = 0;
+CREATE INDEX ix_tx_source_item ON transactions(source_action_item_id)    WHERE source_action_item_id IS NOT NULL;
+
+CREATE TABLE budgets (
+  id             TEXT    NOT NULL PRIMARY KEY,
+  category_id    TEXT    NOT NULL REFERENCES categories(id),
+  amount         INTEGER NOT NULL CHECK (amount >= 0),   -- 0 = no cap from this month on
+  effective_from TEXT    NOT NULL,                       -- 'YYYY-MM'
+  created_at     INTEGER NOT NULL,
+  updated_at     INTEGER NOT NULL,
+  is_deleted     INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0,1))
+) AS BudgetRow;
+CREATE UNIQUE INDEX ux_budgets ON budgets(category_id, effective_from) WHERE is_deleted = 0;
+
+CREATE TABLE recurring_rules (
+  id            TEXT    NOT NULL PRIMARY KEY,
+  name          TEXT    NOT NULL,
+  type          TEXT    NOT NULL CHECK (type IN ('INCOME','OUTCOME','TRANSFER')),
+  amount        INTEGER NOT NULL CHECK (amount > 0),
+  wallet_id     TEXT    NOT NULL REFERENCES wallets(id),
+  to_wallet_id  TEXT    REFERENCES wallets(id),
+  category_id   TEXT    REFERENCES categories(id),
+  description   TEXT    NOT NULL DEFAULT '',
+  freq          TEXT    NOT NULL CHECK (freq IN ('daily','weekly','monthly','yearly')),
+  interval_n    INTEGER NOT NULL DEFAULT 1 CHECK (interval_n >= 1),
+  by_weekday    INTEGER CHECK (by_weekday BETWEEN 1 AND 7),     -- ISO, 1 = Monday; weekly only
+  by_month_day  INTEGER CHECK (by_month_day BETWEEN 1 AND 31),  -- NULL = day of start_date; clamps
+  start_date    TEXT    NOT NULL,
+  end_date      TEXT,
+  next_due_date TEXT    NOT NULL,
+  auto_post     INTEGER NOT NULL DEFAULT 0 CHECK (auto_post IN (0,1)),
+  is_paused     INTEGER NOT NULL DEFAULT 0 CHECK (is_paused IN (0,1)),
+  notif_id      INTEGER,
+  created_at    INTEGER NOT NULL,
+  updated_at    INTEGER NOT NULL,
+  is_deleted    INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0,1)),
+  CHECK ( (type = 'TRANSFER' AND to_wallet_id IS NOT NULL AND to_wallet_id <> wallet_id AND category_id IS NULL)
+       OR (type <> 'TRANSFER' AND to_wallet_id IS NULL AND category_id IS NOT NULL) )
+) AS RecurringRuleRow;
+
+CREATE TABLE recurring_occurrences (
+  id              TEXT    NOT NULL PRIMARY KEY,
+  rule_id         TEXT    NOT NULL REFERENCES recurring_rules(id),
+  occurrence_date TEXT    NOT NULL,
+  status          TEXT    NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','posted','skipped')),
+  transaction_id  TEXT    REFERENCES transactions(id),
+  created_at      INTEGER NOT NULL,
+  updated_at      INTEGER NOT NULL,
+  is_deleted      INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0,1)),
+  CHECK ((status = 'posted') = (transaction_id IS NOT NULL))
+) AS RecurringOccurrenceRow;
+-- exactly-once guarantee for catch-up; deliberately not filtered by is_deleted
+CREATE UNIQUE INDEX ux_occ_rule_date ON recurring_occurrences(rule_id, occurrence_date);
+CREATE INDEX ix_occ_pending ON recurring_occurrences(occurrence_date)
+  WHERE status = 'pending' AND is_deleted = 0;
+
+CREATE TABLE tags (
+  id         TEXT    NOT NULL PRIMARY KEY,
+  name       TEXT    NOT NULL,
+  slug       TEXT    NOT NULL,
+  color      INTEGER,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL,
+  is_deleted INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0,1))
+) AS TagRow;
+CREATE UNIQUE INDEX ux_tags_slug ON tags(slug) WHERE is_deleted = 0;
+
+-- polymorphic join; TagRepository enforces that entity_id exists
+CREATE TABLE taggings (
+  tag_id      TEXT    NOT NULL REFERENCES tags(id),
+  entity_type TEXT    NOT NULL CHECK (entity_type IN ('transaction','action_item','note')),
+  entity_id   TEXT    NOT NULL,
+  created_at  INTEGER NOT NULL,
+  updated_at  INTEGER NOT NULL,
+  is_deleted  INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0,1)),
+  PRIMARY KEY (tag_id, entity_type, entity_id)
+) WITHOUT ROWID AS TaggingRow;
+CREATE INDEX ix_taggings_entity ON taggings(entity_type, entity_id) WHERE is_deleted = 0;
+
+-- keys: theme, due_reminder_time ('08:00'), week_start ('1'),
+--       budget_month_start_day ('1'), next_notif_id, capture_draft
+CREATE TABLE app_settings (
+  "key"      TEXT    NOT NULL PRIMARY KEY,           -- quoted for drift's parser
+  value      TEXT    NOT NULL,
+  updated_at INTEGER NOT NULL
+) AS SettingRow;
+
+CREATE VIRTUAL TABLE search_index USING fts5(
+  entity_type UNINDEXED,
+  entity_id   UNINDEXED,
+  title,
+  body,
+  tokenize = 'unicode61 remove_diacritics 2',
+  prefix   = '2 3'
+);
+
+-- FTS sync: the same three triggers per indexed table
+CREATE TRIGGER trg_tx_fts_ins AFTER INSERT ON transactions WHEN NEW.is_deleted = 0 BEGIN
+  INSERT INTO search_index(entity_type, entity_id, title, body)
+    VALUES ('transaction', NEW.id, NEW.description, '');
+END;
+CREATE TRIGGER trg_tx_fts_upd AFTER UPDATE OF description, is_deleted ON transactions BEGIN
+  DELETE FROM search_index WHERE entity_type = 'transaction' AND entity_id = OLD.id;
+  INSERT INTO search_index(entity_type, entity_id, title, body)
+    SELECT 'transaction', NEW.id, NEW.description, '' WHERE NEW.is_deleted = 0;
+END;
+CREATE TRIGGER trg_tx_fts_del AFTER DELETE ON transactions BEGIN
+  DELETE FROM search_index WHERE entity_type = 'transaction' AND entity_id = OLD.id;
+END;
+
+CREATE TRIGGER trg_ai_fts_ins AFTER INSERT ON action_items WHEN NEW.is_deleted = 0 BEGIN
+  INSERT INTO search_index(entity_type, entity_id, title, body)
+    VALUES ('action_item', NEW.id, NEW.title, NEW.body);
+END;
+CREATE TRIGGER trg_ai_fts_upd AFTER UPDATE OF title, body, is_deleted ON action_items BEGIN
+  DELETE FROM search_index WHERE entity_type = 'action_item' AND entity_id = OLD.id;
+  INSERT INTO search_index(entity_type, entity_id, title, body)
+    SELECT 'action_item', NEW.id, NEW.title, NEW.body WHERE NEW.is_deleted = 0;
+END;
+CREATE TRIGGER trg_ai_fts_del AFTER DELETE ON action_items BEGIN
+  DELETE FROM search_index WHERE entity_type = 'action_item' AND entity_id = OLD.id;
+END;
+
+CREATE TRIGGER trg_note_fts_ins AFTER INSERT ON notes WHEN NEW.is_deleted = 0 BEGIN
+  INSERT INTO search_index(entity_type, entity_id, title, body)
+    VALUES ('note', NEW.id, NEW.title, NEW.body);
+END;
+CREATE TRIGGER trg_note_fts_upd AFTER UPDATE OF title, body, is_deleted ON notes BEGIN
+  DELETE FROM search_index WHERE entity_type = 'note' AND entity_id = OLD.id;
+  INSERT INTO search_index(entity_type, entity_id, title, body)
+    SELECT 'note', NEW.id, NEW.title, NEW.body WHERE NEW.is_deleted = 0;
+END;
+CREATE TRIGGER trg_note_fts_del AFTER DELETE ON notes BEGIN
+  DELETE FROM search_index WHERE entity_type = 'note' AND entity_id = OLD.id;
+END;

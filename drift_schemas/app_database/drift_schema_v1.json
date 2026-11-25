@@ -1,0 +1,2487 @@
+{
+  "_meta": {
+    "description": "This file contains a serialized version of schema entities for drift.",
+    "version": "1.3.0"
+  },
+  "options": {
+    "store_date_time_values_as_text": false
+  },
+  "entities": [
+    {
+      "id": 0,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "wallets",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "primary-key"
+            ]
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "slug",
+            "getter_name": "slug",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "aliases",
+            "getter_name": "aliases",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT ''",
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "kind",
+            "getter_name": "kind",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL CHECK (kind IN ('cash', 'bank', 'ewallet', 'other'))",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "initial_balance",
+            "getter_name": "initialBalance",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "color",
+            "getter_name": "color",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "icon",
+            "getter_name": "icon",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "include_in_total",
+            "getter_name": "includeInTotal",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 1 CHECK (include_in_total IN (0, 1))",
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_default",
+            "getter_name": "isDefault",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_default IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_archived",
+            "getter_name": "isArchived",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_archived IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "sort_order",
+            "getter_name": "sortOrder",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_deleted",
+            "getter_name": "isDeleted",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": []
+      }
+    },
+    {
+      "id": 1,
+      "references": [
+        0
+      ],
+      "type": "index",
+      "data": {
+        "on": 0,
+        "name": "ux_wallets_slug",
+        "sql": "CREATE UNIQUE INDEX ux_wallets_slug    ON wallets(slug)       WHERE is_deleted = 0;",
+        "unique": true,
+        "columns": []
+      }
+    },
+    {
+      "id": 2,
+      "references": [
+        0
+      ],
+      "type": "index",
+      "data": {
+        "on": 0,
+        "name": "ux_wallets_default",
+        "sql": "CREATE UNIQUE INDEX ux_wallets_default ON wallets(is_default) WHERE is_default = 1 AND is_deleted = 0;",
+        "unique": true,
+        "columns": []
+      }
+    },
+    {
+      "id": 3,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "categories",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "primary-key"
+            ]
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "slug",
+            "getter_name": "slug",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "aliases",
+            "getter_name": "aliases",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT ''",
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "kind",
+            "getter_name": "kind",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL CHECK (kind IN ('income', 'outcome'))",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "color",
+            "getter_name": "color",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "icon",
+            "getter_name": "icon",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_system",
+            "getter_name": "isSystem",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_system IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_archived",
+            "getter_name": "isArchived",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_archived IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "sort_order",
+            "getter_name": "sortOrder",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_deleted",
+            "getter_name": "isDeleted",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": []
+      }
+    },
+    {
+      "id": 4,
+      "references": [
+        3
+      ],
+      "type": "index",
+      "data": {
+        "on": 3,
+        "name": "ux_categories_kind_slug",
+        "sql": "CREATE UNIQUE INDEX ux_categories_kind_slug ON categories(kind, slug) WHERE is_deleted = 0;",
+        "unique": true,
+        "columns": []
+      }
+    },
+    {
+      "id": 5,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "notes",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "primary-key"
+            ]
+          },
+          {
+            "name": "title",
+            "getter_name": "title",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT ''",
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "body",
+            "getter_name": "body",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT ''",
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "kind",
+            "getter_name": "kind",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 'note' CHECK (kind IN ('note', 'daily'))",
+            "default_dart": "const CustomExpression('\\'note\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "daily_date",
+            "getter_name": "dailyDate",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_pinned",
+            "getter_name": "isPinned",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_pinned IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_deleted",
+            "getter_name": "isDeleted",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [
+          "CHECK((kind = 'daily')=(daily_date IS NOT NULL))"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "references": [
+        5
+      ],
+      "type": "index",
+      "data": {
+        "on": 5,
+        "name": "ux_notes_daily",
+        "sql": "CREATE UNIQUE INDEX ux_notes_daily   ON notes(daily_date) WHERE kind = 'daily' AND is_deleted = 0;",
+        "unique": true,
+        "columns": []
+      }
+    },
+    {
+      "id": 7,
+      "references": [
+        5
+      ],
+      "type": "index",
+      "data": {
+        "on": 5,
+        "name": "ix_notes_updated",
+        "sql": "CREATE INDEX        ix_notes_updated ON notes(updated_at) WHERE is_deleted = 0;",
+        "unique": false,
+        "columns": []
+      }
+    },
+    {
+      "id": 8,
+      "references": [
+        0,
+        3,
+        5
+      ],
+      "type": "table",
+      "data": {
+        "name": "action_items",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "primary-key"
+            ]
+          },
+          {
+            "name": "title",
+            "getter_name": "title",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL CHECK (length(trim(title)) > 0)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "body",
+            "getter_name": "body",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT ''",
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "status",
+            "getter_name": "status",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'done', 'cancelled'))",
+            "default_dart": "const CustomExpression('\\'open\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "priority",
+            "getter_name": "priority",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (priority BETWEEN 0 AND 3)",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "due_date",
+            "getter_name": "dueDate",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "scheduled_start",
+            "getter_name": "scheduledStart",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "scheduled_end",
+            "getter_name": "scheduledEnd",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "reminder_offset_min",
+            "getter_name": "reminderOffsetMin",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": "CHECK (reminder_offset_min IS NULL OR reminder_offset_min >= 0)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "notif_id",
+            "getter_name": "notifId",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "linked_amount",
+            "getter_name": "linkedAmount",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": "CHECK (linked_amount IS NULL OR linked_amount > 0)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "linked_wallet_id",
+            "getter_name": "linkedWalletId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "REFERENCES wallets(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "wallets",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "linked_category_id",
+            "getter_name": "linkedCategoryId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "REFERENCES categories(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "categories",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "bill_status",
+            "getter_name": "billStatus",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "CHECK (bill_status IN ('pending', 'recorded', 'skipped'))",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "source_note_id",
+            "getter_name": "sourceNoteId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "REFERENCES notes(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "notes",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "source_block_id",
+            "getter_name": "sourceBlockId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "completed_at",
+            "getter_name": "completedAt",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "raw_input",
+            "getter_name": "rawInput",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_deleted",
+            "getter_name": "isDeleted",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [
+          "CHECK(scheduled_end IS NULL OR(scheduled_start IS NOT NULL AND scheduled_end > scheduled_start))",
+          "CHECK((source_note_id IS NULL)=(source_block_id IS NULL))"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "references": [
+        8
+      ],
+      "type": "index",
+      "data": {
+        "on": 8,
+        "name": "ix_ai_scheduled",
+        "sql": "CREATE INDEX ix_ai_scheduled ON action_items(scheduled_start)\n  WHERE scheduled_start IS NOT NULL AND is_deleted = 0;",
+        "unique": false,
+        "columns": []
+      }
+    },
+    {
+      "id": 10,
+      "references": [
+        8
+      ],
+      "type": "index",
+      "data": {
+        "on": 8,
+        "name": "ix_ai_inbox",
+        "sql": "CREATE INDEX ix_ai_inbox ON action_items(status, due_date, priority)\n  WHERE scheduled_start IS NULL AND is_deleted = 0;",
+        "unique": false,
+        "columns": []
+      }
+    },
+    {
+      "id": 11,
+      "references": [
+        8
+      ],
+      "type": "index",
+      "data": {
+        "on": 8,
+        "name": "ux_ai_block",
+        "sql": "CREATE UNIQUE INDEX ux_ai_block ON action_items(source_note_id, source_block_id) WHERE source_note_id IS NOT NULL;",
+        "unique": true,
+        "columns": []
+      }
+    },
+    {
+      "id": 12,
+      "references": [
+        8
+      ],
+      "type": "index",
+      "data": {
+        "on": 8,
+        "name": "ux_ai_notif",
+        "sql": "CREATE UNIQUE INDEX ux_ai_notif ON action_items(notif_id) WHERE notif_id IS NOT NULL;",
+        "unique": true,
+        "columns": []
+      }
+    },
+    {
+      "id": 13,
+      "references": [
+        0,
+        3,
+        8
+      ],
+      "type": "table",
+      "data": {
+        "name": "transactions",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "primary-key"
+            ]
+          },
+          {
+            "name": "type",
+            "getter_name": "type",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL CHECK (type IN ('INCOME', 'OUTCOME', 'TRANSFER'))",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "amount",
+            "getter_name": "amount",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL CHECK (amount > 0)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "wallet_id",
+            "getter_name": "walletId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL REFERENCES wallets(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "wallets",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "to_wallet_id",
+            "getter_name": "toWalletId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "REFERENCES wallets(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "wallets",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "category_id",
+            "getter_name": "categoryId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "REFERENCES categories(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "categories",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "description",
+            "getter_name": "description",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT ''",
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "occurred_at",
+            "getter_name": "occurredAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "occurred_on",
+            "getter_name": "occurredOn",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "parent_transaction_id",
+            "getter_name": "parentTransactionId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "REFERENCES transactions(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "transactions",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "source_action_item_id",
+            "getter_name": "sourceActionItemId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "REFERENCES action_items(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "action_items",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "raw_input",
+            "getter_name": "rawInput",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_deleted",
+            "getter_name": "isDeleted",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [
+          "CHECK((type = 'TRANSFER' AND to_wallet_id IS NOT NULL AND to_wallet_id <> wallet_id AND category_id IS NULL)OR(type <> 'TRANSFER' AND to_wallet_id IS NULL AND category_id IS NOT NULL))"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "references": [
+        13
+      ],
+      "type": "index",
+      "data": {
+        "on": 13,
+        "name": "ix_tx_occurred_on",
+        "sql": "CREATE INDEX ix_tx_occurred_on ON transactions(occurred_on)              WHERE is_deleted = 0;",
+        "unique": false,
+        "columns": []
+      }
+    },
+    {
+      "id": 15,
+      "references": [
+        13
+      ],
+      "type": "index",
+      "data": {
+        "on": 13,
+        "name": "ix_tx_wallet",
+        "sql": "CREATE INDEX ix_tx_wallet      ON transactions(wallet_id)                WHERE is_deleted = 0;",
+        "unique": false,
+        "columns": []
+      }
+    },
+    {
+      "id": 16,
+      "references": [
+        13
+      ],
+      "type": "index",
+      "data": {
+        "on": 13,
+        "name": "ix_tx_to_wallet",
+        "sql": "CREATE INDEX ix_tx_to_wallet   ON transactions(to_wallet_id)             WHERE to_wallet_id IS NOT NULL AND is_deleted = 0;",
+        "unique": false,
+        "columns": []
+      }
+    },
+    {
+      "id": 17,
+      "references": [
+        13
+      ],
+      "type": "index",
+      "data": {
+        "on": 13,
+        "name": "ix_tx_category",
+        "sql": "CREATE INDEX ix_tx_category    ON transactions(category_id, occurred_on) WHERE is_deleted = 0;",
+        "unique": false,
+        "columns": []
+      }
+    },
+    {
+      "id": 18,
+      "references": [
+        13
+      ],
+      "type": "index",
+      "data": {
+        "on": 13,
+        "name": "ix_tx_source_item",
+        "sql": "CREATE INDEX ix_tx_source_item ON transactions(source_action_item_id)    WHERE source_action_item_id IS NOT NULL;",
+        "unique": false,
+        "columns": []
+      }
+    },
+    {
+      "id": 19,
+      "references": [
+        3
+      ],
+      "type": "table",
+      "data": {
+        "name": "budgets",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "primary-key"
+            ]
+          },
+          {
+            "name": "category_id",
+            "getter_name": "categoryId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL REFERENCES categories(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "categories",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "amount",
+            "getter_name": "amount",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL CHECK (amount >= 0)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "effective_from",
+            "getter_name": "effectiveFrom",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_deleted",
+            "getter_name": "isDeleted",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": []
+      }
+    },
+    {
+      "id": 20,
+      "references": [
+        19
+      ],
+      "type": "index",
+      "data": {
+        "on": 19,
+        "name": "ux_budgets",
+        "sql": "CREATE UNIQUE INDEX ux_budgets ON budgets(category_id, effective_from) WHERE is_deleted = 0;",
+        "unique": true,
+        "columns": []
+      }
+    },
+    {
+      "id": 21,
+      "references": [
+        0,
+        3
+      ],
+      "type": "table",
+      "data": {
+        "name": "recurring_rules",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "primary-key"
+            ]
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "type",
+            "getter_name": "type",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL CHECK (type IN ('INCOME', 'OUTCOME', 'TRANSFER'))",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "amount",
+            "getter_name": "amount",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL CHECK (amount > 0)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "wallet_id",
+            "getter_name": "walletId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL REFERENCES wallets(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "wallets",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "to_wallet_id",
+            "getter_name": "toWalletId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "REFERENCES wallets(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "wallets",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "category_id",
+            "getter_name": "categoryId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "REFERENCES categories(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "categories",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "description",
+            "getter_name": "description",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT ''",
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "freq",
+            "getter_name": "freq",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL CHECK (freq IN ('daily', 'weekly', 'monthly', 'yearly'))",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "interval_n",
+            "getter_name": "intervalN",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 1 CHECK (interval_n >= 1)",
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "by_weekday",
+            "getter_name": "byWeekday",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": "CHECK (by_weekday BETWEEN 1 AND 7)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "by_month_day",
+            "getter_name": "byMonthDay",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": "CHECK (by_month_day BETWEEN 1 AND 31)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "start_date",
+            "getter_name": "startDate",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "end_date",
+            "getter_name": "endDate",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "next_due_date",
+            "getter_name": "nextDueDate",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "auto_post",
+            "getter_name": "autoPost",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (auto_post IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_paused",
+            "getter_name": "isPaused",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_paused IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "notif_id",
+            "getter_name": "notifId",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_deleted",
+            "getter_name": "isDeleted",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [
+          "CHECK((type = 'TRANSFER' AND to_wallet_id IS NOT NULL AND to_wallet_id <> wallet_id AND category_id IS NULL)OR(type <> 'TRANSFER' AND to_wallet_id IS NULL AND category_id IS NOT NULL))"
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "references": [
+        21,
+        13
+      ],
+      "type": "table",
+      "data": {
+        "name": "recurring_occurrences",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "primary-key"
+            ]
+          },
+          {
+            "name": "rule_id",
+            "getter_name": "ruleId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL REFERENCES recurring_rules(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "recurring_rules",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "occurrence_date",
+            "getter_name": "occurrenceDate",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "status",
+            "getter_name": "status",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'posted', 'skipped'))",
+            "default_dart": "const CustomExpression('\\'pending\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "transaction_id",
+            "getter_name": "transactionId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": "REFERENCES transactions(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "transactions",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_deleted",
+            "getter_name": "isDeleted",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [
+          "CHECK((status = 'posted')=(transaction_id IS NOT NULL))"
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "references": [
+        22
+      ],
+      "type": "index",
+      "data": {
+        "on": 22,
+        "name": "ux_occ_rule_date",
+        "sql": "CREATE UNIQUE INDEX ux_occ_rule_date ON recurring_occurrences(rule_id, occurrence_date);",
+        "unique": true,
+        "columns": []
+      }
+    },
+    {
+      "id": 24,
+      "references": [
+        22
+      ],
+      "type": "index",
+      "data": {
+        "on": 22,
+        "name": "ix_occ_pending",
+        "sql": "CREATE INDEX ix_occ_pending ON recurring_occurrences(occurrence_date)\n  WHERE status = 'pending' AND is_deleted = 0;",
+        "unique": false,
+        "columns": []
+      }
+    },
+    {
+      "id": 25,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "tags",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "primary-key"
+            ]
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "slug",
+            "getter_name": "slug",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "color",
+            "getter_name": "color",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_deleted",
+            "getter_name": "isDeleted",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": []
+      }
+    },
+    {
+      "id": 26,
+      "references": [
+        25
+      ],
+      "type": "index",
+      "data": {
+        "on": 25,
+        "name": "ux_tags_slug",
+        "sql": "CREATE UNIQUE INDEX ux_tags_slug ON tags(slug) WHERE is_deleted = 0;",
+        "unique": true,
+        "columns": []
+      }
+    },
+    {
+      "id": 27,
+      "references": [
+        25
+      ],
+      "type": "table",
+      "data": {
+        "name": "taggings",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "tag_id",
+            "getter_name": "tagId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL REFERENCES tags(id)",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "tags",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "entity_type",
+            "getter_name": "entityType",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL CHECK (entity_type IN ('transaction', 'action_item', 'note'))",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "entity_id",
+            "getter_name": "entityId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_deleted",
+            "getter_name": "isDeleted",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1))",
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": true,
+        "constraints": [
+          "PRIMARY KEY(tag_id, entity_type, entity_id)"
+        ],
+        "explicit_pk": [
+          "tag_id",
+          "entity_type",
+          "entity_id"
+        ]
+      }
+    },
+    {
+      "id": 28,
+      "references": [
+        27
+      ],
+      "type": "index",
+      "data": {
+        "on": 27,
+        "name": "ix_taggings_entity",
+        "sql": "CREATE INDEX ix_taggings_entity ON taggings(entity_type, entity_id) WHERE is_deleted = 0;",
+        "unique": false,
+        "columns": []
+      }
+    },
+    {
+      "id": 29,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "app_settings",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "key",
+            "getter_name": "key",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "primary-key"
+            ]
+          },
+          {
+            "name": "value",
+            "getter_name": "value",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": []
+      }
+    },
+    {
+      "id": 30,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "search_index",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "entity_type",
+            "getter_name": "entityType",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "entity_id",
+            "getter_name": "entityId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "title",
+            "getter_name": "title",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "body",
+            "getter_name": "body",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": true,
+        "create_virtual_stmt": "CREATE VIRTUAL TABLE \"search_index\" USING fts5(entity_type UNINDEXED, entity_id   UNINDEXED, title, body, tokenize = 'unicode61 remove_diacritics 2', prefix   = '2 3')",
+        "without_rowid": false,
+        "constraints": []
+      }
+    },
+    {
+      "id": 31,
+      "references": [
+        13,
+        30
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 13,
+        "references_in_body": [
+          13,
+          30
+        ],
+        "name": "trg_tx_fts_ins",
+        "sql": "CREATE TRIGGER trg_tx_fts_ins AFTER INSERT ON transactions WHEN NEW.is_deleted = 0 BEGIN\n  INSERT INTO search_index(entity_type, entity_id, title, body)\n    VALUES ('transaction', NEW.id, NEW.description, '');\nEND;"
+      }
+    },
+    {
+      "id": 32,
+      "references": [
+        13,
+        30
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 13,
+        "references_in_body": [
+          13,
+          30
+        ],
+        "name": "trg_tx_fts_upd",
+        "sql": "CREATE TRIGGER trg_tx_fts_upd AFTER UPDATE OF description, is_deleted ON transactions BEGIN\n  DELETE FROM search_index WHERE entity_type = 'transaction' AND entity_id = OLD.id;\n  INSERT INTO search_index(entity_type, entity_id, title, body)\n    SELECT 'transaction', NEW.id, NEW.description, '' WHERE NEW.is_deleted = 0;\nEND;"
+      }
+    },
+    {
+      "id": 33,
+      "references": [
+        13,
+        30
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 13,
+        "references_in_body": [
+          13,
+          30
+        ],
+        "name": "trg_tx_fts_del",
+        "sql": "CREATE TRIGGER trg_tx_fts_del AFTER DELETE ON transactions BEGIN\n  DELETE FROM search_index WHERE entity_type = 'transaction' AND entity_id = OLD.id;\nEND;"
+      }
+    },
+    {
+      "id": 34,
+      "references": [
+        8,
+        30
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 8,
+        "references_in_body": [
+          8,
+          30
+        ],
+        "name": "trg_ai_fts_ins",
+        "sql": "CREATE TRIGGER trg_ai_fts_ins AFTER INSERT ON action_items WHEN NEW.is_deleted = 0 BEGIN\n  INSERT INTO search_index(entity_type, entity_id, title, body)\n    VALUES ('action_item', NEW.id, NEW.title, NEW.body);\nEND;"
+      }
+    },
+    {
+      "id": 35,
+      "references": [
+        8,
+        30
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 8,
+        "references_in_body": [
+          8,
+          30
+        ],
+        "name": "trg_ai_fts_upd",
+        "sql": "CREATE TRIGGER trg_ai_fts_upd AFTER UPDATE OF title, body, is_deleted ON action_items BEGIN\n  DELETE FROM search_index WHERE entity_type = 'action_item' AND entity_id = OLD.id;\n  INSERT INTO search_index(entity_type, entity_id, title, body)\n    SELECT 'action_item', NEW.id, NEW.title, NEW.body WHERE NEW.is_deleted = 0;\nEND;"
+      }
+    },
+    {
+      "id": 36,
+      "references": [
+        8,
+        30
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 8,
+        "references_in_body": [
+          8,
+          30
+        ],
+        "name": "trg_ai_fts_del",
+        "sql": "CREATE TRIGGER trg_ai_fts_del AFTER DELETE ON action_items BEGIN\n  DELETE FROM search_index WHERE entity_type = 'action_item' AND entity_id = OLD.id;\nEND;"
+      }
+    },
+    {
+      "id": 37,
+      "references": [
+        5,
+        30
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 5,
+        "references_in_body": [
+          5,
+          30
+        ],
+        "name": "trg_note_fts_ins",
+        "sql": "CREATE TRIGGER trg_note_fts_ins AFTER INSERT ON notes WHEN NEW.is_deleted = 0 BEGIN\n  INSERT INTO search_index(entity_type, entity_id, title, body)\n    VALUES ('note', NEW.id, NEW.title, NEW.body);\nEND;"
+      }
+    },
+    {
+      "id": 38,
+      "references": [
+        5,
+        30
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 5,
+        "references_in_body": [
+          5,
+          30
+        ],
+        "name": "trg_note_fts_upd",
+        "sql": "CREATE TRIGGER trg_note_fts_upd AFTER UPDATE OF title, body, is_deleted ON notes BEGIN\n  DELETE FROM search_index WHERE entity_type = 'note' AND entity_id = OLD.id;\n  INSERT INTO search_index(entity_type, entity_id, title, body)\n    SELECT 'note', NEW.id, NEW.title, NEW.body WHERE NEW.is_deleted = 0;\nEND;"
+      }
+    },
+    {
+      "id": 39,
+      "references": [
+        5,
+        30
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 5,
+        "references_in_body": [
+          5,
+          30
+        ],
+        "name": "trg_note_fts_del",
+        "sql": "CREATE TRIGGER trg_note_fts_del AFTER DELETE ON notes BEGIN\n  DELETE FROM search_index WHERE entity_type = 'note' AND entity_id = OLD.id;\nEND;"
+      }
+    }
+  ],
+  "fixed_sql": [
+    {
+      "name": "wallets",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"wallets\" (\"id\" TEXT NOT NULL PRIMARY KEY, \"name\" TEXT NOT NULL, \"slug\" TEXT NOT NULL, \"aliases\" TEXT NOT NULL DEFAULT '', \"kind\" TEXT NOT NULL CHECK (kind IN ('cash', 'bank', 'ewallet', 'other')), \"initial_balance\" INTEGER NOT NULL DEFAULT 0, \"color\" INTEGER NOT NULL, \"icon\" TEXT NOT NULL, \"include_in_total\" INTEGER NOT NULL DEFAULT 1 CHECK (include_in_total IN (0, 1)), \"is_default\" INTEGER NOT NULL DEFAULT 0 CHECK (is_default IN (0, 1)), \"is_archived\" INTEGER NOT NULL DEFAULT 0 CHECK (is_archived IN (0, 1)), \"sort_order\" INTEGER NOT NULL DEFAULT 0, \"created_at\" INTEGER NOT NULL, \"updated_at\" INTEGER NOT NULL, \"is_deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)));"
+        }
+      ]
+    },
+    {
+      "name": "ux_wallets_slug",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE UNIQUE INDEX ux_wallets_slug ON wallets (slug) WHERE is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "ux_wallets_default",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE UNIQUE INDEX ux_wallets_default ON wallets (is_default) WHERE is_default = 1 AND is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "categories",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"categories\" (\"id\" TEXT NOT NULL PRIMARY KEY, \"name\" TEXT NOT NULL, \"slug\" TEXT NOT NULL, \"aliases\" TEXT NOT NULL DEFAULT '', \"kind\" TEXT NOT NULL CHECK (kind IN ('income', 'outcome')), \"color\" INTEGER NOT NULL, \"icon\" TEXT NOT NULL, \"is_system\" INTEGER NOT NULL DEFAULT 0 CHECK (is_system IN (0, 1)), \"is_archived\" INTEGER NOT NULL DEFAULT 0 CHECK (is_archived IN (0, 1)), \"sort_order\" INTEGER NOT NULL DEFAULT 0, \"created_at\" INTEGER NOT NULL, \"updated_at\" INTEGER NOT NULL, \"is_deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)));"
+        }
+      ]
+    },
+    {
+      "name": "ux_categories_kind_slug",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE UNIQUE INDEX ux_categories_kind_slug ON categories (kind, slug) WHERE is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "notes",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"notes\" (\"id\" TEXT NOT NULL PRIMARY KEY, \"title\" TEXT NOT NULL DEFAULT '', \"body\" TEXT NOT NULL DEFAULT '', \"kind\" TEXT NOT NULL DEFAULT 'note' CHECK (kind IN ('note', 'daily')), \"daily_date\" TEXT, \"is_pinned\" INTEGER NOT NULL DEFAULT 0 CHECK (is_pinned IN (0, 1)), \"created_at\" INTEGER NOT NULL, \"updated_at\" INTEGER NOT NULL, \"is_deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)), CHECK((kind = 'daily')=(daily_date IS NOT NULL)));"
+        }
+      ]
+    },
+    {
+      "name": "ux_notes_daily",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE UNIQUE INDEX ux_notes_daily ON notes (daily_date) WHERE kind = 'daily' AND is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "ix_notes_updated",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX ix_notes_updated ON notes (updated_at) WHERE is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "action_items",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"action_items\" (\"id\" TEXT NOT NULL PRIMARY KEY, \"title\" TEXT NOT NULL CHECK (length(trim(title)) > 0), \"body\" TEXT NOT NULL DEFAULT '', \"status\" TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'done', 'cancelled')), \"priority\" INTEGER NOT NULL DEFAULT 0 CHECK (priority BETWEEN 0 AND 3), \"due_date\" TEXT, \"scheduled_start\" INTEGER, \"scheduled_end\" INTEGER, \"reminder_offset_min\" INTEGER CHECK (reminder_offset_min IS NULL OR reminder_offset_min >= 0), \"notif_id\" INTEGER, \"linked_amount\" INTEGER CHECK (linked_amount IS NULL OR linked_amount > 0), \"linked_wallet_id\" TEXT REFERENCES wallets(id), \"linked_category_id\" TEXT REFERENCES categories(id), \"bill_status\" TEXT CHECK (bill_status IN ('pending', 'recorded', 'skipped')), \"source_note_id\" TEXT REFERENCES notes(id), \"source_block_id\" TEXT, \"completed_at\" INTEGER, \"raw_input\" TEXT, \"created_at\" INTEGER NOT NULL, \"updated_at\" INTEGER NOT NULL, \"is_deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)), CHECK(scheduled_end IS NULL OR(scheduled_start IS NOT NULL AND scheduled_end > scheduled_start)), CHECK((source_note_id IS NULL)=(source_block_id IS NULL)));"
+        }
+      ]
+    },
+    {
+      "name": "ix_ai_scheduled",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX ix_ai_scheduled ON action_items (scheduled_start) WHERE scheduled_start IS NOT NULL AND is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "ix_ai_inbox",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX ix_ai_inbox ON action_items (status, due_date, priority) WHERE scheduled_start IS NULL AND is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "ux_ai_block",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE UNIQUE INDEX ux_ai_block ON action_items (source_note_id, source_block_id) WHERE source_note_id IS NOT NULL"
+        }
+      ]
+    },
+    {
+      "name": "ux_ai_notif",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE UNIQUE INDEX ux_ai_notif ON action_items (notif_id) WHERE notif_id IS NOT NULL"
+        }
+      ]
+    },
+    {
+      "name": "transactions",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"transactions\" (\"id\" TEXT NOT NULL PRIMARY KEY, \"type\" TEXT NOT NULL CHECK (type IN ('INCOME', 'OUTCOME', 'TRANSFER')), \"amount\" INTEGER NOT NULL CHECK (amount > 0), \"wallet_id\" TEXT NOT NULL REFERENCES wallets(id), \"to_wallet_id\" TEXT REFERENCES wallets(id), \"category_id\" TEXT REFERENCES categories(id), \"description\" TEXT NOT NULL DEFAULT '', \"occurred_at\" INTEGER NOT NULL, \"occurred_on\" TEXT NOT NULL, \"parent_transaction_id\" TEXT REFERENCES transactions(id), \"source_action_item_id\" TEXT REFERENCES action_items(id), \"raw_input\" TEXT, \"created_at\" INTEGER NOT NULL, \"updated_at\" INTEGER NOT NULL, \"is_deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)), CHECK((type = 'TRANSFER' AND to_wallet_id IS NOT NULL AND to_wallet_id <> wallet_id AND category_id IS NULL)OR(type <> 'TRANSFER' AND to_wallet_id IS NULL AND category_id IS NOT NULL)));"
+        }
+      ]
+    },
+    {
+      "name": "ix_tx_occurred_on",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX ix_tx_occurred_on ON transactions (occurred_on) WHERE is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "ix_tx_wallet",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX ix_tx_wallet ON transactions (wallet_id) WHERE is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "ix_tx_to_wallet",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX ix_tx_to_wallet ON transactions (to_wallet_id) WHERE to_wallet_id IS NOT NULL AND is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "ix_tx_category",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX ix_tx_category ON transactions (category_id, occurred_on) WHERE is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "ix_tx_source_item",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX ix_tx_source_item ON transactions (source_action_item_id) WHERE source_action_item_id IS NOT NULL"
+        }
+      ]
+    },
+    {
+      "name": "budgets",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"budgets\" (\"id\" TEXT NOT NULL PRIMARY KEY, \"category_id\" TEXT NOT NULL REFERENCES categories(id), \"amount\" INTEGER NOT NULL CHECK (amount >= 0), \"effective_from\" TEXT NOT NULL, \"created_at\" INTEGER NOT NULL, \"updated_at\" INTEGER NOT NULL, \"is_deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)));"
+        }
+      ]
+    },
+    {
+      "name": "ux_budgets",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE UNIQUE INDEX ux_budgets ON budgets (category_id, effective_from) WHERE is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "recurring_rules",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"recurring_rules\" (\"id\" TEXT NOT NULL PRIMARY KEY, \"name\" TEXT NOT NULL, \"type\" TEXT NOT NULL CHECK (type IN ('INCOME', 'OUTCOME', 'TRANSFER')), \"amount\" INTEGER NOT NULL CHECK (amount > 0), \"wallet_id\" TEXT NOT NULL REFERENCES wallets(id), \"to_wallet_id\" TEXT REFERENCES wallets(id), \"category_id\" TEXT REFERENCES categories(id), \"description\" TEXT NOT NULL DEFAULT '', \"freq\" TEXT NOT NULL CHECK (freq IN ('daily', 'weekly', 'monthly', 'yearly')), \"interval_n\" INTEGER NOT NULL DEFAULT 1 CHECK (interval_n >= 1), \"by_weekday\" INTEGER CHECK (by_weekday BETWEEN 1 AND 7), \"by_month_day\" INTEGER CHECK (by_month_day BETWEEN 1 AND 31), \"start_date\" TEXT NOT NULL, \"end_date\" TEXT, \"next_due_date\" TEXT NOT NULL, \"auto_post\" INTEGER NOT NULL DEFAULT 0 CHECK (auto_post IN (0, 1)), \"is_paused\" INTEGER NOT NULL DEFAULT 0 CHECK (is_paused IN (0, 1)), \"notif_id\" INTEGER, \"created_at\" INTEGER NOT NULL, \"updated_at\" INTEGER NOT NULL, \"is_deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)), CHECK((type = 'TRANSFER' AND to_wallet_id IS NOT NULL AND to_wallet_id <> wallet_id AND category_id IS NULL)OR(type <> 'TRANSFER' AND to_wallet_id IS NULL AND category_id IS NOT NULL)));"
+        }
+      ]
+    },
+    {
+      "name": "recurring_occurrences",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"recurring_occurrences\" (\"id\" TEXT NOT NULL PRIMARY KEY, \"rule_id\" TEXT NOT NULL REFERENCES recurring_rules(id), \"occurrence_date\" TEXT NOT NULL, \"status\" TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'posted', 'skipped')), \"transaction_id\" TEXT REFERENCES transactions(id), \"created_at\" INTEGER NOT NULL, \"updated_at\" INTEGER NOT NULL, \"is_deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)), CHECK((status = 'posted')=(transaction_id IS NOT NULL)));"
+        }
+      ]
+    },
+    {
+      "name": "ux_occ_rule_date",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE UNIQUE INDEX ux_occ_rule_date ON recurring_occurrences (rule_id, occurrence_date)"
+        }
+      ]
+    },
+    {
+      "name": "ix_occ_pending",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX ix_occ_pending ON recurring_occurrences (occurrence_date) WHERE status = 'pending' AND is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "tags",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"tags\" (\"id\" TEXT NOT NULL PRIMARY KEY, \"name\" TEXT NOT NULL, \"slug\" TEXT NOT NULL, \"color\" INTEGER, \"created_at\" INTEGER NOT NULL, \"updated_at\" INTEGER NOT NULL, \"is_deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)));"
+        }
+      ]
+    },
+    {
+      "name": "ux_tags_slug",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE UNIQUE INDEX ux_tags_slug ON tags (slug) WHERE is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "taggings",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"taggings\" (\"tag_id\" TEXT NOT NULL REFERENCES tags(id), \"entity_type\" TEXT NOT NULL CHECK (entity_type IN ('transaction', 'action_item', 'note')), \"entity_id\" TEXT NOT NULL, \"created_at\" INTEGER NOT NULL, \"updated_at\" INTEGER NOT NULL, \"is_deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)), PRIMARY KEY(tag_id, entity_type, entity_id)) WITHOUT ROWID;"
+        }
+      ]
+    },
+    {
+      "name": "ix_taggings_entity",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX ix_taggings_entity ON taggings (entity_type, entity_id) WHERE is_deleted = 0"
+        }
+      ]
+    },
+    {
+      "name": "app_settings",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"app_settings\" (\"key\" TEXT NOT NULL PRIMARY KEY, \"value\" TEXT NOT NULL, \"updated_at\" INTEGER NOT NULL);"
+        }
+      ]
+    },
+    {
+      "name": "search_index",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE VIRTUAL TABLE IF NOT EXISTS \"search_index\" USING fts5(entity_type UNINDEXED, entity_id   UNINDEXED, title, body, tokenize = 'unicode61 remove_diacritics 2', prefix   = '2 3');"
+        }
+      ]
+    },
+    {
+      "name": "trg_tx_fts_ins",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER trg_tx_fts_ins AFTER INSERT ON transactions WHEN NEW.is_deleted = 0 BEGIN INSERT INTO search_index (entity_type, entity_id, title, body) VALUES ('transaction', NEW.id, NEW.description, '');END"
+        }
+      ]
+    },
+    {
+      "name": "trg_tx_fts_upd",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER trg_tx_fts_upd AFTER UPDATE OF description, is_deleted ON transactions BEGIN DELETE FROM search_index WHERE entity_type = 'transaction' AND entity_id = OLD.id;INSERT INTO search_index (entity_type, entity_id, title, body) SELECT 'transaction', NEW.id, NEW.description, '' WHERE NEW.is_deleted = 0;END"
+        }
+      ]
+    },
+    {
+      "name": "trg_tx_fts_del",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER trg_tx_fts_del AFTER DELETE ON transactions BEGIN DELETE FROM search_index WHERE entity_type = 'transaction' AND entity_id = OLD.id;END"
+        }
+      ]
+    },
+    {
+      "name": "trg_ai_fts_ins",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER trg_ai_fts_ins AFTER INSERT ON action_items WHEN NEW.is_deleted = 0 BEGIN INSERT INTO search_index (entity_type, entity_id, title, body) VALUES ('action_item', NEW.id, NEW.title, NEW.body);END"
+        }
+      ]
+    },
+    {
+      "name": "trg_ai_fts_upd",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER trg_ai_fts_upd AFTER UPDATE OF title, body, is_deleted ON action_items BEGIN DELETE FROM search_index WHERE entity_type = 'action_item' AND entity_id = OLD.id;INSERT INTO search_index (entity_type, entity_id, title, body) SELECT 'action_item', NEW.id, NEW.title, NEW.body WHERE NEW.is_deleted = 0;END"
+        }
+      ]
+    },
+    {
+      "name": "trg_ai_fts_del",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER trg_ai_fts_del AFTER DELETE ON action_items BEGIN DELETE FROM search_index WHERE entity_type = 'action_item' AND entity_id = OLD.id;END"
+        }
+      ]
+    },
+    {
+      "name": "trg_note_fts_ins",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER trg_note_fts_ins AFTER INSERT ON notes WHEN NEW.is_deleted = 0 BEGIN INSERT INTO search_index (entity_type, entity_id, title, body) VALUES ('note', NEW.id, NEW.title, NEW.body);END"
+        }
+      ]
+    },
+    {
+      "name": "trg_note_fts_upd",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER trg_note_fts_upd AFTER UPDATE OF title, body, is_deleted ON notes BEGIN DELETE FROM search_index WHERE entity_type = 'note' AND entity_id = OLD.id;INSERT INTO search_index (entity_type, entity_id, title, body) SELECT 'note', NEW.id, NEW.title, NEW.body WHERE NEW.is_deleted = 0;END"
+        }
+      ]
+    },
+    {
+      "name": "trg_note_fts_del",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER trg_note_fts_del AFTER DELETE ON notes BEGIN DELETE FROM search_index WHERE entity_type = 'note' AND entity_id = OLD.id;END"
+        }
+      ]
+    }
+  ]
+}
