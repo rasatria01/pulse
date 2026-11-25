@@ -26,6 +26,31 @@ abstract final class PulseStrings {
   static const financialPulse = 'Financial pulse';
   static const capReached = 'Cap reached';
 
+  // App shell and the placeholder screens.
+  static const today = 'Today';
+  static const tasks = 'Tasks';
+  static const calendar = 'Calendar';
+  static const notes = 'Notes';
+  static const finance = 'Finance';
+  static const search = 'Search';
+  static const settings = 'Settings';
+  static const back = 'Back';
+  static const needsConfirmation = 'Needs confirmation';
+  static const timeline = 'Timeline';
+  static const priorityInbox = 'Priority inbox';
+  static const scratchpad = 'Scratchpad';
+  static const noTasks = 'No tasks yet';
+  static const noEvents = 'Nothing scheduled';
+  static const noNotes = 'No notes yet';
+  static const noTransactions = 'No transactions yet';
+  static const searchEmpty = 'Search your money, tasks and notes';
+  static const settingsEmpty = 'No settings yet';
+  static const noPulse = 'No money recorded yet';
+  static const noTimeline = 'Nothing scheduled today';
+  static const noInbox = 'Inbox is clear';
+  static const noScratchpad = 'Nothing written today';
+  static const captureEmpty = 'Quick capture is not ready yet';
+
   static const expense = 'Expense';
   static const income = 'Income';
   static const transfer = 'Transfer';
