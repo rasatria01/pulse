@@ -82,10 +82,13 @@ void main() {
       await tester.scrollUntilVisible(
         find.text(PulseStrings.noScratchpad),
         200,
-        scrollable: find.descendant(
-          of: find.byType(CustomScrollView),
-          matching: find.byType(Scrollable),
-        ),
+        // The first is the list itself; sections may hold chip rows.
+        scrollable: find
+            .descendant(
+              of: find.byType(CustomScrollView),
+              matching: find.byType(Scrollable),
+            )
+            .first,
       );
       expect(tester.takeException(), isNull);
 
