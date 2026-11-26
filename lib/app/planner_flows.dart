@@ -8,10 +8,13 @@ import 'package:shad/shad.dart';
 
 import '../core/failures.dart';
 import '../core/local_date.dart';
+import '../core/rupiah.dart';
 import '../domain/entities/action_item.dart';
 import '../domain/entities/category.dart';
+import '../domain/entities/recurring_occurrence.dart';
 import '../ui/planner/bill_sheet.dart';
 import '../ui/planner/item_sheet.dart';
+import '../ui/planner/occurrence_sheet.dart';
 import '../ui/planner/planner_strings.dart';
 import '../ui/planner/schedule_sheet.dart';
 import '../ui/widgets/widgets.dart';
@@ -161,9 +164,74 @@ class PlannerFlows {
     _snack(PlannerStrings.deleted(item.title), () => _items.restore(item.id));
   });
 
-  // TODO(wave 3): confirm, edit and skip a recurring occurrence with BillSheet
-  // and RecurringEngine.postPending / skipPending. Until then, only say so.
-  void recurringNotReady() => _toast(PlannerStrings.recurringLater);
+  /// Needs confirmation: posts the rule's amount to the rule's wallet.
+  Future<void> confirmOccurrence(PendingOccurrence pending) => _run(
+    pending.occurrence.id,
+    () => _postOccurrence(pending, pending.rule.amount),
+  );
+
+  Future<void> editOccurrence(PendingOccurrence pending) =>
+      _run(pending.occurrence.id, () async {
+        final wallet = await _walletName(pending.rule.walletId);
+        if (!_context.mounted) return;
+        final result = await showPSheet<OccurrenceSheetResult>(
+          context: _context,
+          builder: (_) => OccurrenceSheet(
+            title: pending.rule.name,
+            amount: pending.rule.amount,
+            walletName: wallet,
+          ),
+        );
+        switch (result) {
+          case OccurrenceConfirmed():
+            await _postOccurrence(pending, result.amount);
+          case OccurrenceSkipped():
+            await _skipOccurrence(pending);
+          case null:
+        }
+      });
+
+  Future<void> skipOccurrence(PendingOccurrence pending) =>
+      _run(pending.occurrence.id, () => _skipOccurrence(pending));
+
+  Future<void> _postOccurrence(PendingOccurrence pending, Rupiah amount) async {
+    final engine = _read(recurringEngineProvider);
+    final id = pending.occurrence.id;
+    final String transactionId;
+    try {
+      transactionId = await engine.postPending(id, amount: amount);
+    } on ValidationFailure catch (e) {
+      if (e.field != 'walletId') rethrow;
+      _toast(PlannerStrings.archivedRuleWallet);
+      return;
+    }
+    final wallet = await _walletName(pending.rule.walletId);
+    _snack(
+      PlannerStrings.recorded(formatRupiah(amount), wallet),
+      () => engine.reopenOccurrence(id, transactionId: transactionId),
+    );
+  }
+
+  Future<void> _skipOccurrence(PendingOccurrence pending) async {
+    final engine = _read(recurringEngineProvider);
+    final id = pending.occurrence.id;
+    await engine.skipPending(id);
+    _snack(
+      PlannerStrings.skippedOccurrence(pending.rule.name),
+      () => engine.reopenOccurrence(id),
+    );
+  }
+
+  /// Archived wallets included.
+  Future<String> _walletName(String id) async {
+    final wallets = await _read(walletRepositoryProvider)
+        .watchAll(includeArchived: true)
+        .first;
+    return [
+      for (final b in wallets)
+        if (b.wallet.id == id) b.wallet.name,
+    ].join();
+  }
 
   Future<void> _billSheet(
     ActionItem item,
@@ -217,11 +285,7 @@ class PlannerFlows {
     required bool pending,
   }) async {
     await _bills.confirm(item.id, draft);
-    final wallets = await _read(walletRepositoryProvider).watchAll().first;
-    final wallet = [
-      for (final b in wallets)
-        if (b.wallet.id == draft.walletId) b.wallet.name,
-    ].join();
+    final wallet = await _walletName(draft.walletId);
     _snack(
       PlannerStrings.recorded(formatRupiah(draft.amount!), wallet),
       () async {

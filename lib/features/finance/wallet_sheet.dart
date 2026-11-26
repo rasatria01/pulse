@@ -97,7 +97,9 @@ class _WalletSheetState extends ConsumerState<WalletSheet> {
     });
   }
 
-  Future<void> _save() async {
+  /// Saves the form. [then] runs in the same transaction, so Set default and
+  /// Archive keep unsaved edits.
+  Future<void> _save([Future<void> Function(String id)? then]) async {
     final name = _name.text.trim();
     // A new wallet may leave the handle to its name.
     var slug = _slug.text.trim().toLowerCase();
@@ -117,6 +119,7 @@ class _WalletSheetState extends ConsumerState<WalletSheet> {
     if (balance == null) return _fail(FinanceStrings.balanceError);
 
     final repository = ref.read(walletRepositoryProvider);
+    final unitOfWork = ref.read(unitOfWorkProvider);
     final old = _old;
     await _run(slug: slug, () async {
       if (old == null) {
@@ -132,7 +135,9 @@ class _WalletSheetState extends ConsumerState<WalletSheet> {
             includeInTotal: _include,
           ),
         );
-      } else {
+        return;
+      }
+      await unitOfWork.run(() async {
         await repository.update(
           old.id,
           WalletPatch(
@@ -146,7 +151,8 @@ class _WalletSheetState extends ConsumerState<WalletSheet> {
             includeInTotal: _include,
           ),
         );
-      }
+        await then?.call(old.id);
+      });
     });
   }
 
@@ -167,7 +173,7 @@ class _WalletSheetState extends ConsumerState<WalletSheet> {
       footer: [
         PButton.primary(
           label: PulseStrings.save,
-          onPressed: _busy ? null : _save,
+          onPressed: _busy ? null : () => _save(),
         ),
       ],
       child: Column(
@@ -224,12 +230,12 @@ class _WalletSheetState extends ConsumerState<WalletSheet> {
               children: [
                 PButton.secondary(
                   label: FinanceStrings.setDefault,
-                  onPressed: () => _run(() => repository.setDefault(old.id)),
+                  onPressed: () => _save(repository.setDefault),
                 ),
                 if (_confirmArchive)
                   PButton.destructive(
                     label: FinanceStrings.confirmArchive,
-                    onPressed: () => _run(() => repository.archive(old.id)),
+                    onPressed: () => _save(repository.archive),
                   )
                 else
                   PButton.outline(

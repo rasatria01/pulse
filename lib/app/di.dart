@@ -33,6 +33,7 @@ import '../domain/repositories/transaction_repository.dart';
 import '../domain/repositories/wallet_repository.dart';
 import '../domain/services/unit_of_work.dart';
 
+export 'di_budget.dart';
 export 'di_capture.dart';
 export 'di_notes.dart';
 export 'di_planner.dart';

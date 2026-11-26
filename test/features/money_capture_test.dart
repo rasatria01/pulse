@@ -377,7 +377,11 @@ void main() {
       // Make it the default, then archive the old default.
       await _tap(tester, find.byKey(const ValueKey('wallet-savings')));
       await _tap(tester, _button('Set default'));
-      await _tap(tester, find.byKey(const ValueKey('wallet-cash')));
+      // The first wallet may sit just above the viewport.
+      await _tap(
+        tester,
+        find.byKey(const ValueKey('wallet-cash'), skipOffstage: false),
+      );
       await _tap(tester, _button('Archive'));
       await _tap(tester, _button('Confirm archive'));
       final all = await _wallets(db).watchAll(includeArchived: true).first;
@@ -385,9 +389,13 @@ void main() {
       expect(bySlug['savings']!.wallet.isDefault, isTrue);
       expect(bySlug['savings']!.balance, const Rupiah(-5000));
       expect(bySlug['cash']!.wallet.isArchived, isTrue);
-      expect(find.byKey(const ValueKey('wallet-cash')), findsNothing);
+      final cash = find.byKey(
+        const ValueKey('wallet-cash'),
+        skipOffstage: false,
+      );
+      expect(cash, findsNothing);
       await _tap(tester, _button('Show archived'));
-      expect(find.byKey(const ValueKey('wallet-cash')), findsOneWidget);
+      expect(cash, findsOneWidget);
       expect(tester.takeException(), isNull);
       await _drain(tester);
     });

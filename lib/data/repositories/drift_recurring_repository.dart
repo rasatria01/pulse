@@ -38,7 +38,23 @@ final class DriftRecurringRepository implements RecurringRepository {
 
   /// Oldest first. Occurrences of a deleted rule are not offered.
   @override
-  Stream<List<PendingOccurrence>> watchPending() {
+  Stream<List<PendingOccurrence>> watchPending() => _watchJoined(
+    _db.recurringOccurrences.status.equals(OccurrenceStatus.pending.name),
+  );
+
+  @override
+  Stream<List<PendingOccurrence>> watchOccurrences(
+    LocalDate from,
+    LocalDate to,
+  ) => _watchJoined(
+    _db.recurringOccurrences.occurrenceDate.isBetweenValues(
+      from.toIso(),
+      to.toIso(),
+    ),
+  );
+
+  /// Oldest first, matching [filter].
+  Stream<List<PendingOccurrence>> _watchJoined(Expression<bool> filter) {
     final occurrences = _db.recurringOccurrences;
     final rules = _db.recurringRules;
     final query =
@@ -46,7 +62,7 @@ final class DriftRecurringRepository implements RecurringRepository {
             innerJoin(rules, rules.id.equalsExp(occurrences.ruleId)),
           ])
           ..where(
-            occurrences.status.equals(OccurrenceStatus.pending.name) &
+            filter &
                 occurrences.isDeleted.equals(0) &
                 rules.isDeleted.equals(0),
           )

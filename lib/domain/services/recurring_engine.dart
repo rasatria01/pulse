@@ -19,6 +19,10 @@ abstract interface class RecurringEngine {
   LocalDate advance(RecurringRule rule, LocalDate from); // pure
 
   /// Posts a pending occurrence atomically, with the amount edited in the sheet.
-  Future<void> postPending(String occurrenceId, {Rupiah? amount});
+  /// Returns the transaction id.
+  Future<String> postPending(String occurrenceId, {Rupiah? amount});
   Future<void> skipPending(String occurrenceId);
+
+  /// Undo: back to pending, deleting [transactionId] if it was posted.
+  Future<void> reopenOccurrence(String occurrenceId, {String? transactionId});
 }

@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/app/app.dart';
 import 'package:pulse/app/bootstrap.dart';
 import 'package:pulse/app/di.dart';
+import 'package:pulse/core/local_date.dart';
 import 'package:pulse/data/db/app_database.dart';
 import 'package:pulse/data/platform/file_backup_gateway.dart';
 import 'package:pulse/domain/entities/action_item.dart';
@@ -15,6 +16,21 @@ import 'package:pulse/features/settings/settings_screen.dart';
 import 'package:pulse/features/settings/settings_strings.dart';
 
 import '../data/support.dart';
+
+/// The real engine is covered in recurring_engine_test. Its queries would start
+/// inside the fake clock zone here and deadlock the real-time steps below.
+class _CountingEngine implements RecurringEngine {
+  int runs = 0;
+
+  @override
+  Future<CatchUpReport> catchUp(LocalDate today) async {
+    runs++;
+    return const CatchUpReport();
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 void main() {
   testWidgets('a restore starts the app again on the restored data', (
@@ -48,11 +64,13 @@ void main() {
         row.read<String>('title'),
     ];
 
+    final engine = _CountingEngine();
     await tester.runAsync(
       () => bootstrap(
         open: open,
         overrides: [
           clockProvider.overrideWithValue(const FixedClock()),
+          recurringEngineProvider.overrideWithValue(engine),
           backupGatewayProvider.overrideWith(
             (ref) => FileBackupGateway(
               ref.watch(appDatabaseProvider),
@@ -93,6 +111,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(done, isTrue);
+    expect(engine.runs, 2); // catch-up ran at start and again after restore
     expect(opened, hasLength(2));
     expect(container(), isNot(same(first)));
     expect(find.byType(SettingsScreen), findsOneWidget);

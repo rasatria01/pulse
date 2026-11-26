@@ -1,4 +1,5 @@
-// Open the database, draw the first frame, then bring reminders up to date.
+// Open the database, draw the first frame, then bring recurring rules and
+// reminders up to date.
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
@@ -21,7 +22,7 @@ Future<void> bootstrap({
   // Drift opens lazily; create or migrate before the first frame.
   await db.customSelect('SELECT 1').get();
   late final ProviderContainer container;
-  late final AppLifecycleListener lifecycle;
+  late final void Function() stopUpkeep;
   container = ProviderContainer(
     // No retries: a local database error will not fix itself.
     retry: (_, _) => null,
@@ -34,7 +35,7 @@ Future<void> bootstrap({
           db,
           path,
           // Everything this start made that would outlive its database.
-          stop: () => lifecycle.dispose(),
+          stop: () => stopUpkeep(),
         );
         await bootstrap(open: open, restored: replaced, overrides: overrides);
       }),
@@ -52,11 +53,41 @@ Future<void> bootstrap({
       child: const PulseApp(),
     ),
   );
-  void resync() => container.read(reminderSchedulerProvider).resyncAll();
-  WidgetsBinding.instance.addPostFrameCallback((_) => resync());
-  // Also covers a timezone change: it can only be made outside the app, and
-  // due-date reminders are recomputed on return. Lives until a restore.
-  lifecycle = AppLifecycleListener(onResume: resync);
+  // Lives until a restore.
+  stopUpkeep = startUpkeep(container);
+}
+
+/// Brings recurring rules and reminders up to date: after the next frame, then
+/// on every resume and when the day changes (PRD 9.3). Restore calls this again
+/// for its new container; the returned function stops it.
+void Function() startUpkeep(ProviderContainer container) {
+  var stopped = false;
+  Future<void> run() async {
+    if (stopped) return;
+    try {
+      // From the clock: on resume todayProvider may not have refreshed yet.
+      await container
+          .read(recurringEngineProvider)
+          .catchUp(container.read(clockProvider).today());
+    } catch (e) {
+      // The type only: messages may carry names.
+      debugPrint('catch-up failed: ${e.runtimeType}');
+    }
+    // Also covers a timezone change: it can only be made outside the app, and
+    // due-date reminders are recomputed on return.
+    if (!stopped) await container.read(reminderSchedulerProvider).resyncAll();
+  }
+
+  WidgetsBinding.instance
+    ..addPostFrameCallback((_) => run())
+    ..ensureVisualUpdate();
+  final lifecycle = AppLifecycleListener(onResume: run);
+  final day = container.listen(todayProvider, (_, _) => run());
+  return () {
+    stopped = true;
+    lifecycle.dispose();
+    day.close();
+  };
 }
 
 AppDatabase _openDatabase() => AppDatabase(openConnection());

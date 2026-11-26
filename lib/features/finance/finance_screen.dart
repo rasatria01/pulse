@@ -4,14 +4,18 @@ import 'package:shad/shad.dart';
 
 import '../../app/di.dart';
 import '../../core/local_date.dart';
+import '../../domain/entities/budget.dart';
 import '../../domain/entities/category.dart';
+import '../../domain/entities/recurring_rule.dart';
 import '../../domain/entities/transaction.dart';
 import '../../domain/entities/wallet.dart';
 import '../../ui/day_label.dart';
 import '../../ui/strings.dart';
 import '../../ui/widgets/common.dart';
 import '../../ui/widgets/widgets.dart';
+import 'budget_sheet.dart';
 import 'finance_strings.dart';
+import 'rule_sheet.dart';
 import 'transaction_sheet.dart';
 import 'wallet_sheet.dart';
 
@@ -35,12 +39,25 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
   bool _showArchived = false;
   int _days = _page;
 
+  /// Kept while a longer history loads, so the list and scroll position stay.
+  List<Transaction>? _transactions;
+
   /// Above the capture bar and tabs, so the keyboard inset is counted once.
   BuildContext get _root => Navigator.of(context, rootNavigator: true).context;
 
   Future<void> _openWallet([Wallet? wallet]) => showPSheet<void>(
     context: _root,
     builder: (context) => WalletSheet(wallet: wallet),
+  );
+
+  Future<void> _openBudget([String? categoryId]) => showPSheet<void>(
+    context: _root,
+    builder: (context) => BudgetSheet(categoryId: categoryId),
+  );
+
+  Future<void> _openRule([RecurringRule? rule]) => showPSheet<void>(
+    context: _root,
+    builder: (context) => RuleSheet(rule: rule),
   );
 
   Future<void> _openTransaction([Transaction? transaction]) async {
@@ -68,7 +85,11 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
         if (_showArchived || !w.wallet.isArchived) w,
     ];
     final history = ref.watch(_historyProvider(today.addDays(-_days)));
-    final transactions = history.value;
+    final transactions = _transactions = history.value ?? _transactions;
+    final budgets = ref.watch(budgetStatusesProvider);
+    final caps = budgets.value ?? const <BudgetStatus>[];
+    final rules = ref.watch(recurringRulesProvider);
+    final recurring = rules.value ?? const <RecurringRule>[];
     final categories = {
       for (final c in ref.watch(categoriesProvider).value ?? <Category>[])
         c.id: c,
@@ -104,7 +125,10 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
           const SliverToBoxAdapter(
             child: PSectionHeader(FinanceStrings.wallets),
           ),
-          if (balances.hasError || history.hasError)
+          if (balances.hasError ||
+              history.hasError ||
+              budgets.hasError ||
+              rules.hasError)
             const SliverToBoxAdapter(
               child: EmptyState(
                 icon: LucideIcons.circleAlert,
@@ -142,6 +166,55 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
                   : FinanceStrings.showArchived,
               () => setState(() => _showArchived = !_showArchived),
             ),
+          const SliverToBoxAdapter(
+            child: PSectionHeader(FinanceStrings.budgets),
+          ),
+          SliverList.builder(
+            itemCount: caps.length,
+            itemBuilder: (context, i) {
+              final status = caps[i];
+              final category = categories[status.categoryId];
+              return Padding(
+                key: ValueKey('budget-${category?.slug}'),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: PulseSpace.s4,
+                  vertical: PulseSpace.s2,
+                ),
+                child: PBudgetBar(
+                  category: category?.name ?? '',
+                  color: category?.color ?? PulseIdentity.slate.toARGB32(),
+                  icon: category?.icon ?? 'tag',
+                  spent: status.spent,
+                  cap: status.cap,
+                  onPressed: () => _openBudget(status.categoryId),
+                ),
+              );
+            },
+          ),
+          button(FinanceStrings.addBudget, _openBudget),
+          const SliverToBoxAdapter(
+            child: PSectionHeader(FinanceStrings.recurring),
+          ),
+          SliverList.builder(
+            itemCount: recurring.length,
+            itemBuilder: (context, i) {
+              final rule = recurring[i];
+              final type = AmountType.of(rule.type);
+              final meta = ruleSummary(rule, today);
+              return _Row(
+                key: ValueKey('rule-${rule.id}'),
+                icon: LucideIcons.repeat,
+                color: null,
+                title: rule.name,
+                meta: meta,
+                amount: AmountText(rule.amount, type: type),
+                semanticLabel:
+                    '${rule.name}, $meta, ${amountLabel(rule.amount, type)}',
+                onTap: () => _openRule(rule),
+              );
+            },
+          ),
+          button(FinanceStrings.addRecurring, _openRule),
           const SliverToBoxAdapter(
             child: PSectionHeader(FinanceStrings.transactions),
           ),
