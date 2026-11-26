@@ -3,8 +3,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shad/shad.dart';
 
+import '../core/routes.dart';
 import '../features/settings/controllers/settings_providers.dart';
 import '../ui/theme.dart';
+import 'di.dart';
 import 'router.dart';
 
 class PulseApp extends ConsumerStatefulWidget {
@@ -19,6 +21,16 @@ class PulseApp extends ConsumerStatefulWidget {
 
 class _PulseAppState extends ConsumerState<PulseApp> {
   late final _router = buildRouter();
+
+  @override
+  void initState() {
+    super.initState();
+    // The restart after a restore lands on Settings, which says how it went.
+    if (ref.read(restoreResultProvider) == null) return;
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _router.push(Routes.settings),
+    );
+  }
 
   @override
   void dispose() {

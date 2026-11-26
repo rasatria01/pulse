@@ -10,6 +10,7 @@ import '../../ui/strings.dart';
 import '../../ui/widgets/widgets.dart';
 import 'controllers/settings_providers.dart';
 import 'settings_strings.dart';
+import 'widgets/restore_sheet.dart';
 
 const _themes = [
   (ShadThemeMode.system, SettingsStrings.themeSystem),
@@ -31,8 +32,19 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  bool _exporting = false;
+  bool _busy = false;
   String? _message;
+
+  @override
+  void initState() {
+    super.initState();
+    final restored = ref.read(restoreResultProvider);
+    if (restored != null) {
+      _message = restored
+          ? SettingsStrings.restored
+          : SettingsStrings.restoreFailed;
+    }
+  }
 
   Future<void> _put(String key, String value) async {
     try {
@@ -48,27 +60,63 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     await scheduler.resyncAll();
   }
 
-  Future<void> _export({required bool save}) async {
+  Future<void> _export({required bool save, bool json = false}) => _run(
+    SettingsStrings.backupFailed,
+    () async {
+      final gateway = ref.read(backupGatewayProvider);
+      final path = json
+          ? await gateway.exportJson()
+          : await gateway.exportSqlite();
+      if (save) {
+        return await gateway.saveAs(path) ? SettingsStrings.backupSaved : null;
+      }
+      await gateway.share(path);
+      return null;
+    },
+  );
+
+  /// Pick, check, show what is in the file, and only then replace the data.
+  Future<void> _restore() => _run(SettingsStrings.readFailed, () async {
     final gateway = ref.read(backupGatewayProvider);
+    final restore = ref.read(restoreRunnerProvider);
+    final path = await gateway.pickBackup();
+    if (path == null) return null;
+    var handedOver = false;
+    try {
+      final check = await gateway.inspect(path);
+      if (check.refusal case final refusal?) return refusalMessage(refusal);
+      if (!mounted) return null;
+      final confirmed = await showPSheet<bool>(
+        context: Navigator.of(context, rootNavigator: true).context,
+        builder: (_) => RestoreSheet(check: check),
+      );
+      if (confirmed == true) {
+        // Restarts the app, so this screen is gone when it returns.
+        handedOver = true;
+        await restore(path);
+      }
+      return null;
+    } finally {
+      if (!handedOver) await gateway.discard(path);
+    }
+  });
+
+  /// Runs one backup action at a time and shows what it returns.
+  Future<void> _run(String failed, Future<String?> Function() action) async {
     setState(() {
-      _exporting = true;
+      _busy = true;
       _message = null;
     });
     String? message;
     try {
-      final path = await gateway.exportSqlite();
-      if (save) {
-        if (await gateway.saveAs(path)) message = SettingsStrings.backupSaved;
-      } else {
-        await gateway.share(path);
-      }
+      message = await action();
     } catch (_) {
       // Plugins throw PlatformException and IO errors besides AppFailure.
-      message = SettingsStrings.backupFailed;
+      message = failed;
     }
     if (!mounted) return;
     setState(() {
-      _exporting = false;
+      _busy = false;
       _message = message;
     });
   }
@@ -93,73 +141,114 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ),
     );
 
-    return PScreen(
-      title: PulseStrings.settings,
-      onBack: context.pop,
-      child: ListView(
-        children: [
-          const PSectionHeader(SettingsStrings.appearance),
-          padded(
-            Wrap(
-              spacing: PulseSpace.s2,
-              children: [
-                for (final (value, label) in _themes)
-                  PChip(
-                    key: ValueKey('theme-${value.name}'),
-                    field: SettingsStrings.theme,
-                    label: label,
-                    selected: mode == value,
-                    onPressed: () => _put(SettingKeys.theme, value.name),
-                  ),
-              ],
-            ),
+    final list = ListView(
+      children: [
+        const PSectionHeader(SettingsStrings.appearance),
+        padded(
+          Wrap(
+            spacing: PulseSpace.s2,
+            children: [
+              for (final (value, label) in _themes)
+                PChip(
+                  key: ValueKey('theme-${value.name}'),
+                  field: SettingsStrings.theme,
+                  label: label,
+                  selected: mode == value,
+                  onPressed: () => _put(SettingKeys.theme, value.name),
+                ),
+            ],
           ),
-          const PSectionHeader(SettingsStrings.reminders),
-          padded(const Text(SettingsStrings.dueTime)),
-          if (dueTime != null)
-            padded(
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Semantics(
-                  label: SettingsStrings.dueTime,
-                  child: ShadSelect<String>(
-                    key: const ValueKey('due-time'),
-                    initialValue: dueTime,
-                    minWidth: 160,
-                    maxHeight: 280,
-                    options: [
-                      for (final time in _times)
-                        ShadOption(value: time, child: Text(time)),
-                    ],
-                    selectedOptionBuilder: (context, time) => Text(time),
-                    onChanged: (time) {
-                      if (time != null) _setDueTime(time);
-                    },
-                  ),
+        ),
+        const PSectionHeader(SettingsStrings.reminders),
+        padded(const Text(SettingsStrings.dueTime)),
+        if (dueTime != null)
+          padded(
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Semantics(
+                label: SettingsStrings.dueTime,
+                child: ShadSelect<String>(
+                  key: const ValueKey('due-time'),
+                  initialValue: dueTime,
+                  minWidth: 160,
+                  maxHeight: 280,
+                  options: [
+                    for (final time in _times)
+                      ShadOption(value: time, child: Text(time)),
+                  ],
+                  selectedOptionBuilder: (context, time) => Text(time),
+                  onChanged: (time) {
+                    if (time != null) _setDueTime(time);
+                  },
                 ),
               ),
             ),
-          hint(SettingsStrings.dueTimeHint),
-          const PSectionHeader(SettingsStrings.backup),
-          hint(SettingsStrings.backupHint),
-          padded(
-            Wrap(
-              spacing: PulseSpace.s2,
-              runSpacing: PulseSpace.s2,
-              children: [
-                PButton.primary(
-                  label: SettingsStrings.shareBackup,
-                  icon: LucideIcons.share2,
-                  onPressed: _exporting ? null : () => _export(save: false),
-                ),
-                PButton.outline(
-                  label: SettingsStrings.saveBackup,
-                  icon: LucideIcons.download,
-                  onPressed: _exporting ? null : () => _export(save: true),
-                ),
-              ],
+          ),
+        hint(SettingsStrings.dueTimeHint),
+        const PSectionHeader(SettingsStrings.backup),
+        hint(SettingsStrings.backupHint),
+        padded(
+          Wrap(
+            spacing: PulseSpace.s2,
+            runSpacing: PulseSpace.s2,
+            children: [
+              PButton.primary(
+                label: SettingsStrings.shareBackup,
+                icon: LucideIcons.share2,
+                onPressed: _busy ? null : () => _export(save: false),
+              ),
+              PButton.outline(
+                label: SettingsStrings.saveBackup,
+                icon: LucideIcons.download,
+                onPressed: _busy ? null : () => _export(save: true),
+              ),
+            ],
+          ),
+        ),
+        hint(SettingsStrings.jsonHint),
+        padded(
+          Wrap(
+            spacing: PulseSpace.s2,
+            runSpacing: PulseSpace.s2,
+            children: [
+              PButton.outline(
+                label: SettingsStrings.shareJson,
+                icon: LucideIcons.share2,
+                onPressed: _busy
+                    ? null
+                    : () => _export(save: false, json: true),
+              ),
+              PButton.outline(
+                label: SettingsStrings.saveJson,
+                icon: LucideIcons.download,
+                onPressed: _busy ? null : () => _export(save: true, json: true),
+              ),
+            ],
+          ),
+        ),
+        const PSectionHeader(SettingsStrings.restore),
+        hint(SettingsStrings.restoreHint),
+        padded(
+          Align(
+            alignment: Alignment.centerLeft,
+            child: PButton.outline(
+              label: SettingsStrings.chooseBackup,
+              icon: LucideIcons.upload,
+              onPressed: _busy ? null : _restore,
             ),
           ),
+        ),
+      ],
+    );
+
+    return PScreen(
+      title: PulseStrings.settings,
+      onBack: context.pop,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(child: list),
+          // Below the list, so that it shows wherever the list is scrolled.
           if (_message case final message?)
             padded(Semantics(liveRegion: true, child: Text(message))),
         ],
