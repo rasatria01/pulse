@@ -12,6 +12,7 @@ import '../repositories/wallet_repository.dart';
 import 'bill_draft_builder.dart';
 import 'bill_service.dart';
 import 'item_service.dart';
+import 'note_task_sync.dart';
 import 'reminder_scheduler.dart';
 import 'unit_of_work.dart';
 
@@ -26,6 +27,7 @@ class DefaultBillService implements BillService {
     required this._reminders,
     required this._unitOfWork,
     required this._clock,
+    this._notes,
   });
 
   final ActionItemRepository _items;
@@ -36,6 +38,7 @@ class DefaultBillService implements BillService {
   final ReminderScheduler _reminders;
   final UnitOfWork _unitOfWork;
   final Clock _clock;
+  final NoteTaskSync? _notes;
 
   @override
   Future<BillDraft?> draftFor(ActionItem item) async {
@@ -121,12 +124,13 @@ class DefaultBillService implements BillService {
     String id,
     Future<BillStatus> Function(ActionItem item, bool paid) resolve,
   ) async {
+    await flushSourceNote(_notes, _items, id);
     final item = await _unitOfWork.run(() async {
       final item =
           await _items.find(id) ?? (throw NotFoundFailure('action item $id'));
       final paid = await _transactions.findBySourceActionItem(id) != null;
       final status = await resolve(item, paid);
-      return _items.update(
+      final done = await _items.update(
         id,
         ActionItemPatch(
           status: ActionStatus.done,
@@ -134,6 +138,8 @@ class DefaultBillService implements BillService {
           billStatus: (value: status),
         ),
       );
+      await _notes?.onItemChanged(done);
+      return done;
     });
     await syncReminder(_reminders, item);
   }

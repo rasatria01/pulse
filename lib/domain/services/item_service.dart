@@ -6,6 +6,7 @@ import '../repositories/action_item_repository.dart';
 import '../repositories/settings_repository.dart';
 import '../repositories/tag_repository.dart';
 import '../repositories/transaction_repository.dart';
+import 'note_task_sync.dart';
 import 'reminder_scheduler.dart';
 import 'unit_of_work.dart';
 
@@ -30,6 +31,18 @@ Future<void> quietly(Future<void> Function() alarm) async {
   } catch (_) {}
 }
 
+/// Lets an open editor of the item's note save first, so that a write-back
+/// never meets stale text (PRD 9.2).
+Future<void> flushSourceNote(
+  NoteTaskSync? notes,
+  ActionItemRepository items,
+  String itemId,
+) async {
+  if (notes == null) return;
+  final noteId = (await items.find(itemId))?.sourceNoteId;
+  if (noteId != null) await notes.flushEditor(noteId);
+}
+
 /// Create, edit, complete, reopen and delete of action items (PRD F4), with
 /// their reminders. Bill confirmation is BillService.
 class ItemService {
@@ -41,6 +54,7 @@ class ItemService {
     required this._reminders,
     required this._unitOfWork,
     required this._clock,
+    this._notes,
   });
 
   final ActionItemRepository _items;
@@ -50,6 +64,7 @@ class ItemService {
   final ReminderScheduler _reminders;
   final UnitOfWork _unitOfWork;
   final Clock _clock;
+  final NoteTaskSync? _notes; // writes changes back to a source note
 
   Future<ActionItem> create(
     ActionItemInput input, {
@@ -100,6 +115,7 @@ class ItemService {
   /// Marks the item done without a payment. A bill is left pending (or recorded
   /// if its payment already exists), so it can't silently disappear (PRD 9.1).
   Future<void> complete(String id) async {
+    await flushSourceNote(_notes, _items, id);
     // Outside the transaction: a watched query must not run inside one.
     final tags = await _tags.watchAll().first;
     final item = await _unitOfWork.run(() async {
@@ -111,7 +127,7 @@ class ItemService {
             ? BillStatus.pending
             : BillStatus.recorded;
       }
-      return _items.update(
+      final done = await _items.update(
         id,
         ActionItemPatch(
           status: ActionStatus.done,
@@ -119,13 +135,15 @@ class ItemService {
           billStatus: (value: bill),
         ),
       );
+      await _notes?.onItemChanged(done);
+      return done;
     });
     await syncReminder(_reminders, item);
-    // TODO(F5): NoteTaskSync.onItemChanged for items with a source note.
   }
 
   /// [deleteTransaction] also removes the bill's recorded payment, atomically.
   Future<void> reopen(String id, {bool deleteTransaction = false}) async {
+    await flushSourceNote(_notes, _items, id);
     final item = await _unitOfWork.run(() async {
       await _require(id);
       if (deleteTransaction) {
@@ -135,7 +153,7 @@ class ItemService {
           paid = await _transactions.findBySourceActionItem(id);
         }
       }
-      return _write(
+      final open = await _write(
         id,
         const ActionItemPatch(
           status: ActionStatus.open,
@@ -143,21 +161,33 @@ class ItemService {
           billStatus: (value: null),
         ),
       );
+      await _notes?.onItemChanged(open);
+      return open;
     });
     await syncReminder(_reminders, item);
   }
 
   /// Soft delete; [restore] is the snackbar's Undo. A payment stays.
   Future<void> delete(String id) async {
-    final item = await _require(id);
-    await _items.softDelete(id);
+    await flushSourceNote(_notes, _items, id);
+    final item = await _unitOfWork.run(() async {
+      final item = await _require(id);
+      await _items.softDelete(id);
+      await _notes?.onItemChanged(item.copyWith(isDeleted: true));
+      return item;
+    });
     final notifId = item.notifId;
     if (notifId != null) await quietly(() => _reminders.cancel(notifId));
   }
 
   Future<void> restore(String id) async {
-    await _items.undelete(id);
-    await syncReminder(_reminders, await _require(id));
+    final item = await _unitOfWork.run(() async {
+      await _items.undelete(id);
+      final item = await _require(id);
+      await _notes?.onItemChanged(item);
+      return item;
+    });
+    await syncReminder(_reminders, item);
   }
 
   Future<ActionItem> _change(
@@ -165,11 +195,14 @@ class ItemService {
     ActionItemPatch patch, {
     List<String>? tagSlugs,
   }) async {
+    await flushSourceNote(_notes, _items, id);
     final item = await _unitOfWork.run(() async {
       await _require(id);
       await _write(id, patch);
       if (tagSlugs != null) await _setTags(id, tagSlugs);
-      return _require(id);
+      final changed = await _require(id);
+      await _notes?.onItemChanged(changed);
+      return changed;
     });
     await syncReminder(_reminders, item);
     return item;

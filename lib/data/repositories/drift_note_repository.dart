@@ -44,6 +44,12 @@ final class DriftNoteRepository implements NoteRepository {
       .guarded();
 
   @override
+  Future<Note?> find(String id) => guard(() async {
+    final row = await _query('n.id = ?', id).getSingleOrNull();
+    return row == null ? null : _entity(row);
+  });
+
+  @override
   Stream<Note?> watch(String id) => _watchOne('n.id = ?', id);
 
   @override

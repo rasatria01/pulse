@@ -4,6 +4,13 @@ abstract final class Routes {
   static const tasks = '/tasks';
   static const calendar = '/calendar';
   static const notes = '/notes';
+
+  static String notePath(String id) => '/notes/$id';
+
+  /// Editor ids for a note that does not exist yet: it is created on the first
+  /// keystroke.
+  static const newNoteId = 'new';
+  static const dailyNotePrefix = 'daily-'; // + 'YYYY-MM-DD'
   static const finance = '/finance';
   static const search = '/search';
   static const settings = '/settings';

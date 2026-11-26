@@ -3,6 +3,7 @@ import '../entities/note.dart';
 
 abstract interface class NoteRepository {
   Stream<List<NoteSummary>> watchAll();
+  Future<Note?> find(String id); // null once deleted
   Stream<Note?> watch(String id);
   Stream<Note?> watchDaily(LocalDate date); // null until the first keystroke
   Future<Note> ensureDaily(LocalDate date);

@@ -26,6 +26,7 @@ final itemServiceProvider = Provider<ItemService>(
     reminders: ref.watch(reminderSchedulerProvider),
     unitOfWork: ref.watch(unitOfWorkProvider),
     clock: ref.watch(clockProvider),
+    notes: ref.watch(noteTaskSyncProvider),
   ),
 );
 
@@ -39,6 +40,7 @@ final billServiceProvider = Provider<BillService>(
     reminders: ref.watch(reminderSchedulerProvider),
     unitOfWork: ref.watch(unitOfWorkProvider),
     clock: ref.watch(clockProvider),
+    notes: ref.watch(noteTaskSyncProvider),
   ),
 );
 

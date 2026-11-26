@@ -61,6 +61,13 @@ List<ChecklistLine> parseChecklist(String body) {
   return found;
 }
 
+/// Every block id written in [text].
+Iterable<String> blockIdsIn(String text) =>
+    _token.allMatches(text.replaceAll('\r', '')).map((m) => m[1]!);
+
+/// [text] without its block ids, for reading.
+String hideBlockIds(String text) => text.replaceAll(_token, '');
+
 /// A block id not in [taken]. Pass every id of the note: those on its lines and
 /// those of its items, deleted ones too (the unique index covers them).
 String generateBlockId(Random random, Set<String> taken) {
