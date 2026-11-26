@@ -84,7 +84,7 @@ class PConfirmRow extends StatelessWidget {
                       ),
                     ),
                     if (amount != null)
-                      AmountText(amount!, type: type)
+                      TrailingAmount(child: AmountText(amount!, type: type))
                     else
                       Text(
                         PulseStrings.noAmount,

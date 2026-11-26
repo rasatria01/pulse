@@ -122,7 +122,7 @@ class TaskRow extends StatelessWidget {
                         ),
                       ),
                       if (item.linkedAmount != null)
-                        AmountText(item.linkedAmount!),
+                        TrailingAmount(child: AmountText(item.linkedAmount!)),
                     ],
                   ),
                 ),

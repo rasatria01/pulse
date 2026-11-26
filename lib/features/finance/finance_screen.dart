@@ -319,7 +319,7 @@ class _Row extends StatelessWidget {
                 ],
               ),
             ),
-            amount,
+            TrailingAmount(child: amount),
           ],
         ),
       ),

@@ -54,6 +54,26 @@ String amountLabel(Rupiah value, AmountType type) {
   return '$word $minus${formatRupiah(value).replaceAll('\u00a0', ' ')}';
 }
 
+/// An amount at the end of a row: a very long one shrinks, whole, instead of
+/// pushing the title out of the row.
+class TrailingAmount extends StatelessWidget {
+  const TrailingAmount({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => ConstrainedBox(
+    constraints: BoxConstraints(
+      maxWidth: MediaQuery.sizeOf(context).width * 0.4,
+    ),
+    child: FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerRight,
+      child: child,
+    ),
+  );
+}
+
 /// Every money value in Pulse. [value] is a magnitude except for a balance,
 /// which may be negative.
 class AmountText extends StatelessWidget {

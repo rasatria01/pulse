@@ -148,7 +148,8 @@ class PInboxItem extends StatelessWidget {
                     spacing: PulseSpace.s3,
                     children: [
                       Expanded(child: text),
-                      if (amount != null) AmountText(amount!),
+                      if (amount != null)
+                        TrailingAmount(child: AmountText(amount!)),
                     ],
                   ),
                 ),
