@@ -44,7 +44,12 @@ Future<void> bootstrap({
   );
   // Read the theme before the first frame, so it does not flash.
   container.listen(themeModeProvider, (_, _) {});
-  await container.read(themeModeProvider.future);
+  try {
+    await container.read(themeModeProvider.future);
+  } catch (e) {
+    // A bad settings row must not keep the app from starting.
+    debugPrint('theme not read: ${e.runtimeType}');
+  }
   runApp(
     // A new key: a restart must not keep any state of the scope before it.
     UncontrolledProviderScope(

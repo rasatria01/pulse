@@ -13,11 +13,18 @@ const exportedAtKey = 'exported_at';
 const schemaQuery = 'SELECT type, name, tbl_name, sql FROM sqlite_schema';
 
 const _notADatabase = 26;
-final _space = RegExp(r'\s+');
+const _int32 = '-2147483648 AND 2147483647';
+// Only what SQLite's tokenizer takes as space: to it, U+00A0 and its like are
+// parts of a name.
+final _space = RegExp(r'[ \t\n\r\f]+');
+final _endSpace = RegExp(r'^ | $');
 
 /// One schema object as a comparable line.
-String schemaEntry(Object? type, Object? name, Object? table, Object? sql) =>
-    '$type|$name|$table|${'${sql ?? ''}'.replaceAll(_space, ' ').trim()}';
+String schemaEntry(Object? type, Object? name, Object? table, Object? sql) {
+  // Not trim(), which also takes Unicode spaces.
+  final text = '${sql ?? ''}'.replaceAll(_space, ' ').replaceAll(_endSpace, '');
+  return '$type|$name|$table|$text';
+}
 
 /// Checks the file at [path] against [schema], the entries of a database this
 /// build creates. On its own isolate: integrity_check reads every page.
@@ -82,15 +89,36 @@ RestoreCheck _check(String path, Set<String> schema, int currentVersion) {
         final type = (column['type'] as String).toLowerCase();
         if (name == 'is_deleted') live = ' WHERE is_deleted = 0';
         bad.add('typeof("$name") NOT IN (\'$type\', \'null\')');
-        // The two calendar formats of PRD 6.
+        // The two calendar formats of PRD 6, and only days that exist: date()
+        // gives back anything else changed, or null.
         if (name.endsWith('_date') || name.endsWith('_on')) {
-          bad.add('"$name" NOT GLOB \'????-??-??\'');
+          bad.add('"$name" IS NOT date("$name")');
         }
-        if (name == 'effective_from') bad.add('"$name" NOT GLOB \'????-??\'');
+        if (name == 'effective_from') {
+          bad.add('"$name" || \'-01\' IS NOT date("$name" || \'-01\')');
+        }
+        // Android alarm ids are int32.
+        if (name == 'notif_id') bad.add('"$name" NOT BETWEEN $_int32');
+      }
+      if (table == 'app_settings') {
+        bad.add(
+          '"key" = \'next_notif_id\' AND '
+          '(value IS NOT CAST(CAST(value AS INTEGER) AS TEXT) '
+          'OR CAST(value AS INTEGER) NOT BETWEEN $_int32)',
+        );
       }
       if (value('SELECT count(*) FROM "$table" WHERE ${bad.join(' OR ')}') !=
           0) {
         return damaged;
+      }
+      // Every value must decode: text that is not UTF-8 throws on each read,
+      // and the theme is read before the first frame.
+      final statement = db.prepare('SELECT * FROM "$table"');
+      try {
+        final cursor = statement.selectCursor();
+        while (cursor.moveNext()) {}
+      } finally {
+        statement.close();
       }
       counts[table] = value('SELECT count(*) FROM "$table"$live') as int;
     }
