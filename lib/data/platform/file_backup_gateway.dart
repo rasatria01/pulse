@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -17,8 +18,9 @@ import '../db/db_errors.dart';
 import '../repositories/drift_search_repository.dart';
 import 'backup_check.dart';
 
-/// PRD 9.5. [share] and [saveAs] take a file from an export and delete it, so
-/// no copy of the database stays behind in the cache.
+/// PRD 9.5. [share] and [saveAs] take a file from an export and delete it.
+/// Sharing still leaves share_plus's own copy in cache/share_plus until the
+/// next share.
 final class FileBackupGateway implements BackupGateway {
   FileBackupGateway(
     this._db,
@@ -44,17 +46,12 @@ final class FileBackupGateway implements BackupGateway {
     await _delete(path);
     // A consistent snapshot under WAL, run on the database isolate.
     await _db.customStatement('VACUUM INTO ?', [path]);
-    // The restore summary shows when the file was made; only the copy says so.
-    final now = _clock.nowUtc().millisecondsSinceEpoch;
-    final copy = sqlite3.open(path);
     try {
-      copy.execute(
-        'INSERT OR REPLACE INTO app_settings (key, value, updated_at) '
-        'VALUES (?, ?, ?)',
-        [exportedAtKey, '$now', now],
-      );
-    } finally {
-      copy.close();
+      await _finishCopy(path, _clock.nowUtc().millisecondsSinceEpoch);
+    } catch (_) {
+      // It may still hold what was deleted.
+      await _delete(path);
+      rethrow;
     }
     return path;
   });
@@ -99,7 +96,8 @@ final class FileBackupGateway implements BackupGateway {
   @override
   Future<void> share(String path) async {
     try {
-      // share_plus hands the receiver its own copy in cache/share_plus.
+      // share_plus hands the receiver its own copy, which it keeps in
+      // cache/share_plus until the next share.
       await SharePlus.instance.share(ShareParams(files: [XFile(path)]));
     } finally {
       await _delete(path);
@@ -224,3 +222,39 @@ final class FileBackupGateway implements BackupGateway {
     if (await file.exists()) await file.delete();
   }
 }
+
+/// Takes the text of deleted rows out of the exported copy at [path], keeping
+/// the rows and their ids, and stamps it with the export instant [now].
+// Top level, so that the isolate's closure holds nothing but these two.
+Future<void> _finishCopy(String path, int now) => Isolate.run(() {
+  final copy = sqlite3.open(path);
+  try {
+    // Freed space is zeroed, not left readable.
+    copy.execute('PRAGMA secure_delete = ON');
+    copy.execute('BEGIN');
+    for (final (table, blank) in const [
+      ('notes', "title = '', body = ''"),
+      ('transactions', "description = '', raw_input = NULL"),
+      // An item's title cannot be empty.
+      ('action_items', "title = '-', body = '', raw_input = NULL"),
+      ('recurring_rules', "name = '', description = ''"),
+      ('wallets', "name = '', slug = '', aliases = ''"),
+      ('categories', "name = '', slug = '', aliases = ''"),
+      ('tags', "name = '', slug = ''"),
+    ]) {
+      copy.execute('UPDATE $table SET $blank WHERE is_deleted = 1');
+    }
+    // The restore summary shows when the file was made; only the copy says so.
+    copy.execute(
+      'INSERT OR REPLACE INTO app_settings (key, value, updated_at) '
+      'VALUES (?, ?, ?)',
+      [exportedAtKey, '$now', now],
+    );
+    copy.execute('COMMIT');
+    // The search index keeps the words of removed entries until rewritten.
+    copy.execute("INSERT INTO search_index(search_index) VALUES ('rebuild')");
+    copy.execute('VACUUM');
+  } finally {
+    copy.close();
+  }
+});
