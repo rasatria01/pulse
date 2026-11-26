@@ -24,7 +24,7 @@ void main() {
     final path = await gateway.exportSqlite();
     // A second export in the same minute replaces the first.
     expect(await gateway.exportSqlite(), path);
-    expect(path, endsWith('/pulse-backup-20261125-1000.sqlite'));
+    expect(path, endsWith('/melatime-backup-20261125-1000.sqlite'));
 
     final copy = AppDatabase(NativeDatabase(File(path)));
     addTearDown(copy.close);

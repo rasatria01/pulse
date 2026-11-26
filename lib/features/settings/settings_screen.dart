@@ -238,6 +238,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
         ),
+        const PSectionHeader(SettingsStrings.about),
+        padded(
+          Image.asset(
+            ShadTheme.of(context).brightness == Brightness.dark
+                ? 'assets/brand/lockup_on_dark.png'
+                : 'assets/brand/lockup.png',
+            height: MelaSize.control,
+            alignment: Alignment.centerLeft,
+            semanticLabel: MelaStrings.appName,
+          ),
+        ),
+        hint(MelaStrings.tagline),
       ],
     );
 

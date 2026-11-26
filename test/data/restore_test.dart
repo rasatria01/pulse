@@ -235,7 +235,7 @@ void main() {
 
     final path = await app.gateway.exportJson();
 
-    expect(path, endsWith('/pulse-export-20261125-1000.json'));
+    expect(path, endsWith('/melatime-export-20261125-1000.json'));
     final json = jsonDecode(await File(path).readAsString()) as Map;
     final manifest = json['manifest'] as Map;
     expect(manifest['app_id'], AppDatabase.applicationId);

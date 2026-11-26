@@ -1,5 +1,5 @@
 name: pulse
-description: "Offline money, tasks and notes for one person."
+description: "MelaTime: offline money, tasks and notes for one person."
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -42,6 +42,7 @@ dev_dependencies:
 
 flutter:
   assets:
+    - assets/brand/
     - assets/licenses/
   fonts:
     - family: Plus Jakarta Sans

@@ -41,7 +41,7 @@ final class FileBackupGateway implements BackupGateway {
 
   @override
   Future<String> exportSqlite() => guard(() async {
-    final path = await _exportPath('pulse-backup', 'sqlite');
+    final path = await _exportPath('melatime-backup', 'sqlite');
     // VACUUM INTO refuses an existing file: a second export in the same minute.
     await _delete(path);
     // A consistent snapshot under WAL, run on the database isolate.
@@ -74,7 +74,7 @@ final class FileBackupGateway implements BackupGateway {
         tables[table.actualTableName] = [for (final row in rows) row.data];
       }
     });
-    final path = await _exportPath('pulse-export', 'json');
+    final path = await _exportPath('melatime-export', 'json');
     await File(path).writeAsString(
       jsonEncode({
         'manifest': {

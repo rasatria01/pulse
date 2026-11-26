@@ -1,6 +1,8 @@
 /// The words the ui/ widgets add themselves, in one place until the app has
 /// localisation. Everything else is passed in by the screen.
 abstract final class MelaStrings {
+  static const appName = 'MelaTime';
+  static const tagline = 'Menata laku, setiap waktu.';
   static const save = 'Save';
   static const confirm = 'Confirm';
   static const edit = 'Edit';
@@ -16,7 +18,7 @@ abstract final class MelaStrings {
   static const highPriority = 'High priority';
   static const quickCapture = 'Quick capture';
   static const capturePlaceholder = 'Add money, a task or a note';
-  static const parsedChips = 'What Pulse read';
+  static const parsedChips = 'What MelaTime read';
   static const error = 'error';
   static const safeToSpend = 'Safe to spend today';
   static const setBudget = 'Set a budget to see safe-to-spend';

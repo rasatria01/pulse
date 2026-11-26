@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_leaf">#143B32</color>
+    <!-- The page colour (MelaColors.bg), behind Flutter. -->
+    <color name="window_bg">#F6F3EC</color>
+</resources>

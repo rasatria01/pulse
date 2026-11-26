@@ -1,6 +1,7 @@
 /// Settings and reminder words, in one place until the app has localisation.
 abstract final class SettingsStrings {
   static const appearance = 'Appearance';
+  static const about = 'About';
   static const themeSystem = 'System';
   static const themeLight = 'Light';
   static const themeDark = 'Dark';
@@ -28,11 +29,11 @@ abstract final class SettingsStrings {
 
   static const restore = 'Restore';
   static const restoreHint =
-      'Replace everything in Pulse with a SQLite backup.';
+      'Replace everything in MelaTime with a SQLite backup.';
   static const chooseBackup = 'Choose backup file';
   static const restoreTitle = 'Restore this backup?';
   static const restoreWarning =
-      'Everything in Pulse now will be replaced. A copy of the current data is '
+      'Everything in MelaTime now will be replaced. A copy of the current data is '
       'kept on this device until the next restore.';
   static const restoreConfirm = 'Replace my data';
   static const cancel = 'Cancel';
@@ -41,13 +42,13 @@ abstract final class SettingsStrings {
   static const restoreFailed =
       'Could not restore the backup. Your data is unchanged.';
   static const readFailed = 'Could not read that file';
-  static const refusedNotPulse = 'That file is not a Pulse backup.';
+  static const refusedNotPulse = 'That file is not a MelaTime backup.';
   static const refusedNewer =
-      'That backup was made by a newer version of Pulse. Update the app, then '
+      'That backup was made by a newer version of MelaTime. Update the app, then '
       'restore it.';
   static const refusedDamaged = 'That backup is damaged or incomplete.';
   static const refusedSchema =
-      'That file has been changed outside Pulse, so it was refused.';
+      'That file has been changed outside MelaTime, so it was refused.';
   static const unknownDate = 'Export date unknown';
   static String exportedOn(String date) => 'Exported $date';
   static String rows(int count) => count == 1 ? '1 row' : '$count rows';

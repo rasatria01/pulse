@@ -5,6 +5,7 @@ import 'package:shad/shad.dart';
 
 import '../core/routes.dart';
 import '../features/settings/controllers/settings_providers.dart';
+import '../ui/strings.dart';
 import '../ui/theme.dart';
 import 'di.dart';
 import 'router.dart';
@@ -40,7 +41,7 @@ class _MelaAppState extends ConsumerState<MelaApp> {
 
   @override
   Widget build(BuildContext context) => ShadApp.router(
-    title: 'Pulse',
+    title: MelaStrings.appName,
     theme: melaTheme(Brightness.light),
     darkTheme: melaTheme(Brightness.dark),
     themeMode:

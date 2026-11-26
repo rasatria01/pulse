@@ -74,6 +74,8 @@ void main() {
         200,
         scrollable: find.byType(Scrollable).first,
       );
+      await tester.ensureVisible(find.text(SettingsStrings.chooseBackup));
+      await tester.pump();
       await tester.tap(find.text(SettingsStrings.chooseBackup));
       await tester.pumpAndSettle();
     }

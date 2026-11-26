@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "app.pulse"
+    namespace = "app.melatime"
     compileSdk = 37 // flutter_local_notifications 23 needs 37
     ndkVersion = flutter.ndkVersion
 
@@ -17,11 +17,10 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "app.pulse"
+        applicationId = "app.melatime"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 26 // adaptive vector icon only
         targetSdk = flutter.targetSdkVersion
         // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
         // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)

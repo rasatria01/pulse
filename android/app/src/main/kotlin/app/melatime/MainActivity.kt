@@ -1,4 +1,4 @@
-package app.pulse
+package app.melatime
 
 import io.flutter.embedding.android.FlutterActivity
 
