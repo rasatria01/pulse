@@ -36,22 +36,22 @@ class PScreen extends StatelessWidget {
                 : MediaQuery.viewInsetsOf(context).bottom,
           ),
           child: DefaultTextStyle(
-            style: PulseText.body.copyWith(color: colors.foreground),
+            style: MelaText.body.copyWith(color: colors.foreground),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: PulseSpace.s4,
-                    vertical: PulseSpace.s2,
+                    horizontal: MelaSpace.s4,
+                    vertical: MelaSpace.s2,
                   ),
                   child: Row(
-                    spacing: PulseSpace.s2,
+                    spacing: MelaSpace.s2,
                     children: [
                       if (onBack != null)
                         PButton.ghost(
                           icon: LucideIcons.arrowLeft,
-                          semanticLabel: PulseStrings.back,
+                          semanticLabel: MelaStrings.back,
                           onPressed: onBack,
                         ),
                       Expanded(
@@ -59,7 +59,7 @@ class PScreen extends StatelessWidget {
                           header: true,
                           child: Text(
                             title,
-                            style: PulseText.titleLg.copyWith(
+                            style: MelaText.titleLg.copyWith(
                               color: colors.foreground,
                             ),
                           ),

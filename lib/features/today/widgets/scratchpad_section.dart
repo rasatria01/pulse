@@ -27,7 +27,7 @@ class ScratchpadSection extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const PSectionHeader(PulseStrings.scratchpad),
+          const PSectionHeader(MelaStrings.scratchpad),
           Semantics(
             container: true,
             button: true,
@@ -38,22 +38,20 @@ class ScratchpadSection extends ConsumerWidget {
               child: text.isEmpty
                   ? const EmptyState(
                       icon: LucideIcons.notebookPen,
-                      title: PulseStrings.noScratchpad,
+                      title: MelaStrings.noScratchpad,
                     )
                   : Padding(
                       padding: const EdgeInsets.fromLTRB(
-                        PulseSpace.s4,
-                        PulseSpace.s1,
-                        PulseSpace.s4,
-                        PulseSpace.s4,
+                        MelaSpace.s4,
+                        MelaSpace.s1,
+                        MelaSpace.s4,
+                        MelaSpace.s4,
                       ),
                       child: Text(
                         text,
                         maxLines: 4,
                         overflow: TextOverflow.ellipsis,
-                        style: PulseText.body.copyWith(
-                          color: colors.foreground,
-                        ),
+                        style: MelaText.body.copyWith(color: colors.foreground),
                       ),
                     ),
             ),

@@ -13,7 +13,7 @@ class PSnackbar extends StatelessWidget {
     super.key,
     required this.message,
     required this.onAction,
-    this.actionLabel = PulseStrings.undo,
+    this.actionLabel = MelaStrings.undo,
     this.seconds,
   });
 
@@ -30,35 +30,35 @@ class PSnackbar extends StatelessWidget {
     final colors = theme.colorScheme;
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: PulseSize.touch),
-      padding: const EdgeInsets.only(left: PulseSpace.s4, right: PulseSpace.s2),
+      constraints: const BoxConstraints(minHeight: MelaSize.touch),
+      padding: const EdgeInsets.only(left: MelaSpace.s4, right: MelaSpace.s2),
       decoration: BoxDecoration(
         color: colors.surfaceRaised,
         border: Border.all(color: colors.border),
-        borderRadius: BorderRadius.circular(PulseRadius.xl2),
-        boxShadow: PulseShadow.float(theme.brightness),
+        borderRadius: BorderRadius.circular(MelaRadius.xl2),
+        boxShadow: MelaShadow.float(theme.brightness),
       ),
       child: Row(
-        spacing: PulseSpace.s3,
+        spacing: MelaSpace.s3,
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: PulseSpace.s2),
+              padding: const EdgeInsets.symmetric(vertical: MelaSpace.s2),
               child: Semantics(
                 liveRegion: true,
                 child: Text(
                   message,
-                  style: PulseText.body.copyWith(color: colors.foreground),
+                  style: MelaText.body.copyWith(color: colors.foreground),
                 ),
               ),
             ),
           ),
           if (seconds != null)
             Text(
-              PulseStrings.seconds(seconds!),
-              style: PulseText.caption.copyWith(
+              MelaStrings.seconds(seconds!),
+              style: MelaText.caption.copyWith(
                 color: colors.inkSubtle,
-                fontFeatures: PulseText.amount.fontFeatures,
+                fontFeatures: MelaText.amount.fontFeatures,
               ),
             ),
           PButton.ghost(
@@ -79,7 +79,7 @@ void showPSnackbar(
   BuildContext context, {
   required String message,
   required VoidCallback onUndo,
-  String actionLabel = PulseStrings.undo,
+  String actionLabel = MelaStrings.undo,
 }) {
   final toaster = ShadToaster.of(context);
   final colors = ShadTheme.of(context).colorScheme;
@@ -92,10 +92,8 @@ void showPSnackbar(
       displayDuration: const Duration(seconds: 5),
       alignment: Alignment.bottomCenter,
       offset: Offset(
-        PulseSpace.s4,
-        MediaQuery.paddingOf(context).bottom +
-            PulseSize.capture +
-            PulseSpace.s2,
+        MelaSpace.s4,
+        MediaQuery.paddingOf(context).bottom + MelaSize.capture + MelaSpace.s2,
       ),
       animateIn: [FadeEffect(duration: fade)],
       animateOut: [FadeEffect(begin: 1, end: 0, duration: fade)],

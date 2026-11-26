@@ -6,7 +6,7 @@ import '../tokens.dart';
 
 /// Lucide names that are stored (wallets.icon, categories.icon) or used by the
 /// design system, mapped to the glyphs shad ships.
-const Map<String, IconData> pulseIcons = {
+const Map<String, IconData> melaIcons = {
   'arrow-right-left': LucideIcons.arrowRightLeft,
   'banknote': LucideIcons.banknote,
   'bus': LucideIcons.bus,
@@ -40,8 +40,8 @@ const Map<String, IconData> pulseIcons = {
 };
 
 /// The icon for a stored name; an unknown name shows [fallback].
-IconData pulseIcon(String name, {IconData fallback = LucideIcons.tag}) =>
-    pulseIcons[name] ?? fallback;
+IconData melaIcon(String name, {IconData fallback = LucideIcons.tag}) =>
+    melaIcons[name] ?? fallback;
 
 /// The default icon for a wallet kind.
 IconData walletKindIcon(WalletKind kind) => switch (kind) {
@@ -56,7 +56,7 @@ class PIcon extends StatelessWidget {
   const PIcon(
     this.icon, {
     super.key,
-    this.size = PulseSize.icon,
+    this.size = MelaSize.icon,
     this.color,
     this.semanticLabel,
   });
@@ -65,10 +65,10 @@ class PIcon extends StatelessWidget {
   PIcon.named(
     String name, {
     super.key,
-    this.size = PulseSize.icon,
+    this.size = MelaSize.icon,
     this.color,
     this.semanticLabel,
-  }) : icon = pulseIcon(name);
+  }) : icon = melaIcon(name);
 
   final IconData icon;
   final double size;

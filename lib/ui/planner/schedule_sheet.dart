@@ -46,10 +46,10 @@ class _ScheduleSheetState extends State<ScheduleSheet> {
 
   @override
   Widget build(BuildContext context) => PSheet(
-    title: PulseStrings.schedule,
+    title: MelaStrings.schedule,
     footer: [
       PButton.primary(
-        label: PulseStrings.schedule,
+        label: MelaStrings.schedule,
         onPressed: parseTime(_time.text) == null ? null : _save,
       ),
     ],

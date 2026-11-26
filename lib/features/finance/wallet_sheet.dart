@@ -59,7 +59,7 @@ class _WalletSheetState extends ConsumerState<WalletSheet> {
     text: _old == null ? '' : '${_old.initialBalance.value}',
   );
   late WalletKind _kind = _old?.kind ?? WalletKind.cash;
-  late int _color = _old?.color ?? PulseIdentity.slate.toARGB32();
+  late int _color = _old?.color ?? MelaIdentity.slate.toARGB32();
   late bool _include = _old?.includeInTotal ?? true;
   bool _confirmArchive = false;
   bool _busy = false;
@@ -172,14 +172,14 @@ class _WalletSheetState extends ConsumerState<WalletSheet> {
       title: old == null ? FinanceStrings.addWallet : FinanceStrings.editWallet,
       footer: [
         PButton.primary(
-          label: PulseStrings.save,
+          label: MelaStrings.save,
           onPressed: _busy ? null : () => _save(),
         ),
       ],
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: PulseSpace.s3,
+        spacing: MelaSpace.s3,
         children: [
           _input(FinanceStrings.name, _name),
           _input(FinanceStrings.handle, _slug),
@@ -188,7 +188,7 @@ class _WalletSheetState extends ConsumerState<WalletSheet> {
           LabelledField(
             label: FinanceStrings.type,
             child: Wrap(
-              spacing: PulseSpace.s2,
+              spacing: MelaSpace.s2,
               children: [
                 for (final kind in WalletKind.values)
                   PChip(
@@ -202,9 +202,9 @@ class _WalletSheetState extends ConsumerState<WalletSheet> {
           LabelledField(
             label: FinanceStrings.colour,
             child: Wrap(
-              spacing: PulseSpace.s2,
+              spacing: MelaSpace.s2,
               children: [
-                for (final (i, color) in PulseIdentity.all.indexed)
+                for (final (i, color) in MelaIdentity.all.indexed)
                   PChip(
                     label: FinanceStrings.colourNames[i],
                     dotColor: color.toARGB32(),
@@ -226,7 +226,7 @@ class _WalletSheetState extends ConsumerState<WalletSheet> {
           ),
           if (canRetire) ...[
             Wrap(
-              spacing: PulseSpace.s2,
+              spacing: MelaSpace.s2,
               children: [
                 PButton.secondary(
                   label: FinanceStrings.setDefault,

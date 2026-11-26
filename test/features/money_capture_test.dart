@@ -117,7 +117,7 @@ List<String> _chipFields(WidgetTester tester) => [
 ];
 
 bool _saveEnabled(WidgetTester tester) =>
-    tester.widget<PButton>(_button(PulseStrings.save)).onPressed != null;
+    tester.widget<PButton>(_button(MelaStrings.save)).onPressed != null;
 
 const _minus = '−';
 const _space = ' ';
@@ -160,7 +160,7 @@ void main() {
     // Balance 100.000 - 35.000, and today's spend.
     expect(find.text('Rp${_space}65.000'), findsWidgets);
     expect(find.text('Rp${_space}35.000'), findsOneWidget);
-    expect(find.text(PulseStrings.setBudget), findsOneWidget);
+    expect(find.text(MelaStrings.setBudget), findsOneWidget);
     await _drain(tester);
   });
 
@@ -172,7 +172,7 @@ void main() {
     await _type(tester, '-20k coffee');
     await _enter(tester);
     expect(await _history(db), hasLength(1));
-    await _tap(tester, _button(PulseStrings.undo));
+    await _tap(tester, _button(MelaStrings.undo));
     expect(await _history(db), isEmpty);
     expect(find.byType(PSnackbar), findsNothing);
 
@@ -192,7 +192,7 @@ void main() {
     await _type(tester, '-20k coffee');
     await _enter(tester);
     await _closeSheet(tester);
-    await _tap(tester, _button(PulseStrings.undo));
+    await _tap(tester, _button(MelaStrings.undo));
     expect(await _history(db), isEmpty);
     await _drain(tester);
   });
@@ -274,7 +274,7 @@ void main() {
 
     await _tap(tester, _chip('Date', 'Now'));
     expect(tester.takeException(), isNull);
-    await _tap(tester, _button(PulseStrings.save).last);
+    await _tap(tester, _button(MelaStrings.save).last);
     expect(_chip('Date', 'Today 10:00'), findsOneWidget);
     await _enter(tester);
     expect((await _history(db)).single.amount, const Rupiah(12000));
@@ -324,7 +324,7 @@ void main() {
         ),
         '40000',
       );
-      await _tap(tester, _button(PulseStrings.save));
+      await _tap(tester, _button(MelaStrings.save));
       final edited = (await _history(db)).single;
       expect(edited.amount, const Rupiah(40000));
       expect(edited.occurredOn, today);
@@ -333,7 +333,7 @@ void main() {
       await _tap(tester, _button('Delete'));
       await _tap(tester, _button('Confirm delete'));
       expect(await _history(db), isEmpty);
-      await _tap(tester, _button(PulseStrings.undo));
+      await _tap(tester, _button(MelaStrings.undo));
       expect(await _history(db), hasLength(1));
       await _drain(tester);
 
@@ -348,7 +348,7 @@ void main() {
         ),
         '10k',
       );
-      await _tap(tester, _button(PulseStrings.save));
+      await _tap(tester, _button(MelaStrings.save));
       expect(
         (await _history(db)).where((t) => t.type == TxnType.transfer),
         hasLength(1),
@@ -366,11 +366,11 @@ void main() {
         text,
       );
       await fill('Name', 'GoPay');
-      await _tap(tester, _button(PulseStrings.save));
+      await _tap(tester, _button(MelaStrings.save));
       expect(find.text('@gopay is already used.'), findsOneWidget);
       await fill('Name', 'Savings');
       await fill('Starting balance', '-5k');
-      await _tap(tester, _button(PulseStrings.save));
+      await _tap(tester, _button(MelaStrings.save));
       expect(find.byType(WalletSheet), findsNothing);
       expect(tester.takeException(), isNull);
 

@@ -35,7 +35,7 @@ class NotesScreen extends ConsumerWidget {
     String words(NoteSummary n) => '${n.title} ${n.preview}'.trim();
 
     return PScreen(
-      title: PulseStrings.notes,
+      title: MelaStrings.notes,
       actions: [
         PButton.ghost(
           icon: LucideIcons.plus,
@@ -49,7 +49,7 @@ class NotesScreen extends ConsumerWidget {
             child: _NoteRow(
               icon: LucideIcons.notebookPen,
               title: NotesStrings.todayScratchpad,
-              preview: daily == null ? PulseStrings.noScratchpad : words(daily),
+              preview: daily == null ? MelaStrings.noScratchpad : words(daily),
               onTap: () => open('${Routes.dailyNotePrefix}${today.toIso()}'),
             ),
           ),
@@ -57,7 +57,7 @@ class NotesScreen extends ConsumerWidget {
             SliverToBoxAdapter(
               child: EmptyState(
                 icon: LucideIcons.stickyNote,
-                title: PulseStrings.noNotes,
+                title: MelaStrings.noNotes,
                 actionLabel: NotesStrings.newNote,
                 actionIcon: LucideIcons.plus,
                 onAction: create,
@@ -116,11 +116,11 @@ class _NoteRow extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: PulseSpace.s4,
-            vertical: PulseSpace.s2,
+            horizontal: MelaSpace.s4,
+            vertical: MelaSpace.s2,
           ),
           child: Row(
-            spacing: PulseSpace.s3,
+            spacing: MelaSpace.s3,
             children: [
               PIconTile(icon: icon),
               Expanded(
@@ -131,7 +131,7 @@ class _NoteRow extends StatelessWidget {
                       title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: PulseText.bodyStrong.copyWith(
+                      style: MelaText.bodyStrong.copyWith(
                         color: colors.foreground,
                       ),
                     ),
@@ -140,7 +140,7 @@ class _NoteRow extends StatelessWidget {
                         preview,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: PulseText.caption.copyWith(
+                        style: MelaText.caption.copyWith(
                           color: colors.mutedForeground,
                         ),
                       ),

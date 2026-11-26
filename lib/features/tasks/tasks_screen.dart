@@ -49,7 +49,7 @@ class TasksScreen extends ConsumerWidget {
       body = SingleChildScrollView(
         child: EmptyState(
           icon: LucideIcons.listTodo,
-          title: PulseStrings.noTasks,
+          title: MelaStrings.noTasks,
           body: TasksStrings.emptyBody,
           actionLabel: PlannerStrings.addTask,
           actionIcon: LucideIcons.plus,
@@ -69,7 +69,7 @@ class TasksScreen extends ConsumerWidget {
     }
 
     return PScreen(
-      title: PulseStrings.tasks,
+      title: MelaStrings.tasks,
       actions: [
         PButton.ghost(
           icon: LucideIcons.plus,

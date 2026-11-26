@@ -53,17 +53,17 @@ class NotePreview extends ConsumerWidget {
       );
     }
 
-    final text = PulseText.body.copyWith(color: colors.foreground);
+    final text = MelaText.body.copyWith(color: colors.foreground);
     final panel = BoxDecoration(
       color: colors.muted,
-      borderRadius: BorderRadius.circular(PulseRadius.md),
+      borderRadius: BorderRadius.circular(MelaRadius.md),
     );
     final style = MarkdownStyleSheet(
       p: text,
       listBullet: text,
-      h1: PulseText.titleLg.copyWith(color: colors.foreground),
-      h2: PulseText.title.copyWith(color: colors.foreground),
-      h3: PulseText.bodyStrong.copyWith(color: colors.foreground),
+      h1: MelaText.titleLg.copyWith(color: colors.foreground),
+      h2: MelaText.title.copyWith(color: colors.foreground),
+      h3: MelaText.bodyStrong.copyWith(color: colors.foreground),
       a: text.copyWith(decoration: TextDecoration.underline),
       code: text.copyWith(fontFamily: 'monospace', color: colors.positive),
       codeblockDecoration: panel,
@@ -79,7 +79,7 @@ class NotePreview extends ConsumerWidget {
     );
 
     return ListView.builder(
-      padding: const EdgeInsets.all(PulseSpace.s4),
+      padding: const EdgeInsets.all(MelaSpace.s4),
       itemCount: blocks.length,
       itemBuilder: (context, i) {
         final block = blocks[i];
@@ -90,16 +90,16 @@ class NotePreview extends ConsumerWidget {
         final indent = source.length - source.trimLeft().length;
         return Padding(
           padding: EdgeInsets.only(
-            left: indent * PulseSpace.s2,
-            bottom: PulseSpace.s1,
+            left: indent * MelaSpace.s2,
+            bottom: MelaSpace.s1,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: PulseSpace.s2,
+            spacing: MelaSpace.s2,
             children: [
               Icon(
                 block.checked ? LucideIcons.squareCheck : LucideIcons.square,
-                size: PulseSize.icon,
+                size: MelaSize.icon,
                 color: colors.mutedForeground,
                 semanticLabel: block.checked
                     ? NotesStrings.done

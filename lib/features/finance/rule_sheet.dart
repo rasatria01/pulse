@@ -233,22 +233,22 @@ class _RuleSheetState extends ConsumerState<RuleSheet> {
           ),
         ],
         PButton.primary(
-          label: PulseStrings.save,
+          label: MelaStrings.save,
           onPressed: _busy ? null : () => _save(),
         ),
       ],
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: PulseSpace.s3,
+        spacing: MelaSpace.s3,
         children: [
           _input(FinanceStrings.name, _name),
           PChoiceField<TxnType>(
             label: FinanceStrings.type,
             options: const [
-              (TxnType.outcome, PulseStrings.expense),
-              (TxnType.income, PulseStrings.income),
-              (TxnType.transfer, PulseStrings.transfer),
+              (TxnType.outcome, MelaStrings.expense),
+              (TxnType.income, MelaStrings.income),
+              (TxnType.transfer, MelaStrings.transfer),
             ],
             value: _type,
             onChanged: (type) => setState(() {

@@ -16,7 +16,7 @@ void main() {
           .get();
       expect(rows, isNotEmpty);
       for (final row in rows) {
-        expect(pulseIcons, contains(row.read<String>('icon')));
+        expect(melaIcons, contains(row.read<String>('icon')));
       }
     },
   );

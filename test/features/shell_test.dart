@@ -24,8 +24,8 @@ const _tabs = {
 
 void main() {
   for (final (mode, colors) in [
-    (ShadThemeMode.light, PulseColors.light),
-    (ShadThemeMode.dark, PulseColors.dark),
+    (ShadThemeMode.light, MelaColors.light),
+    (ShadThemeMode.dark, MelaColors.dark),
   ]) {
     testWidgets('every screen opens on a phone at 1.3x text, ${mode.name}', (
       tester,
@@ -57,8 +57,8 @@ void main() {
       }
 
       for (final (label, screen) in [
-        (PulseStrings.search, SearchScreen),
-        (PulseStrings.settings, SettingsScreen),
+        (MelaStrings.search, SearchScreen),
+        (MelaStrings.settings, SettingsScreen),
       ]) {
         await tester.tap(
           find.byWidgetPredicate(
@@ -71,7 +71,7 @@ void main() {
 
         await tester.tap(
           find.byWidgetPredicate(
-            (w) => w is PButton && w.semanticLabel == PulseStrings.back,
+            (w) => w is PButton && w.semanticLabel == MelaStrings.back,
           ),
         );
         await tester.pumpAndSettle();
@@ -80,7 +80,7 @@ void main() {
 
       // The last Today section is reachable by scrolling.
       await tester.scrollUntilVisible(
-        find.text(PulseStrings.noScratchpad),
+        find.text(MelaStrings.noScratchpad),
         200,
         // The first is the list itself; sections may hold chip rows.
         scrollable: find

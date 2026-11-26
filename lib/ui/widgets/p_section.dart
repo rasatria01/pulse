@@ -12,16 +12,16 @@ class PSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(
-      PulseSpace.s4,
-      PulseSpace.s4,
-      PulseSpace.s4,
-      PulseSpace.s1,
+      MelaSpace.s4,
+      MelaSpace.s4,
+      MelaSpace.s4,
+      MelaSpace.s1,
     ),
     child: Semantics(
       header: true,
       child: Text(
         title,
-        style: PulseText.title.copyWith(
+        style: MelaText.title.copyWith(
           color: ShadTheme.of(context).colorScheme.foreground,
         ),
       ),

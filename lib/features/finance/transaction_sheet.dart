@@ -220,22 +220,22 @@ class _TransactionSheetState extends ConsumerState<TransactionSheet> {
                   onPressed: () => setState(() => _confirmDelete = true),
                 ),
         PButton.primary(
-          label: PulseStrings.save,
+          label: MelaStrings.save,
           onPressed: _busy ? null : _save,
         ),
       ],
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: PulseSpace.s3,
+        spacing: MelaSpace.s3,
         children: [
           if (!transfer)
             Wrap(
-              spacing: PulseSpace.s2,
+              spacing: MelaSpace.s2,
               children: [
                 for (final (type, label) in const [
-                  (TxnType.outcome, PulseStrings.expense),
-                  (TxnType.income, PulseStrings.income),
+                  (TxnType.outcome, MelaStrings.expense),
+                  (TxnType.income, MelaStrings.income),
                 ])
                   PChip(
                     label: label,

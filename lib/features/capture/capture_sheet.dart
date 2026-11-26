@@ -391,11 +391,11 @@ class _CaptureSheetState extends ConsumerState<CaptureSheet> {
     final undo = _undo;
     final error = _error;
     return PSheet(
-      title: PulseStrings.quickCapture,
+      title: MelaStrings.quickCapture,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: PulseSpace.s2,
+        spacing: MelaSpace.s2,
         children: [
           PCaptureBar.open(
             controller: _text,
@@ -407,14 +407,14 @@ class _CaptureSheetState extends ConsumerState<CaptureSheet> {
           if (loose != null)
             Text(
               loose,
-              style: PulseText.caption.copyWith(color: colors.mutedForeground),
+              style: MelaText.caption.copyWith(color: colors.mutedForeground),
             ),
           if (error != null)
             Semantics(
               liveRegion: true,
               child: Text(
                 error,
-                style: PulseText.caption.copyWith(color: colors.destructive),
+                style: MelaText.caption.copyWith(color: colors.destructive),
               ),
             ),
           // Inside the sheet: the app snackbar would sit behind the keyboard.
@@ -455,11 +455,11 @@ class _AmountSheetState extends State<_AmountSheet> {
   @override
   Widget build(BuildContext context) => PSheet(
     title: CaptureStrings.amount,
-    footer: [PButton.primary(label: PulseStrings.save, onPressed: _save)],
+    footer: [PButton.primary(label: MelaStrings.save, onPressed: _save)],
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: PulseSpace.s2,
+      spacing: MelaSpace.s2,
       children: [
         Semantics(
           label: CaptureStrings.amount,
@@ -474,7 +474,7 @@ class _AmountSheetState extends State<_AmountSheet> {
         if (_invalid)
           Text(
             CaptureStrings.amountError,
-            style: PulseText.caption.copyWith(
+            style: MelaText.caption.copyWith(
               color: ShadTheme.of(context).colorScheme.destructive,
             ),
           ),

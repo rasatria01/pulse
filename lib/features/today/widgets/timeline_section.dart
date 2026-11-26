@@ -22,12 +22,12 @@ class TimelineSection extends ConsumerWidget {
 
     return SliverMainAxisGroup(
       slivers: [
-        const SliverToBoxAdapter(child: PSectionHeader(PulseStrings.timeline)),
+        const SliverToBoxAdapter(child: PSectionHeader(MelaStrings.timeline)),
         if (due != null && timed != null && count == 0)
           const SliverToBoxAdapter(
             child: EmptyState(
               icon: LucideIcons.clock,
-              title: PulseStrings.noTimeline,
+              title: MelaStrings.noTimeline,
             ),
           ),
         // Timed first, earliest first; then the Due lane (PRD F2).

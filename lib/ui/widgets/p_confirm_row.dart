@@ -41,27 +41,27 @@ class PConfirmRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = ShadTheme.of(context).colorScheme;
     final bill = source == ConfirmSource.bill;
-    final kind = bill ? PulseStrings.bill : PulseStrings.recurring;
+    final kind = bill ? MelaStrings.bill : MelaStrings.recurring;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-        PulseSpace.s4,
-        PulseSpace.s3,
-        PulseSpace.s4,
-        PulseSpace.s1,
+        MelaSpace.s4,
+        MelaSpace.s3,
+        MelaSpace.s4,
+        MelaSpace.s1,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: PulseSpace.s3,
+        spacing: MelaSpace.s3,
         children: [
           PIconTile(icon: bill ? LucideIcons.receiptText : LucideIcons.repeat),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: PulseSpace.s1,
+              spacing: MelaSpace.s1,
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: PulseSpace.s3,
+                  spacing: MelaSpace.s3,
                   children: [
                     Expanded(
                       child: Column(
@@ -70,13 +70,13 @@ class PConfirmRow extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: PulseText.bodyStrong.copyWith(
+                            style: MelaText.bodyStrong.copyWith(
                               color: colors.foreground,
                             ),
                           ),
                           Text(
                             meta == null ? kind : '$kind · $meta',
-                            style: PulseText.caption.copyWith(
+                            style: MelaText.caption.copyWith(
                               color: colors.mutedForeground,
                             ),
                           ),
@@ -87,28 +87,28 @@ class PConfirmRow extends StatelessWidget {
                       TrailingAmount(child: AmountText(amount!, type: type))
                     else
                       Text(
-                        PulseStrings.noAmount,
-                        style: PulseText.caption.copyWith(
+                        MelaStrings.noAmount,
+                        style: MelaText.caption.copyWith(
                           color: colors.inkSubtle,
                         ),
                       ),
                   ],
                 ),
                 Wrap(
-                  spacing: PulseSpace.s2,
+                  spacing: MelaSpace.s2,
                   children: [
                     PButton.primary(
-                      label: PulseStrings.confirm,
+                      label: MelaStrings.confirm,
                       size: PButtonSize.sm,
                       onPressed: onConfirm,
                     ),
                     PButton.secondary(
-                      label: PulseStrings.edit,
+                      label: MelaStrings.edit,
                       size: PButtonSize.sm,
                       onPressed: onEdit,
                     ),
                     PButton.ghost(
-                      label: PulseStrings.skip,
+                      label: MelaStrings.skip,
                       size: PButtonSize.sm,
                       onPressed: onSkip,
                     ),

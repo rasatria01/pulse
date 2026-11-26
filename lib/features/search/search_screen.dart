@@ -69,7 +69,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       body = text.trim().isEmpty
           ? const EmptyState(
               icon: LucideIcons.search,
-              title: PulseStrings.searchEmpty,
+              title: MelaStrings.searchEmpty,
             )
           : const SizedBox.shrink();
     } else if (results.hasError) {
@@ -108,14 +108,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
 
     return PScreen(
-      title: PulseStrings.search,
+      title: MelaStrings.search,
       onBack: context.pop,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: PulseSpace.s2,
+        spacing: MelaSpace.s2,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: PulseSpace.s4),
+            padding: const EdgeInsets.symmetric(horizontal: MelaSpace.s4),
             child: Semantics(
               label: SearchStrings.field,
               child: ShadInput(
@@ -126,7 +126,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: PulseSpace.s4),
+            padding: const EdgeInsets.symmetric(horizontal: MelaSpace.s4),
             child: PChipRow(
               children: [
                 for (final (value, label) in _types)
@@ -163,11 +163,11 @@ class _Hit extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: PulseSpace.s4,
-          vertical: PulseSpace.s3,
+          horizontal: MelaSpace.s4,
+          vertical: MelaSpace.s3,
         ),
         child: Row(
-          spacing: PulseSpace.s3,
+          spacing: MelaSpace.s3,
           children: [
             PIconTile(icon: _icons[hit.type]!),
             Expanded(
@@ -178,14 +178,14 @@ class _Hit extends StatelessWidget {
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: PulseText.bodyStrong,
+                    style: MelaText.bodyStrong,
                   ),
                   if (snippet.isNotEmpty)
                     Text(
                       snippet,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: PulseText.caption.copyWith(
+                      style: MelaText.caption.copyWith(
                         color: colors.mutedForeground,
                       ),
                     ),

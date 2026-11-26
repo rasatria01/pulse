@@ -13,9 +13,9 @@ bool reduceMotion(BuildContext context) =>
 /// [base] height, grown when the scaled label line would not fit in it.
 double scaledControlHeight(BuildContext context, double base) => math.max(
   base,
-  MediaQuery.textScalerOf(context).scale(PulseText.label.fontSize!) *
-          PulseText.label.height! +
-      PulseSpace.s2,
+  MediaQuery.textScalerOf(context).scale(MelaText.label.fontSize!) *
+          MelaText.label.height! +
+      MelaSpace.s2,
 );
 
 /// A hit area of at least 48x48 around a smaller control, read by TalkBack as
@@ -60,8 +60,8 @@ class PTapTarget extends StatelessWidget {
         onTap: onTap,
         child: ConstrainedBox(
           constraints: const BoxConstraints(
-            minWidth: PulseSize.touch,
-            minHeight: PulseSize.touch,
+            minWidth: MelaSize.touch,
+            minHeight: MelaSize.touch,
           ),
           child: Align(widthFactor: 1, heightFactor: 1, child: child),
         ),
@@ -83,12 +83,12 @@ class PIconTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = ShadTheme.of(context).colorScheme;
     return Container(
-      width: PulseSize.tile,
-      height: PulseSize.tile,
+      width: MelaSize.tile,
+      height: MelaSize.tile,
       decoration: BoxDecoration(color: colors.muted, shape: BoxShape.circle),
       child: Icon(
         icon,
-        size: PulseSize.icon,
+        size: MelaSize.icon,
         color: color ?? colors.mutedForeground,
       ),
     );
@@ -136,7 +136,7 @@ class PSpendBar extends StatelessWidget {
     final value = limit <= 0
         ? (spent > 0 ? 1.0 : 0.0)
         : (spent / limit).clamp(0.0, 1.0);
-    final radius = BorderRadius.circular(PulseRadius.full);
+    final radius = BorderRadius.circular(MelaRadius.full);
     return ShadProgress(
       value: value,
       minHeight: 6,

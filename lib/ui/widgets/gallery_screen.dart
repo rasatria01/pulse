@@ -1,5 +1,5 @@
 // Hidden developer screen (route /gallery): every widget with sample data, so
-// its copy is not user-facing and stays out of PulseStrings.
+// its copy is not user-facing and stays out of MelaStrings.
 import 'package:flutter/widgets.dart';
 import 'package:shad/shad.dart';
 
@@ -26,15 +26,15 @@ class _GalleryScreenState extends State<GalleryScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = ShadTheme.of(context).colorScheme;
-    final teal = PulseIdentity.teal.toARGB32();
-    final amber = PulseIdentity.amber.toARGB32();
+    final teal = MelaIdentity.teal.toARGB32();
+    final amber = MelaIdentity.amber.toARGB32();
     void nothing() {}
 
     Widget section(String name, List<Widget> children) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: PulseSpace.s2,
+      spacing: MelaSpace.s2,
       children: [
-        Text(name, style: PulseText.title.copyWith(color: colors.foreground)),
+        Text(name, style: MelaText.title.copyWith(color: colors.foreground)),
         ...children,
       ],
     );
@@ -42,7 +42,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
     final sections = [
       section('PButton', [
         Wrap(
-          spacing: PulseSpace.s2,
+          spacing: MelaSpace.s2,
           children: [
             PButton.primary(label: 'Save', onPressed: nothing),
             PButton.secondary(label: 'Edit', onPressed: nothing),
@@ -76,10 +76,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ]),
       section('PIcon', [
         Wrap(
-          spacing: PulseSpace.s3,
-          runSpacing: PulseSpace.s3,
+          spacing: MelaSpace.s3,
+          runSpacing: MelaSpace.s3,
           children: [
-            for (final name in pulseIcons.keys)
+            for (final name in melaIcons.keys)
               PIcon.named(name, color: colors.foreground, semanticLabel: name),
           ],
         ),
@@ -91,7 +91,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
           size: AmountSize.hero,
         ),
         const Wrap(
-          spacing: PulseSpace.s4,
+          spacing: MelaSpace.s4,
           children: [
             AmountText(Rupiah(35000)),
             AmountText(Rupiah(7500000), type: AmountType.income),
@@ -252,10 +252,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
       color: colors.background,
       child: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(PulseSpace.s4),
+          padding: const EdgeInsets.all(MelaSpace.s4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: PulseSpace.s6,
+            spacing: MelaSpace.s6,
             children: sections,
           ),
         ),

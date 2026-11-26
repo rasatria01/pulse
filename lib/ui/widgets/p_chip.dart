@@ -52,16 +52,16 @@ class PChip extends StatelessWidget {
             PChipTone.warning => (colors.warningSoft, colors.warning),
             PChipTone.error => (colors.dangerSoft, colors.destructive),
           };
-    final radius = BorderRadius.circular(PulseRadius.full);
+    final radius = BorderRadius.circular(MelaRadius.full);
     final leadingIcon =
         icon ?? (tone == PChipTone.error ? LucideIcons.circleAlert : null);
 
     Widget chip = ShadButton.raw(
       variant: ShadButtonVariant.ghost,
       onPressed: onPressed,
-      height: scaledControlHeight(context, PulseSize.controlSm),
-      padding: const EdgeInsets.symmetric(horizontal: PulseSpace.s3),
-      gap: PulseSpace.s1,
+      height: scaledControlHeight(context, MelaSize.controlSm),
+      padding: const EdgeInsets.symmetric(horizontal: MelaSpace.s3),
+      gap: MelaSpace.s1,
       backgroundColor: background,
       hoverBackgroundColor: background,
       pressedBackgroundColor: background == clear ? colors.accent : background,
@@ -69,10 +69,8 @@ class PChip extends StatelessWidget {
       hoverForegroundColor: foreground,
       pressedForegroundColor: foreground,
       textStyle: numeric
-          ? PulseText.label.copyWith(
-              fontFeatures: PulseText.amount.fontFeatures,
-            )
-          : PulseText.label,
+          ? MelaText.label.copyWith(fontFeatures: MelaText.amount.fontFeatures)
+          : MelaText.label,
       decoration: ShadDecoration(
         border: ShadBorder.all(width: 0, radius: radius),
         secondaryFocusedBorder: ShadBorder.all(
@@ -86,19 +84,19 @@ class PChip extends StatelessWidget {
           ? null
           : Row(
               mainAxisSize: MainAxisSize.min,
-              spacing: PulseSpace.s1,
+              spacing: MelaSpace.s1,
               children: [
                 if (dotColor != null)
                   Container(
-                    width: PulseSpace.s2,
-                    height: PulseSpace.s2,
+                    width: MelaSpace.s2,
+                    height: MelaSpace.s2,
                     decoration: BoxDecoration(
                       color: identityColor(dotColor!),
                       shape: BoxShape.circle,
                     ),
                   ),
                 if (leadingIcon != null)
-                  Icon(leadingIcon, size: PulseSize.iconSm),
+                  Icon(leadingIcon, size: MelaSize.iconSm),
               ],
             ),
       child: Flexible(
@@ -109,13 +107,13 @@ class PChip extends StatelessWidget {
       chip = CustomPaint(
         foregroundPainter: DashedBorderPainter(
           color: colors.input,
-          radius: PulseRadius.full,
+          radius: MelaRadius.full,
         ),
         child: chip,
       );
     }
 
-    final suffix = tone == PChipTone.error ? ' (${PulseStrings.error})' : '';
+    final suffix = tone == PChipTone.error ? ' (${MelaStrings.error})' : '';
     return PTapTarget(
       label: '${field == null ? '' : '$field: '}$label$suffix',
       onTap: onPressed,
@@ -134,6 +132,6 @@ class PChipRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
     scrollDirection: Axis.horizontal,
-    child: Row(spacing: PulseSpace.s2, children: children),
+    child: Row(spacing: MelaSpace.s2, children: children),
   );
 }

@@ -39,7 +39,7 @@ class PTimelineItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = ShadTheme.of(context).colorScheme;
     final due = start == null;
-    final tabular = PulseText.amount.fontFeatures;
+    final tabular = MelaText.amount.fontFeatures;
     final line = [
       if (!due) end == null ? start! : '$start\u2013$end',
       if (!due) ?duration,
@@ -48,16 +48,16 @@ class PTimelineItem extends StatelessWidget {
 
     Widget block = Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: PulseSize.touch),
+      constraints: const BoxConstraints(minHeight: MelaSize.touch),
       padding: const EdgeInsets.symmetric(
-        horizontal: PulseSpace.s3,
-        vertical: PulseSpace.s2,
+        horizontal: MelaSpace.s3,
+        vertical: MelaSpace.s2,
       ),
       decoration: due
           ? null
           : BoxDecoration(
               color: colors.muted,
-              borderRadius: BorderRadius.circular(PulseRadius.md),
+              borderRadius: BorderRadius.circular(MelaRadius.md),
             ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -65,12 +65,12 @@ class PTimelineItem extends StatelessWidget {
         children: [
           Text(
             title,
-            style: PulseText.bodyStrong.copyWith(color: colors.foreground),
+            style: MelaText.bodyStrong.copyWith(color: colors.foreground),
           ),
           if (line.isNotEmpty)
             Text(
               line,
-              style: PulseText.caption.copyWith(
+              style: MelaText.caption.copyWith(
                 color: colors.mutedForeground,
                 fontFeatures: tabular,
               ),
@@ -82,7 +82,7 @@ class PTimelineItem extends StatelessWidget {
       block = CustomPaint(
         painter: DashedBorderPainter(
           color: colors.input,
-          radius: PulseRadius.md,
+          radius: MelaRadius.md,
         ),
         child: block,
       );
@@ -96,20 +96,20 @@ class PTimelineItem extends StatelessWidget {
         button: onPressed != null,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: PulseSpace.s4,
-            vertical: PulseSpace.s2,
+            horizontal: MelaSpace.s4,
+            vertical: MelaSpace.s2,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: PulseSpace.s3,
+            spacing: MelaSpace.s3,
             children: [
               SizedBox(
                 width: MediaQuery.textScalerOf(context).scale(44),
                 child: Padding(
-                  padding: const EdgeInsets.only(top: PulseSpace.s2),
+                  padding: const EdgeInsets.only(top: MelaSpace.s2),
                   child: Text(
-                    start ?? PulseStrings.due,
-                    style: PulseText.caption.copyWith(
+                    start ?? MelaStrings.due,
+                    style: MelaText.caption.copyWith(
                       color: now ? colors.foreground : colors.inkSubtle,
                       fontFeatures: tabular,
                     ),

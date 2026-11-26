@@ -55,7 +55,7 @@ Future<void> bootstrap({
     UncontrolledProviderScope(
       key: UniqueKey(),
       container: container,
-      child: const PulseApp(),
+      child: const MelaApp(),
     ),
   );
   // Lives until a restore.

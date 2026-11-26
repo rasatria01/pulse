@@ -61,7 +61,7 @@ void main() {
 
     await tester.tap(
       find.byWidgetPredicate(
-        (w) => w is PButton && w.semanticLabel == PulseStrings.search,
+        (w) => w is PButton && w.semanticLabel == MelaStrings.search,
       ),
     );
     await tester.pumpAndSettle();

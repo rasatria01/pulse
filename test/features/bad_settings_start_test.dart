@@ -55,10 +55,10 @@ void main() {
     });
     await tester.pump();
 
-    expect(find.byType(PulseApp), findsOneWidget);
+    expect(find.byType(MelaApp), findsOneWidget);
 
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(PulseApp)),
+      tester.element(find.byType(MelaApp)),
       listen: false,
     );
     await tester.pumpWidget(const SizedBox.shrink());

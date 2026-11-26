@@ -25,7 +25,7 @@ Future<T?> showPOptions<T extends Object>(
     child: options.isEmpty
         ? Text(empty ?? '')
         : Wrap(
-            spacing: PulseSpace.s2,
+            spacing: MelaSpace.s2,
             children: [
               for (final option in options)
                 PChip(
@@ -97,10 +97,10 @@ class _DateTimeSheetState extends State<_DateTimeSheet> {
   @override
   Widget build(BuildContext context) => PSheet(
     title: widget.title,
-    footer: [PButton.primary(label: PulseStrings.save, onPressed: _save)],
+    footer: [PButton.primary(label: MelaStrings.save, onPressed: _save)],
     child: Column(
       mainAxisSize: MainAxisSize.min,
-      spacing: PulseSpace.s3,
+      spacing: MelaSpace.s3,
       children: [
         FittedBox(
           fit: BoxFit.scaleDown,
@@ -126,7 +126,7 @@ class _DateTimeSheetState extends State<_DateTimeSheet> {
         if (_invalid)
           Text(
             widget.timeError,
-            style: PulseText.caption.copyWith(
+            style: MelaText.caption.copyWith(
               color: ShadTheme.of(context).colorScheme.destructive,
             ),
           ),

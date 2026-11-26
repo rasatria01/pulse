@@ -126,7 +126,7 @@ void main() {
           .watchAll(kind: CategoryKind.outcome)
           .first,
     )).first;
-    expect(find.text(PulseStrings.setBudget), findsOneWidget);
+    expect(find.text(MelaStrings.setBudget), findsOneWidget);
 
     await _db(
       tester,
@@ -193,7 +193,7 @@ void main() {
     pulse = container.read(todayPulseProvider).requireValue;
     expect(pulse.safeToSpend!.perDay, const Rupiah(241666));
     expect(pulse.safeToSpend!.remaining, const Rupiah(241666 - 250000));
-    expect(find.text(PulseStrings.safeToSpend), findsOneWidget);
+    expect(find.text(MelaStrings.safeToSpend), findsOneWidget);
     await _drain(tester);
   });
 
@@ -229,7 +229,7 @@ void main() {
     );
 
     await _scrollTo(tester, find.text('Cloud'));
-    await _tap(tester, on('Cloud', PulseStrings.edit));
+    await _tap(tester, on('Cloud', MelaStrings.edit));
     expect(find.byType(OccurrenceSheet), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.enterText(
@@ -242,14 +242,14 @@ void main() {
     await tester.pumpAndSettle();
     await _tap(tester, _button(PlannerStrings.recordRecurring));
     expect((await _history(tester)).single.amount, const Rupiah(250000));
-    await _tap(tester, _button(PulseStrings.undo));
+    await _tap(tester, _button(MelaStrings.undo));
     expect(await _history(tester), isEmpty);
     await _drain(tester);
 
-    await _tap(tester, on('Cloud', PulseStrings.confirm));
+    await _tap(tester, on('Cloud', MelaStrings.confirm));
     expect((await _history(tester)).single.description, 'Cloud');
     await _drain(tester);
-    await _tap(tester, on('Gym', PulseStrings.skip));
+    await _tap(tester, on('Gym', MelaStrings.skip));
     expect(await _history(tester), hasLength(1));
     expect(find.text('Gym'), findsNothing);
     expect(find.text('Music'), findsOneWidget);
@@ -269,7 +269,7 @@ void main() {
     expect(find.byType(BudgetSheet), findsOneWidget);
     await _tap(tester, _chip('Category', 'Food'));
     await _fill(tester, 'Monthly cap', '1.5jt');
-    await _tap(tester, _button(PulseStrings.save));
+    await _tap(tester, _button(MelaStrings.save));
     await _scrollTo(tester, find.byType(PBudgetBar));
     expect(
       tester.widget<PBudgetBar>(find.byType(PBudgetBar)).cap,
@@ -282,7 +282,7 @@ void main() {
     expect(find.byType(RuleSheet), findsOneWidget);
     await _fill(tester, 'Name', 'Rent');
     await _fill(tester, 'Amount', '900k');
-    await _tap(tester, _button(PulseStrings.save));
+    await _tap(tester, _button(MelaStrings.save));
     expect(tester.takeException(), isNull);
     await _scrollTo(tester, find.text('Rent'));
 
@@ -356,7 +356,7 @@ void main() {
       await _settle(tester);
       await _tap(tester, _button('Add wallet'));
       await _fill(tester, 'Name', name);
-      await _tap(tester, _button(PulseStrings.save));
+      await _tap(tester, _button(MelaStrings.save));
     }
 
     await _tap(tester, find.byKey(const ValueKey('wallet-bank')));

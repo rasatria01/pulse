@@ -1,6 +1,6 @@
 /// The words the ui/ widgets add themselves, in one place until the app has
 /// localisation. Everything else is passed in by the screen.
-abstract final class PulseStrings {
+abstract final class MelaStrings {
   static const save = 'Save';
   static const confirm = 'Confirm';
   static const edit = 'Edit';

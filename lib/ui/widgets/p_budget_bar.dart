@@ -41,19 +41,19 @@ class PBudgetBar extends StatelessWidget {
     final level = SpendLevel.of(spent.value, cap.value);
     final percent = cap.value <= 0 ? 0 : spent.value * 100 ~/ cap.value;
     final status = spent.value > cap.value
-        ? PulseStrings.overBy(formatRupiah(spent - cap))
-        : PulseStrings.percentUsed(percent);
+        ? MelaStrings.overBy(formatRupiah(spent - cap))
+        : MelaStrings.percentUsed(percent);
     final remaining = level == SpendLevel.critical
-        ? PulseStrings.capReached
-        : PulseStrings.left(formatRupiah(cap - spent));
-    final tabular = PulseText.amount.fontFeatures;
+        ? MelaStrings.capReached
+        : MelaStrings.left(formatRupiah(cap - spent));
+    final tabular = MelaText.amount.fontFeatures;
 
     Widget spread(List<Widget> children) => SizedBox(
       width: double.infinity,
       child: Wrap(
         alignment: WrapAlignment.spaceBetween,
         crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: PulseSpace.s2,
+        spacing: MelaSpace.s2,
         children: children,
       ),
     );
@@ -65,27 +65,27 @@ class PBudgetBar extends StatelessWidget {
         container: true,
         button: onPressed != null,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: PulseSize.touch),
+          constraints: const BoxConstraints(minHeight: MelaSize.touch),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: PulseSpace.s3,
+            spacing: MelaSpace.s3,
             children: [
-              PIconTile(icon: pulseIcon(icon), color: identityColor(color)),
+              PIconTile(icon: melaIcon(icon), color: identityColor(color)),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  spacing: PulseSpace.s2,
+                  spacing: MelaSpace.s2,
                   children: [
                     spread([
                       Text(
                         category,
-                        style: PulseText.bodyStrong.copyWith(
+                        style: MelaText.bodyStrong.copyWith(
                           color: colors.foreground,
                         ),
                       ),
                       Text(
                         '${formatRupiah(spent)} / ${formatRupiah(cap)}',
-                        style: PulseText.amountSm.copyWith(
+                        style: MelaText.amountSm.copyWith(
                           color: colors.mutedForeground,
                         ),
                       ),
@@ -93,12 +93,12 @@ class PBudgetBar extends StatelessWidget {
                     PSpendBar(
                       spent: spent.value,
                       limit: cap.value,
-                      semanticLabel: PulseStrings.budgetOf(category),
+                      semanticLabel: MelaStrings.budgetOf(category),
                     ),
                     spread([
                       Text(
                         status,
-                        style: PulseText.captionStrong.copyWith(
+                        style: MelaText.captionStrong.copyWith(
                           color:
                               level.statusColor(colors) ??
                               colors.mutedForeground,
@@ -107,7 +107,7 @@ class PBudgetBar extends StatelessWidget {
                       ),
                       Text(
                         remaining,
-                        style: PulseText.caption.copyWith(
+                        style: MelaText.caption.copyWith(
                           color: colors.inkSubtle,
                           fontFeatures: tabular,
                         ),

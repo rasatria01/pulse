@@ -40,7 +40,7 @@ class RestoreSheet extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: PulseSpace.s1,
+            spacing: MelaSpace.s1,
             children: [
               Text(
                 exported == null
@@ -49,14 +49,14 @@ class RestoreSheet extends StatelessWidget {
                         DateFormat('d MMM yyyy, HH:mm')
                             .format(exported.toLocal()),
                       ),
-                style: PulseText.bodyStrong,
+                style: MelaText.bodyStrong,
               ),
               for (final MapEntry(key: table, value: name)
                   in SettingsStrings.tableNames.entries)
                 if (check.rowCounts[table] case final count?)
                   MergeSemantics(
                     child: Row(
-                      spacing: PulseSpace.s3,
+                      spacing: MelaSpace.s3,
                       children: [
                         Expanded(child: Text(name)),
                         Text(SettingsStrings.rows(count)),

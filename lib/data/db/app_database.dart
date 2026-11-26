@@ -53,7 +53,7 @@ class AppDatabase extends _$AppDatabase {
         name: 'Cash',
         slug: 'cash',
         kind: 'cash',
-        color: 0xFF3A9A3F, // PulseIdentity.green
+        color: 0xFF36923B, // MelaIdentity.green
         icon: 'wallet',
         isDefault: const Value(1),
         createdAt: now,
@@ -61,13 +61,13 @@ class AppDatabase extends _$AppDatabase {
       ),
     );
 
-    // Colours are PulseIdentity values: slate, orange, blue, amber, teal.
+    // Colours are MelaIdentity values: slate, orange, blue, amber, teal.
     const seeded = [
-      ('Uncategorized', 'uncategorized', 'outcome', 0xFF64748B, 'circle-help'),
+      ('Uncategorized', 'uncategorized', 'outcome', 0xFF6E7E95, 'circle-help'),
       ('Food', 'food', 'outcome', 0xFFD9622B, 'utensils'),
       ('Transport', 'transport', 'outcome', 0xFF3B74E0, 'bus'),
       ('Bills', 'bills', 'outcome', 0xFFB7791F, 'receipt'),
-      ('Uncategorized', 'uncategorized', 'income', 0xFF64748B, 'circle-help'),
+      ('Uncategorized', 'uncategorized', 'income', 0xFF6E7E95, 'circle-help'),
       ('Income', 'income', 'income', 0xFF14958A, 'banknote'),
     ];
     for (final (i, (name, slug, kind, color, icon)) in seeded.indexed) {

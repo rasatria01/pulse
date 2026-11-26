@@ -3,7 +3,7 @@ import 'package:shad/shad.dart';
 
 import 'tokens.dart';
 
-extension PulseColorsShad on PulseColors {
+extension MelaColorsShad on MelaColors {
   ShadColorScheme toShad() => ShadColorScheme(
     background: bg,
     foreground: ink,
@@ -28,6 +28,8 @@ extension PulseColorsShad on PulseColors {
     custom: {
       'surfaceRaised': surfaceRaised,
       'inkSubtle': inkSubtle,
+      'turmeric': accent,
+      'onTurmeric': onAccent,
       'positive': positive,
       'positiveSoft': positiveSoft,
       'warning': warning,
@@ -39,9 +41,11 @@ extension PulseColorsShad on PulseColors {
 }
 
 /// Typed access to the roles shad doesn't have: ShadTheme.of(context).colorScheme.positive
-extension PulseScheme on ShadColorScheme {
+extension MelaScheme on ShadColorScheme {
   Color get surfaceRaised => custom['surfaceRaised']!;
   Color get inkSubtle => custom['inkSubtle']!;
+  Color get turmeric => custom['turmeric']!;
+  Color get onTurmeric => custom['onTurmeric']!;
   Color get positive => custom['positive']!;
   Color get positiveSoft => custom['positiveSoft']!;
   Color get warning => custom['warning']!;
@@ -50,29 +54,29 @@ extension PulseScheme on ShadColorScheme {
   Color get scrim => custom['scrim']!;
 }
 
-final pulseTextTheme = ShadTextTheme(
+final melaTextTheme = ShadTextTheme(
   family: 'Plus Jakarta Sans',
-  h2: PulseText.titleLg,
-  h4: PulseText.title,
-  p: PulseText.body,
-  large: PulseText.bodyStrong,
-  small: PulseText.label,
-  muted: PulseText.caption,
+  h2: MelaText.titleLg,
+  h4: MelaText.title,
+  p: MelaText.body,
+  large: MelaText.bodyStrong,
+  small: MelaText.label,
+  muted: MelaText.caption,
   custom: {
-    'amount-hero': PulseText.amountHero,
-    'amount-lg': PulseText.amountLg,
-    'amount': PulseText.amount,
-    'amount-sm': PulseText.amountSm,
-    'caption-strong': PulseText.captionStrong,
-    'micro': PulseText.micro,
+    'amount-hero': MelaText.amountHero,
+    'amount-lg': MelaText.amountLg,
+    'amount': MelaText.amount,
+    'amount-sm': MelaText.amountSm,
+    'caption-strong': MelaText.captionStrong,
+    'micro': MelaText.micro,
   },
 );
 
-ShadThemeData pulseTheme(Brightness brightness) => ShadThemeData(
+ShadThemeData melaTheme(Brightness brightness) => ShadThemeData(
   brightness: brightness,
   colorScheme:
-      (brightness == Brightness.light ? PulseColors.light : PulseColors.dark)
+      (brightness == Brightness.light ? MelaColors.light : MelaColors.dark)
           .toShad(),
-  radius: BorderRadius.circular(PulseRadius.md),
-  textTheme: pulseTextTheme,
+  radius: BorderRadius.circular(MelaRadius.md),
+  textTheme: melaTextTheme,
 );

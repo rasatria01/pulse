@@ -81,7 +81,7 @@ class PButton extends StatelessWidget {
     final small = size == PButtonSize.sm;
     final height = scaledControlHeight(
       context,
-      small ? PulseSize.controlSm : PulseSize.control,
+      small ? MelaSize.controlSm : MelaSize.control,
     );
     final clear = colors.background.withValues(alpha: 0);
     final (background, foreground, pressed) = switch (variant) {
@@ -117,29 +117,29 @@ class PButton extends StatelessWidget {
         padding: iconOnly
             ? EdgeInsets.zero
             : EdgeInsets.symmetric(
-                horizontal: small ? PulseSpace.s3 : PulseSpace.s4,
+                horizontal: small ? MelaSpace.s3 : MelaSpace.s4,
               ),
-        gap: PulseSpace.s2,
+        gap: MelaSpace.s2,
         backgroundColor: background,
         hoverBackgroundColor: background,
         pressedBackgroundColor: pressed,
         foregroundColor: foreground,
         hoverForegroundColor: foreground,
         pressedForegroundColor: foreground,
-        textStyle: PulseText.label,
+        textStyle: MelaText.label,
         pressAnimationDuration: reduceMotion(context) ? Duration.zero : null,
         decoration: variant == ShadButtonVariant.outline
             ? ShadDecoration(
                 border: ShadBorder.all(
                   color: colors.input,
                   width: 1,
-                  radius: BorderRadius.circular(PulseRadius.md),
+                  radius: BorderRadius.circular(MelaRadius.md),
                 ),
               )
             : null,
         leading: icon == null
             ? null
-            : Icon(icon, size: small ? PulseSize.iconSm : PulseSize.icon),
+            : Icon(icon, size: small ? MelaSize.iconSm : MelaSize.icon),
         child: iconOnly
             ? null
             : Flexible(

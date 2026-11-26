@@ -22,10 +22,10 @@ class PulseSection extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const PSectionHeader(PulseStrings.financialPulse),
+          const PSectionHeader(MelaStrings.financialPulse),
           if (value != null)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: PulseSpace.s4),
+              padding: const EdgeInsets.symmetric(horizontal: MelaSpace.s4),
               child: PulseCard(
                 liquid: value.liquid,
                 todaySpend: value.todaySpend,

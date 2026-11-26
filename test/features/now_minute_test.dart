@@ -47,12 +47,12 @@ void main() {
           appDatabaseProvider.overrideWithValue(db),
           clockProvider.overrideWithValue(clock),
         ],
-        child: const PulseApp(),
+        child: const MelaApp(),
       ),
     );
     await tester.pumpAndSettle();
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(PulseApp)),
+      tester.element(find.byType(MelaApp)),
     );
     // Starts two minutes from now.
     container

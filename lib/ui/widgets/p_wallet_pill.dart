@@ -34,7 +34,7 @@ class PWalletPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = ShadTheme.of(context).colorScheme;
-    final radius = BorderRadius.circular(PulseRadius.full);
+    final radius = BorderRadius.circular(MelaRadius.full);
     return PTapTarget(
       label: balance == null
           ? name
@@ -44,12 +44,9 @@ class PWalletPill extends StatelessWidget {
       child: ShadButton.raw(
         variant: ShadButtonVariant.ghost,
         onPressed: onPressed,
-        height: scaledControlHeight(context, PulseSize.controlSm),
-        padding: const EdgeInsets.only(
-          left: PulseSpace.s2,
-          right: PulseSpace.s3,
-        ),
-        gap: PulseSpace.s2,
+        height: scaledControlHeight(context, MelaSize.controlSm),
+        padding: const EdgeInsets.only(left: MelaSpace.s2, right: MelaSpace.s3),
+        gap: MelaSpace.s2,
         backgroundColor: colors.secondary,
         hoverBackgroundColor: colors.secondary,
         pressedBackgroundColor: colors.accent,
@@ -70,8 +67,8 @@ class PWalletPill extends StatelessWidget {
           ),
         ),
         leading: Icon(
-          pulseIcon(icon, fallback: LucideIcons.wallet),
-          size: PulseSize.iconSm,
+          melaIcon(icon, fallback: LucideIcons.wallet),
+          size: MelaSize.iconSm,
           color: identityColor(color),
         ),
         trailing: balance == null
@@ -84,7 +81,7 @@ class PWalletPill extends StatelessWidget {
         child: Text(
           name,
           maxLines: 1,
-          style: PulseText.label.copyWith(color: colors.mutedForeground),
+          style: MelaText.label.copyWith(color: colors.mutedForeground),
         ),
       ),
     );

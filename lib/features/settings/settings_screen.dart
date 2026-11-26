@@ -129,15 +129,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     Widget padded(Widget child) => Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: PulseSpace.s4,
-        vertical: PulseSpace.s1,
+        horizontal: MelaSpace.s4,
+        vertical: MelaSpace.s1,
       ),
       child: child,
     );
     Widget hint(String text) => padded(
       Text(
         text,
-        style: PulseText.caption.copyWith(color: colors.mutedForeground),
+        style: MelaText.caption.copyWith(color: colors.mutedForeground),
       ),
     );
 
@@ -146,7 +146,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         const PSectionHeader(SettingsStrings.appearance),
         padded(
           Wrap(
-            spacing: PulseSpace.s2,
+            spacing: MelaSpace.s2,
             children: [
               for (final (value, label) in _themes)
                 PChip(
@@ -189,8 +189,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         hint(SettingsStrings.backupHint),
         padded(
           Wrap(
-            spacing: PulseSpace.s2,
-            runSpacing: PulseSpace.s2,
+            spacing: MelaSpace.s2,
+            runSpacing: MelaSpace.s2,
             children: [
               PButton.primary(
                 label: SettingsStrings.shareBackup,
@@ -208,8 +208,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         hint(SettingsStrings.jsonHint),
         padded(
           Wrap(
-            spacing: PulseSpace.s2,
-            runSpacing: PulseSpace.s2,
+            spacing: MelaSpace.s2,
+            runSpacing: MelaSpace.s2,
             children: [
               PButton.outline(
                 label: SettingsStrings.shareJson,
@@ -242,7 +242,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
 
     return PScreen(
-      title: PulseStrings.settings,
+      title: MelaStrings.settings,
       onBack: context.pop,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

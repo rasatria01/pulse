@@ -36,36 +36,36 @@ class PulseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = ShadTheme.of(context).colorScheme;
-    final muted = PulseText.caption.copyWith(
+    final muted = MelaText.caption.copyWith(
       color: colors.mutedForeground,
-      fontFeatures: PulseText.amount.fontFeatures,
+      fontFeatures: MelaText.amount.fontFeatures,
     );
     final safe = safeToSpend;
     return Semantics(
       container: true,
       explicitChildNodes: true,
-      label: PulseStrings.financialPulse,
+      label: MelaStrings.financialPulse,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(PulseSpace.s4),
+        padding: const EdgeInsets.all(MelaSpace.s4),
         decoration: BoxDecoration(
           color: colors.card,
           border: Border.all(color: colors.border),
-          borderRadius: BorderRadius.circular(PulseRadius.xl),
+          borderRadius: BorderRadius.circular(MelaRadius.xl),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: PulseSpace.s3,
+          spacing: MelaSpace.s3,
           children: [
             if (safe != null) ...[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: PulseSpace.s1,
+                spacing: MelaSpace.s1,
                 children: [
                   Text(
-                    PulseStrings.safeToSpend,
-                    style: PulseText.captionStrong.copyWith(
+                    MelaStrings.safeToSpend,
+                    style: MelaText.captionStrong.copyWith(
                       color: colors.mutedForeground,
                     ),
                   ),
@@ -79,19 +79,16 @@ class PulseCard extends StatelessWidget {
               PSpendBar(
                 spent: todaySpend.value,
                 limit: safe.value,
-                semanticLabel: PulseStrings.spentToday,
+                semanticLabel: MelaStrings.spentToday,
               ),
               _spread([
-                Text(
-                  PulseStrings.spent(formatRupiah(todaySpend)),
-                  style: muted,
-                ),
+                Text(MelaStrings.spent(formatRupiah(todaySpend)), style: muted),
                 _remaining(context, safe, muted),
               ]),
             ] else if (showBudgetHint) ...[
-              Text(PulseStrings.setBudget, style: muted),
+              Text(MelaStrings.setBudget, style: muted),
               _spread([
-                Text(PulseStrings.spentToday, style: muted),
+                Text(MelaStrings.spentToday, style: muted),
                 AmountText(
                   todaySpend,
                   type: AmountType.balance,
@@ -100,19 +97,19 @@ class PulseCard extends StatelessWidget {
               ]),
             ],
             _spread([
-              Text(PulseStrings.liquidBalance, style: muted),
+              Text(MelaStrings.liquidBalance, style: muted),
               AmountText(liquid, type: AmountType.balance, size: AmountSize.sm),
             ]),
             if (wallets.isNotEmpty)
               Container(
-                padding: const EdgeInsets.only(top: PulseSpace.s1),
+                padding: const EdgeInsets.only(top: MelaSpace.s1),
                 decoration: BoxDecoration(
                   border: Border(top: BorderSide(color: colors.border)),
                 ),
                 child: Semantics(
                   container: true,
                   explicitChildNodes: true,
-                  label: PulseStrings.wallets,
+                  label: MelaStrings.wallets,
                   child: PChipRow(children: wallets),
                 ),
               ),
@@ -124,7 +121,7 @@ class PulseCard extends StatelessWidget {
 
   Widget _spread(List<Widget> children) => Wrap(
     alignment: WrapAlignment.spaceBetween,
-    spacing: PulseSpace.s3,
+    spacing: MelaSpace.s3,
     children: children,
   );
 
@@ -134,14 +131,14 @@ class PulseCard extends StatelessWidget {
     final color = level.statusColor(ShadTheme.of(context).colorScheme);
     return Text(
       left.value < 0
-          ? PulseStrings.overBy(formatRupiah(left))
-          : PulseStrings.left(formatRupiah(left)),
+          ? MelaStrings.overBy(formatRupiah(left))
+          : MelaStrings.left(formatRupiah(left)),
       style: color == null
           ? muted
           : muted.copyWith(
               color: color,
-              fontWeight: PulseText.captionStrong.fontWeight,
-              fontVariations: PulseText.captionStrong.fontVariations,
+              fontWeight: MelaText.captionStrong.fontWeight,
+              fontVariations: MelaText.captionStrong.fontVariations,
             ),
     );
   }

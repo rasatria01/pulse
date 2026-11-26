@@ -62,13 +62,13 @@ void main() {
           clockProvider.overrideWithValue(const FixedClock()),
           backupGatewayProvider.overrideWithValue(backup),
         ],
-        child: const PulseApp(),
+        child: const MelaApp(),
       ),
     );
     await tester.pumpAndSettle();
     await tester.tap(
       find.byWidgetPredicate(
-        (w) => w is PButton && w.semanticLabel == PulseStrings.settings,
+        (w) => w is PButton && w.semanticLabel == MelaStrings.settings,
       ),
     );
     await tester.pumpAndSettle();

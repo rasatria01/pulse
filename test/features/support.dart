@@ -31,7 +31,7 @@ Future<AppDatabase> pumpApp(
         appDatabaseProvider.overrideWithValue(db),
         clockProvider.overrideWithValue(const FixedClock()),
       ],
-      child: PulseApp(themeMode: mode),
+      child: MelaApp(themeMode: mode),
     ),
   );
   await tester.pumpAndSettle();

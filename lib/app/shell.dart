@@ -9,11 +9,11 @@ import '../ui/widgets/widgets.dart';
 
 // In the order of the router's branches.
 const _tabs = [
-  ('today', PulseStrings.today, LucideIcons.sunMedium),
-  ('tasks', PulseStrings.tasks, LucideIcons.listTodo),
-  ('calendar', PulseStrings.calendar, LucideIcons.calendar),
-  ('notes', PulseStrings.notes, LucideIcons.stickyNote),
-  ('finance', PulseStrings.finance, LucideIcons.wallet),
+  ('today', MelaStrings.today, LucideIcons.sunMedium),
+  ('tasks', MelaStrings.tasks, LucideIcons.listTodo),
+  ('calendar', MelaStrings.calendar, LucideIcons.calendar),
+  ('notes', MelaStrings.notes, LucideIcons.stickyNote),
+  ('finance', MelaStrings.finance, LucideIcons.wallet),
 ];
 
 /// The five tabs: the current screen, the pinned capture bar and the bottom
@@ -91,16 +91,16 @@ class _Tab extends StatelessWidget {
       selected: selected,
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: PulseSpace.s1),
+        padding: const EdgeInsets.symmetric(vertical: MelaSpace.s1),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: PulseSize.icon, color: color),
+            Icon(icon, size: MelaSize.icon, color: color),
             Text(
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: PulseText.micro.copyWith(color: color),
+              style: MelaText.micro.copyWith(color: color),
             ),
           ],
         ),

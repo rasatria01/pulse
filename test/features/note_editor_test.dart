@@ -107,7 +107,7 @@ void main() {
       final db = await pumpApp(tester, mode: mode);
 
       await tester.scrollUntilVisible(
-        find.text(PulseStrings.noScratchpad),
+        find.text(MelaStrings.noScratchpad),
         200,
         scrollable: find
             .descendant(
@@ -146,7 +146,7 @@ void main() {
       await _tap(tester, _button(NotesStrings.edit));
 
       // Back on Today the scratchpad shows, without its token.
-      await _tap(tester, _button(PulseStrings.back));
+      await _tap(tester, _button(MelaStrings.back));
       expect(find.textContaining('Hello\n- [ ] Buy milk'), findsOneWidget);
       expect(find.textContaining('^t'), findsNothing);
     });
@@ -175,7 +175,7 @@ void main() {
 
     // Leaving before the debounce fires.
     await tester.enterText(_field, '${_controller(tester).text}\nlast words');
-    await _tap(tester, _button(PulseStrings.back));
+    await _tap(tester, _button(MelaStrings.back));
     expect(find.byType(NoteEditorScreen), findsNothing);
     expect(
       (await _rows(tester, db, 'body', 'notes')).single,
@@ -253,7 +253,7 @@ void main() {
     expect(find.byType(NoteEditorScreen), findsNothing);
     expect(find.byType(SearchScreen), findsOneWidget);
     expect(await _rows(tester, db, 'id', 'notes'), isEmpty);
-    await _tap(tester, _button(PulseStrings.undo));
+    await _tap(tester, _button(MelaStrings.undo));
     expect(await _rows(tester, db, 'id', 'notes'), [note.id]);
     await tester.pump(const Duration(seconds: 6));
     await tester.pumpAndSettle();

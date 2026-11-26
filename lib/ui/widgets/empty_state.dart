@@ -28,32 +28,32 @@ class EmptyState extends StatelessWidget {
     final colors = ShadTheme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: PulseSpace.s4,
-        vertical: PulseSpace.s6,
+        horizontal: MelaSpace.s4,
+        vertical: MelaSpace.s6,
       ),
       child: SizedBox(
         width: double.infinity,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          spacing: PulseSpace.s2,
+          spacing: MelaSpace.s2,
           children: [
             Container(
-              width: PulseSize.touch,
-              height: PulseSize.touch,
+              width: MelaSize.touch,
+              height: MelaSize.touch,
               decoration: BoxDecoration(
                 color: colors.muted,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
-                size: PulseSize.icon,
+                size: MelaSize.icon,
                 color: colors.mutedForeground,
               ),
             ),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: PulseText.bodyStrong.copyWith(color: colors.foreground),
+              style: MelaText.bodyStrong.copyWith(color: colors.foreground),
             ),
             if (body != null)
               ConstrainedBox(
@@ -61,7 +61,7 @@ class EmptyState extends StatelessWidget {
                 child: Text(
                   body!,
                   textAlign: TextAlign.center,
-                  style: PulseText.body.copyWith(color: colors.mutedForeground),
+                  style: MelaText.body.copyWith(color: colors.mutedForeground),
                 ),
               ),
             if (actionLabel != null)

@@ -53,7 +53,7 @@ void main() {
     }
 
     ProviderContainer container() => ProviderScope.containerOf(
-      tester.element(find.byType(PulseApp)),
+      tester.element(find.byType(MelaApp)),
       listen: false,
     );
     Future<List<String>> titles() async => [

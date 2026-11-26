@@ -16,7 +16,7 @@ class PCaptureBar extends StatelessWidget {
   const PCaptureBar({
     super.key,
     required VoidCallback this.onOpen,
-    this.placeholder = PulseStrings.capturePlaceholder,
+    this.placeholder = MelaStrings.capturePlaceholder,
   }) : controller = null,
        focusNode = null,
        chips = const [],
@@ -34,7 +34,7 @@ class PCaptureBar extends StatelessWidget {
     this.hint,
     this.onChanged,
     required this.onSave,
-    this.placeholder = PulseStrings.capturePlaceholder,
+    this.placeholder = MelaStrings.capturePlaceholder,
   }) : onOpen = null;
 
   final VoidCallback? onOpen;
@@ -64,29 +64,29 @@ class PCaptureBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: PTapTarget(
-          label: PulseStrings.quickCapture,
+          label: MelaStrings.quickCapture,
           onTap: onOpen,
           child: Container(
             width: double.infinity,
-            constraints: const BoxConstraints(minHeight: PulseSize.capture),
+            constraints: const BoxConstraints(minHeight: MelaSize.capture),
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(
-              horizontal: PulseSpace.s4,
-              vertical: PulseSpace.s1,
+              horizontal: MelaSpace.s4,
+              vertical: MelaSpace.s1,
             ),
             child: Container(
-              constraints: const BoxConstraints(minHeight: PulseSize.control),
-              padding: const EdgeInsets.symmetric(horizontal: PulseSpace.s3),
+              constraints: const BoxConstraints(minHeight: MelaSize.control),
+              padding: const EdgeInsets.symmetric(horizontal: MelaSpace.s3),
               decoration: BoxDecoration(
                 color: colors.muted,
-                borderRadius: BorderRadius.circular(PulseRadius.md),
+                borderRadius: BorderRadius.circular(MelaRadius.md),
               ),
               child: Row(
-                spacing: PulseSpace.s2,
+                spacing: MelaSpace.s2,
                 children: [
                   Icon(
                     LucideIcons.plus,
-                    size: PulseSize.icon,
+                    size: MelaSize.icon,
                     color: colors.inkSubtle,
                   ),
                   Expanded(
@@ -94,7 +94,7 @@ class PCaptureBar extends StatelessWidget {
                       placeholder,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: PulseText.body.copyWith(color: colors.inkSubtle),
+                      style: MelaText.body.copyWith(color: colors.inkSubtle),
                     ),
                   ),
                 ],
@@ -113,19 +113,19 @@ class PCaptureBar extends StatelessWidget {
     final border = ShadBorder.all(
       color: hasError ? colors.destructive : colors.input,
       width: 1,
-      radius: BorderRadius.circular(PulseRadius.md),
+      radius: BorderRadius.circular(MelaRadius.md),
     );
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: PulseSpace.s1,
+      spacing: MelaSpace.s1,
       children: [
         Row(
-          spacing: PulseSpace.s2,
+          spacing: MelaSpace.s2,
           children: [
             Expanded(
               child: Semantics(
-                label: PulseStrings.quickCapture,
+                label: MelaStrings.quickCapture,
                 child: ShadInput(
                   controller: controller,
                   focusNode: focusNode,
@@ -135,7 +135,7 @@ class PCaptureBar extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  style: PulseText.body.copyWith(color: colors.foreground),
+                  style: MelaText.body.copyWith(color: colors.foreground),
                   decoration: ShadDecoration(
                     color: colors.surfaceRaised,
                     border: border,
@@ -149,13 +149,13 @@ class PCaptureBar extends StatelessWidget {
                 ),
               ),
             ),
-            PButton.primary(label: PulseStrings.save, onPressed: save),
+            PButton.primary(label: MelaStrings.save, onPressed: save),
           ],
         ),
         Semantics(
           container: true,
           explicitChildNodes: true,
-          label: PulseStrings.parsedChips,
+          label: MelaStrings.parsedChips,
           child: PChipRow(children: chips),
         ),
         if (hasError && hint != null)
@@ -163,7 +163,7 @@ class PCaptureBar extends StatelessWidget {
             liveRegion: true,
             child: Text(
               hint!,
-              style: PulseText.caption.copyWith(color: colors.destructive),
+              style: MelaText.caption.copyWith(color: colors.destructive),
             ),
           ),
       ],

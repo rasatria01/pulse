@@ -95,7 +95,7 @@ abstract final class FinanceStrings {
   static String next(String day) => 'Next $day';
   static String everyN(int n, String unit) => 'Every $n $unit';
 
-  /// In the order of PulseIdentity.all.
+  /// In the order of MelaIdentity.all.
   static const colourNames = [
     'Slate',
     'Blue',

@@ -51,7 +51,7 @@ class NeedsConfirmationSection extends ConsumerWidget {
     return SliverMainAxisGroup(
       slivers: [
         const SliverToBoxAdapter(
-          child: PSectionHeader(PulseStrings.needsConfirmation),
+          child: PSectionHeader(MelaStrings.needsConfirmation),
         ),
         SliverList.builder(
           itemCount: bills.length,

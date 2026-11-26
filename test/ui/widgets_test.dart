@@ -33,8 +33,8 @@ Future<void> _pump(
   }
   await tester.pumpWidget(
     ShadApp(
-      theme: pulseTheme(Brightness.light),
-      darkTheme: pulseTheme(Brightness.dark),
+      theme: melaTheme(Brightness.light),
+      darkTheme: melaTheme(Brightness.dark),
       themeMode: brightness == Brightness.light
           ? ShadThemeMode.light
           : ShadThemeMode.dark,
@@ -95,8 +95,8 @@ void main() {
   });
 
   test('stored colours and icon names resolve with fallbacks', () {
-    expect(identityColor(PulseIdentity.teal.toARGB32()), PulseIdentity.teal);
-    expect(identityColor(0xFF123456), PulseIdentity.slate);
+    expect(identityColor(MelaIdentity.teal.toARGB32()), MelaIdentity.teal);
+    expect(identityColor(0xFF123456), MelaIdentity.slate);
     for (final name in [
       'wallet',
       'banknote',
@@ -107,9 +107,9 @@ void main() {
       'receipt-text',
       'tag',
     ]) {
-      expect(pulseIcons, contains(name));
+      expect(melaIcons, contains(name));
     }
-    expect(pulseIcon('nope'), LucideIcons.tag);
+    expect(melaIcon('nope'), LucideIcons.tag);
   });
 
   for (final (name, brightness, scale) in _variants) {

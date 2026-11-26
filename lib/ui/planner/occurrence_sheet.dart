@@ -67,7 +67,7 @@ class _OccurrenceSheetState extends State<OccurrenceSheet> {
       title: widget.title,
       footer: [
         PButton.ghost(
-          label: PulseStrings.skip,
+          label: MelaStrings.skip,
           onPressed: () => _pop(const OccurrenceSkipped()),
         ),
         PButton.primary(

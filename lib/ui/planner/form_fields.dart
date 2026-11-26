@@ -25,19 +25,17 @@ class PField extends StatelessWidget {
     final colors = ShadTheme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: PulseSpace.s1,
+      spacing: MelaSpace.s1,
       children: [
         Text(
           label,
-          style: PulseText.captionStrong.copyWith(
-            color: colors.mutedForeground,
-          ),
+          style: MelaText.captionStrong.copyWith(color: colors.mutedForeground),
         ),
         child,
         if (error != null)
           Text(
             error!,
-            style: PulseText.caption.copyWith(color: colors.destructive),
+            style: MelaText.caption.copyWith(color: colors.destructive),
           ),
       ],
     );
@@ -152,7 +150,7 @@ class _PDateFieldState extends State<PDateField> {
                   weekStartsOn: DateTime.monday,
                   allowDeselection: false,
                   // Two digits at 1.3x text need a touch-sized cell.
-                  dayButtonSize: PulseSize.touch,
+                  dayButtonSize: MelaSize.touch,
                   onChanged: (picked) {
                     if (picked != null) {
                       _choose(LocalDate.fromDateTime(picked));

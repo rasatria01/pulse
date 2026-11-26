@@ -107,7 +107,7 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
     );
 
     return PScreen(
-      title: PulseStrings.finance,
+      title: MelaStrings.finance,
       actions: [
         PButton.ghost(
           icon: LucideIcons.arrowRightLeft,
@@ -147,7 +147,7 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
               ].join(' · ');
               return _Row(
                 key: ValueKey('wallet-${wallet.slug}'),
-                icon: pulseIcon(wallet.icon, fallback: LucideIcons.wallet),
+                icon: melaIcon(wallet.icon, fallback: LucideIcons.wallet),
                 color: identityColor(wallet.color),
                 title: wallet.name,
                 meta: meta,
@@ -177,12 +177,12 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
               return Padding(
                 key: ValueKey('budget-${category?.slug}'),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: PulseSpace.s4,
-                  vertical: PulseSpace.s2,
+                  horizontal: MelaSpace.s4,
+                  vertical: MelaSpace.s2,
                 ),
                 child: PBudgetBar(
                   category: category?.name ?? '',
-                  color: category?.color ?? PulseIdentity.slate.toARGB32(),
+                  color: category?.color ?? MelaIdentity.slate.toARGB32(),
                   icon: category?.icon ?? 'tag',
                   spent: status.spent,
                   cap: status.cap,
@@ -222,7 +222,7 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
             const SliverToBoxAdapter(
               child: EmptyState(
                 icon: LucideIcons.receiptText,
-                title: PulseStrings.noTransactions,
+                title: MelaStrings.noTransactions,
               ),
             ),
           SliverList.builder(
@@ -245,7 +245,7 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
                 key: ValueKey(t.id),
                 icon: category == null
                     ? LucideIcons.arrowRightLeft
-                    : pulseIcon(category.icon),
+                    : melaIcon(category.icon),
                 color: category == null ? null : identityColor(category.color),
                 title: title,
                 meta: meta,
@@ -291,11 +291,11 @@ class _Row extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: PulseSpace.s4,
-          vertical: PulseSpace.s3,
+          horizontal: MelaSpace.s4,
+          vertical: MelaSpace.s3,
         ),
         child: Row(
-          spacing: PulseSpace.s3,
+          spacing: MelaSpace.s3,
           children: [
             PIconTile(icon: icon, color: color),
             Expanded(
@@ -306,13 +306,13 @@ class _Row extends StatelessWidget {
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: PulseText.bodyStrong,
+                    style: MelaText.bodyStrong,
                   ),
                   Text(
                     meta,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: PulseText.caption.copyWith(
+                    style: MelaText.caption.copyWith(
                       color: colors.mutedForeground,
                     ),
                   ),

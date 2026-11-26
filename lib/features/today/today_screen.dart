@@ -17,16 +17,16 @@ class TodayScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PScreen(
-    title: PulseStrings.today,
+    title: MelaStrings.today,
     actions: [
       PButton.ghost(
         icon: LucideIcons.search,
-        semanticLabel: PulseStrings.search,
+        semanticLabel: MelaStrings.search,
         onPressed: () => context.push(Routes.search),
       ),
       PButton.ghost(
         icon: LucideIcons.settings,
-        semanticLabel: PulseStrings.settings,
+        semanticLabel: MelaStrings.settings,
         onPressed: () => context.push(Routes.settings),
       ),
     ],

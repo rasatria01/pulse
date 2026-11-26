@@ -13,11 +13,11 @@ class LabelledField extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
-    spacing: PulseSpace.s1,
+    spacing: MelaSpace.s1,
     children: [
       Text(
         label,
-        style: PulseText.captionStrong.copyWith(
+        style: MelaText.captionStrong.copyWith(
           color: ShadTheme.of(context).colorScheme.mutedForeground,
         ),
       ),
@@ -36,7 +36,7 @@ class FormError extends StatelessWidget {
     liveRegion: true,
     child: Text(
       message,
-      style: PulseText.caption.copyWith(
+      style: MelaText.caption.copyWith(
         color: ShadTheme.of(context).colorScheme.destructive,
       ),
     ),

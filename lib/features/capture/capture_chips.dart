@@ -184,9 +184,9 @@ List<PChip> captureChips(
       final day = dayLabel(LocalDate.fromDateTime(d.occurredAt), today);
       return [
         kindChip(switch (d.type) {
-          TxnType.outcome => PulseStrings.expense,
-          TxnType.income => PulseStrings.income,
-          TxnType.transfer => PulseStrings.transfer,
+          TxnType.outcome => MelaStrings.expense,
+          TxnType.income => MelaStrings.income,
+          TxnType.transfer => MelaStrings.transfer,
         }, d.type == TxnType.income ? PChipTone.positive : PChipTone.neutral),
         amountChip(d.amount, AmountType.of(d.type)),
         if (d.type == TxnType.transfer) ...[

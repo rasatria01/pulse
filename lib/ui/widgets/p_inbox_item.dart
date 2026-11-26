@@ -51,20 +51,20 @@ class PInboxItem extends StatelessWidget {
     final still = reduceMotion(context);
     final (word, icon, color) = switch (reason) {
       InboxReason.overdue => (
-        dueLabel ?? PulseStrings.overdue,
+        dueLabel ?? MelaStrings.overdue,
         LucideIcons.circleAlert,
         colors.destructive,
       ),
       InboxReason.high => (
-        PulseStrings.highPriority,
+        MelaStrings.highPriority,
         LucideIcons.flag,
         colors.foreground,
       ),
-      InboxReason.today => (PulseStrings.dueToday, null, colors.foreground),
+      InboxReason.today => (MelaStrings.dueToday, null, colors.foreground),
     };
 
     final checkbox = PTapTarget(
-      label: PulseStrings.complete(title),
+      label: MelaStrings.complete(title),
       checked: done,
       onTap: () => onComplete(!done),
       child: ShadCheckbox(
@@ -78,7 +78,7 @@ class PInboxItem extends StatelessWidget {
           border: ShadBorder.all(
             width: 2,
             color: done ? colors.primary : colors.input,
-            radius: BorderRadius.circular(PulseRadius.sm),
+            radius: BorderRadius.circular(MelaRadius.sm),
           ),
         ),
         icon: Icon(
@@ -95,26 +95,26 @@ class PInboxItem extends StatelessWidget {
       children: [
         Text(
           title,
-          style: PulseText.bodyStrong.copyWith(
+          style: MelaText.bodyStrong.copyWith(
             color: done ? colors.inkSubtle : colors.foreground,
             decoration: done ? TextDecoration.lineThrough : null,
           ),
         ),
         Text.rich(
           TextSpan(
-            style: PulseText.caption.copyWith(color: colors.mutedForeground),
+            style: MelaText.caption.copyWith(color: colors.mutedForeground),
             children: [
               if (icon != null)
                 WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: Padding(
-                    padding: const EdgeInsets.only(right: PulseSpace.s1),
+                    padding: const EdgeInsets.only(right: MelaSpace.s1),
                     child: Icon(icon, size: 14, color: color),
                   ),
                 ),
               TextSpan(
                 text: word,
-                style: PulseText.captionStrong.copyWith(color: color),
+                style: MelaText.captionStrong.copyWith(color: color),
               ),
               if (meta != null) TextSpan(text: ' · $meta'),
             ],
@@ -126,7 +126,7 @@ class PInboxItem extends StatelessWidget {
     final row = ColoredBox(
       color: colors.card,
       child: Padding(
-        padding: const EdgeInsets.only(left: PulseSpace.s1),
+        padding: const EdgeInsets.only(left: MelaSpace.s1),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -139,13 +139,13 @@ class PInboxItem extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
                     0,
-                    PulseSpace.s3,
-                    PulseSpace.s4,
-                    PulseSpace.s3,
+                    MelaSpace.s3,
+                    MelaSpace.s4,
+                    MelaSpace.s3,
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: PulseSpace.s3,
+                    spacing: MelaSpace.s3,
                     children: [
                       Expanded(child: text),
                       if (amount != null)
@@ -163,8 +163,8 @@ class PInboxItem extends StatelessWidget {
     Widget swipeBackground(IconData icon, Alignment alignment) => Container(
       color: colors.muted,
       alignment: alignment,
-      padding: const EdgeInsets.symmetric(horizontal: PulseSpace.s4),
-      child: Icon(icon, size: PulseSize.icon, color: colors.foreground),
+      padding: const EdgeInsets.symmetric(horizontal: MelaSpace.s4),
+      child: Icon(icon, size: MelaSize.icon, color: colors.foreground),
     );
 
     return Dismissible(

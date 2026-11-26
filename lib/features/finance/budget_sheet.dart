@@ -98,14 +98,14 @@ class _BudgetSheetState extends ConsumerState<BudgetSheet> {
             onPressed: _busy ? null : () => _write(Rupiah.zero),
           ),
         PButton.primary(
-          label: PulseStrings.save,
+          label: MelaStrings.save,
           onPressed: _busy ? null : _save,
         ),
       ],
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: PulseSpace.s3,
+        spacing: MelaSpace.s3,
         children: [
           PChoiceChips(
             label: FinanceStrings.category,

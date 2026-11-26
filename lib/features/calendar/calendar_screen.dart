@@ -39,7 +39,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         '${dayLabel(d, today)}';
 
     return PScreen(
-      title: PulseStrings.calendar,
+      title: MelaStrings.calendar,
       actions: [
         PButton.ghost(
           icon: LucideIcons.plus,
@@ -51,7 +51,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: PulseSpace.s4),
+            padding: const EdgeInsets.symmetric(horizontal: MelaSpace.s4),
             child: PChipRow(
               children: [
                 for (final (week, label) in [
@@ -72,7 +72,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: PulseSpace.s2),
+            padding: const EdgeInsets.symmetric(horizontal: MelaSpace.s2),
             child: Row(
               children: [
                 PButton.ghost(
@@ -89,7 +89,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           )
                         : long(day),
                     textAlign: TextAlign.center,
-                    style: PulseText.bodyStrong,
+                    style: MelaText.bodyStrong,
                   ),
                 ),
                 PButton.ghost(
@@ -146,19 +146,17 @@ class _DayAgenda extends ConsumerWidget {
             child: heading == null
                 ? const EmptyState(
                     icon: LucideIcons.calendar,
-                    title: PulseStrings.noEvents,
+                    title: MelaStrings.noEvents,
                     body: CalendarStrings.emptyBody,
                   )
                 : Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: PulseSpace.s4,
-                      vertical: PulseSpace.s2,
+                      horizontal: MelaSpace.s4,
+                      vertical: MelaSpace.s2,
                     ),
                     child: Text(
                       CalendarStrings.nothing,
-                      style: PulseText.caption.copyWith(
-                        color: colors.inkSubtle,
-                      ),
+                      style: MelaText.caption.copyWith(color: colors.inkSubtle),
                     ),
                   ),
           ),

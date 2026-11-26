@@ -65,19 +65,17 @@ class PSheet extends StatelessWidget {
       isScrollControlled: true,
       closeIcon: const SizedBox.shrink(),
       backgroundColor: colors.surfaceRaised,
-      radius: const BorderRadius.vertical(
-        top: Radius.circular(PulseRadius.xl2),
-      ),
+      radius: const BorderRadius.vertical(top: Radius.circular(MelaRadius.xl2)),
       removeBorderRadiusWhenTiny: false,
       border: const Border(),
-      shadows: PulseShadow.sheet(theme.brightness),
+      shadows: MelaShadow.sheet(theme.brightness),
       padding: const EdgeInsets.fromLTRB(
-        PulseSpace.s4,
-        PulseSpace.s2,
-        PulseSpace.s4,
-        PulseSpace.s4,
+        MelaSpace.s4,
+        MelaSpace.s2,
+        MelaSpace.s4,
+        MelaSpace.s4,
       ),
-      gap: PulseSpace.s3,
+      gap: MelaSpace.s3,
       actionsAxis: Axis.vertical,
       expandActionsWhenTiny: false,
       actions: [
@@ -86,7 +84,7 @@ class PSheet extends StatelessWidget {
             width: double.infinity,
             child: Wrap(
               alignment: WrapAlignment.end,
-              spacing: PulseSpace.s3,
+              spacing: MelaSpace.s3,
               children: footer,
             ),
           ),
@@ -94,15 +92,15 @@ class PSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: PulseSpace.s3,
+        spacing: MelaSpace.s3,
         children: [
           Center(
             child: Container(
               width: 36,
-              height: PulseSpace.s1,
+              height: MelaSpace.s1,
               decoration: BoxDecoration(
                 color: colors.input,
-                borderRadius: BorderRadius.circular(PulseRadius.full),
+                borderRadius: BorderRadius.circular(MelaRadius.full),
               ),
             ),
           ),
@@ -112,11 +110,11 @@ class PSheet extends StatelessWidget {
               namesRoute: true,
               child: Text(
                 title!,
-                style: PulseText.title.copyWith(color: colors.foreground),
+                style: MelaText.title.copyWith(color: colors.foreground),
               ),
             ),
           DefaultTextStyle(
-            style: PulseText.body.copyWith(color: colors.foreground),
+            style: MelaText.body.copyWith(color: colors.foreground),
             child: child,
           ),
         ],

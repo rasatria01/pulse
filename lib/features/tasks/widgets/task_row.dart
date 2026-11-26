@@ -43,15 +43,15 @@ class TaskRow extends StatelessWidget {
       ?priorityLabel(item.priority),
       ?tagLine(item, tags),
     ].join(' · ');
-    final caption = PulseText.caption.copyWith(color: colors.mutedForeground);
+    final caption = MelaText.caption.copyWith(color: colors.mutedForeground);
 
     return Padding(
-      padding: const EdgeInsets.only(left: PulseSpace.s1),
+      padding: const EdgeInsets.only(left: MelaSpace.s1),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           PTapTarget(
-            label: PulseStrings.complete(item.title),
+            label: MelaStrings.complete(item.title),
             checked: done,
             onTap: onToggle,
             child: ShadCheckbox(
@@ -65,7 +65,7 @@ class TaskRow extends StatelessWidget {
                 border: ShadBorder.all(
                   width: 2,
                   color: done ? colors.primary : colors.input,
-                  radius: BorderRadius.circular(PulseRadius.sm),
+                  radius: BorderRadius.circular(MelaRadius.sm),
                 ),
               ),
               icon: Icon(
@@ -85,13 +85,13 @@ class TaskRow extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
                     0,
-                    PulseSpace.s3,
-                    PulseSpace.s4,
-                    PulseSpace.s3,
+                    MelaSpace.s3,
+                    MelaSpace.s4,
+                    MelaSpace.s3,
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: PulseSpace.s3,
+                    spacing: MelaSpace.s3,
                     children: [
                       Expanded(
                         child: Column(
@@ -99,7 +99,7 @@ class TaskRow extends StatelessWidget {
                           children: [
                             Text(
                               item.title,
-                              style: PulseText.bodyStrong.copyWith(
+                              style: MelaText.bodyStrong.copyWith(
                                 color: done
                                     ? colors.inkSubtle
                                     : colors.foreground,
@@ -112,7 +112,7 @@ class TaskRow extends StatelessWidget {
                               Text(
                                 dueWords,
                                 style: late
-                                    ? PulseText.captionStrong.copyWith(
+                                    ? MelaText.captionStrong.copyWith(
                                         color: colors.destructive,
                                       )
                                     : caption,

@@ -62,7 +62,7 @@ Finder _chip(String field, String label) => find.byWidgetPredicate(
 );
 
 Finder _checkbox(String title) =>
-    find.bySemanticsLabel(PulseStrings.complete(title));
+    find.bySemanticsLabel(MelaStrings.complete(title));
 
 /// Scrolls Today down until [finder] is on screen.
 Future<void> _reveal(WidgetTester tester, Finder finder) async {
@@ -129,7 +129,7 @@ void main() {
         find.byKey(const ValueKey('item-tags')),
         '#bill #home',
       );
-      await _tap(tester, _button(PulseStrings.save));
+      await _tap(tester, _button(MelaStrings.save));
       const title = 'Pay internet bill for the whole house this month';
       expect(find.text(title), findsOneWidget);
 
@@ -159,7 +159,7 @@ void main() {
       await _tap(tester, find.text(title));
       await _tap(tester, _button(PlannerStrings.delete));
       expect(find.text(title), findsNothing);
-      await _tap(tester, _button(PulseStrings.undo));
+      await _tap(tester, _button(MelaStrings.undo));
       expect(find.text(title), findsOneWidget);
       await _drain(tester);
     });
@@ -247,20 +247,20 @@ void main() {
       await tester.drag(find.byType(CustomScrollView), const Offset(0, 2000));
       await tester.pumpAndSettle();
       await _reveal(tester, find.text('Electricity'));
-      await _tap(tester, _button(PulseStrings.confirm).first);
+      await _tap(tester, _button(MelaStrings.confirm).first);
       expect((await _payments(tester)).single.sourceActionItemId, bill.id);
       expect(find.text('Electricity'), findsNothing);
       // Undo puts it back in needs confirmation.
-      await _tap(tester, _button(PulseStrings.undo));
+      await _tap(tester, _button(MelaStrings.undo));
       expect(await _payments(tester), isEmpty);
       expect(find.text('Electricity'), findsOneWidget);
 
       // Dismissing the edit sheet keeps it pending; Skip records nothing.
-      await _tap(tester, _button(PulseStrings.edit).first);
+      await _tap(tester, _button(MelaStrings.edit).first);
       expect(find.byType(BillSheet), findsOneWidget);
       await tester.tapAt(const Offset(10, 10));
       await tester.pumpAndSettle();
-      await _tap(tester, _button(PulseStrings.skip).first);
+      await _tap(tester, _button(MelaStrings.skip).first);
       expect(find.text('Electricity'), findsNothing);
       expect(await _payments(tester), isEmpty);
       await _drain(tester);
@@ -296,7 +296,7 @@ void main() {
 
       await _tap(tester, find.bySemanticsLabel('Next'));
       expect(find.text('Dentist'), findsNothing);
-      expect(find.text(PulseStrings.noEvents), findsOneWidget);
+      expect(find.text(MelaStrings.noEvents), findsOneWidget);
       await _tap(tester, find.bySemanticsLabel('View: Week'));
       expect(find.text('Mon 23 Nov'), findsOneWidget);
       expect(find.text('Dentist'), findsOneWidget);

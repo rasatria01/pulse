@@ -43,13 +43,13 @@ String formatAmount(Rupiah value, AmountType type) {
 /// The screen-reader form, such as "Expense Rp 35.000".
 String amountLabel(Rupiah value, AmountType type) {
   final word = switch (type) {
-    AmountType.outcome => PulseStrings.expense,
-    AmountType.income => PulseStrings.income,
-    AmountType.transfer => PulseStrings.transfer,
-    AmountType.balance => PulseStrings.balance,
+    AmountType.outcome => MelaStrings.expense,
+    AmountType.income => MelaStrings.income,
+    AmountType.transfer => MelaStrings.transfer,
+    AmountType.balance => MelaStrings.balance,
   };
   final minus = type == AmountType.balance && value.value < 0
-      ? '${PulseStrings.minus} '
+      ? '${MelaStrings.minus} '
       : '';
   return '$word $minus${formatRupiah(value).replaceAll('\u00a0', ' ')}';
 }
@@ -92,10 +92,10 @@ class AmountText extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = ShadTheme.of(context).colorScheme;
     final style = switch (size) {
-      AmountSize.hero => PulseText.amountHero,
-      AmountSize.lg => PulseText.amountLg,
-      AmountSize.md => PulseText.amount,
-      AmountSize.sm => PulseText.amountSm,
+      AmountSize.hero => MelaText.amountHero,
+      AmountSize.lg => MelaText.amountLg,
+      AmountSize.md => MelaText.amount,
+      AmountSize.sm => MelaText.amountSm,
     };
     return Text(
       formatAmount(value, type),

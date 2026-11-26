@@ -9,17 +9,17 @@ import '../ui/theme.dart';
 import 'di.dart';
 import 'router.dart';
 
-class PulseApp extends ConsumerStatefulWidget {
-  const PulseApp({super.key, this.themeMode});
+class MelaApp extends ConsumerStatefulWidget {
+  const MelaApp({super.key, this.themeMode});
 
   /// Overrides the stored 'theme' setting; for tests.
   final ShadThemeMode? themeMode;
 
   @override
-  ConsumerState<PulseApp> createState() => _PulseAppState();
+  ConsumerState<MelaApp> createState() => _MelaAppState();
 }
 
-class _PulseAppState extends ConsumerState<PulseApp> {
+class _MelaAppState extends ConsumerState<MelaApp> {
   late final _router = buildRouter();
 
   @override
@@ -41,8 +41,8 @@ class _PulseAppState extends ConsumerState<PulseApp> {
   @override
   Widget build(BuildContext context) => ShadApp.router(
     title: 'Pulse',
-    theme: pulseTheme(Brightness.light),
-    darkTheme: pulseTheme(Brightness.dark),
+    theme: melaTheme(Brightness.light),
+    darkTheme: melaTheme(Brightness.dark),
     themeMode:
         widget.themeMode ??
         ref.watch(themeModeProvider).value ??

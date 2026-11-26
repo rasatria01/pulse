@@ -133,7 +133,7 @@ class _ItemSheetState extends State<ItemSheet> {
           ),
         ],
         PButton.primary(
-          label: PulseStrings.save,
+          label: MelaStrings.save,
           onPressed: () => _submit(ItemSheetAction.save),
         ),
       ],

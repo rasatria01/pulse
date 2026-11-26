@@ -61,7 +61,7 @@ void main() {
           ),
         ],
         child: ShadApp(
-          theme: pulseTheme(Brightness.light),
+          theme: melaTheme(Brightness.light),
           home: const SettingsScreen(),
         ),
       ),

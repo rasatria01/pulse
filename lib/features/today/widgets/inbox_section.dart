@@ -22,13 +22,13 @@ class InboxSection extends ConsumerWidget {
     return SliverMainAxisGroup(
       slivers: [
         const SliverToBoxAdapter(
-          child: PSectionHeader(PulseStrings.priorityInbox),
+          child: PSectionHeader(MelaStrings.priorityInbox),
         ),
         if (items != null && items.isEmpty)
           const SliverToBoxAdapter(
             child: EmptyState(
               icon: LucideIcons.inbox,
-              title: PulseStrings.noInbox,
+              title: MelaStrings.noInbox,
             ),
           ),
         SliverList.builder(

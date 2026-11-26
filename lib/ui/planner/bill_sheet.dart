@@ -102,7 +102,7 @@ class _BillSheetState extends State<BillSheet> {
       title: PlannerStrings.recordPayment,
       footer: [
         PButton.ghost(
-          label: PulseStrings.skip,
+          label: MelaStrings.skip,
           onPressed: () =>
               Navigator.of(context).pop<BillSheetResult>(const BillSkipped()),
         ),
