@@ -22,7 +22,9 @@ import 'support.dart';
 /// Lets the real event loop turn, which drift needs between frames.
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 10; i++) {
-    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 5)),
+    );
     await tester.pump(const Duration(milliseconds: 10));
   }
   await tester.pumpAndSettle();
@@ -32,7 +34,9 @@ Future<T> _db<T>(WidgetTester tester, Future<T> work) async {
   var done = false;
   final result = work.whenComplete(() => done = true);
   for (var i = 0; !done && i < 100; i++) {
-    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 5)),
+    );
     await tester.pump(const Duration(milliseconds: 1));
   }
   expect(done, isTrue, reason: 'database work did not finish');
