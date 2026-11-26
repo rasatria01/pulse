@@ -70,6 +70,17 @@ abstract final class FinanceStrings {
   static const capError = 'Enter a cap above 0, such as 1500000.';
   static const categoryError = 'Pick a category.';
 
+  static const categories = 'Categories';
+  static const addCategory = 'Add category';
+  static const editCategory = 'Edit category';
+  static const categoryHandle = 'Handle (for #handle in capture)';
+  static const icon = 'Icon';
+  static const spendingCategories = 'Spending';
+  static const incomeCategories = 'Income';
+  static const categoryArchiveWarning =
+      'An archived category keeps its history, takes no new transactions and '
+      'can’t be restored.';
+
   static const recurring = 'Recurring';
   static const addRecurring = 'Add recurring';
   static const editRecurring = 'Recurring rule';

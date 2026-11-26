@@ -388,6 +388,17 @@ void main() {
       expect(tester.takeException(), isNull);
 
       // Make it the default, then archive the old default.
+      // The categories section sits between the wallets and the history.
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('wallet-savings')),
+        -100,
+        scrollable: find
+            .descendant(
+              of: find.byType(CustomScrollView),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
       await _tap(tester, find.byKey(const ValueKey('wallet-savings')));
       await _tap(tester, _button('Set default'));
       // The first wallet may sit just above the viewport.
@@ -407,6 +418,16 @@ void main() {
         skipOffstage: false,
       );
       expect(cash, findsNothing);
+      await tester.scrollUntilVisible(
+        _button('Show archived'),
+        -100,
+        scrollable: find
+            .descendant(
+              of: find.byType(CustomScrollView),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
       await _tap(tester, _button('Show archived'));
       expect(cash, findsOneWidget);
       expect(tester.takeException(), isNull);

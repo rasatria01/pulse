@@ -167,15 +167,19 @@ class _TransactionSheetState extends ConsumerState<TransactionSheet> {
     final kind = _type == TxnType.income
         ? CategoryKind.income
         : CategoryKind.outcome;
-    final picked = await showPOptions<String>(
+    final picked = await showCategoryPicker(
       context,
       title: FinanceStrings.category,
       selected: _categoryId,
       options: [
         for (final c in categories)
-          if (!c.isArchived && c.kind == kind)
-            (value: c.id, label: c.name, dotColor: c.color),
+          if (!c.isArchived && c.kind == kind) c,
       ],
+      onCreate: (name) async =>
+          (await ref
+                  .read(categoryRepositoryProvider)
+                  .create(newCategoryInput(name, kind, categories)))
+              .id,
     );
     if (picked != null && mounted) setState(() => _categoryId = picked);
   }

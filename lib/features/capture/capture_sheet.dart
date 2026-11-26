@@ -280,19 +280,35 @@ class _CaptureSheetState extends ConsumerState<CaptureSheet> {
         final kind = draft is TransactionDraft && draft.type == TxnType.income
             ? CategoryKind.income
             : CategoryKind.outcome;
-        final picked = await showPOptions<String>(
+        final selected = switch (draft) {
+          TransactionDraft d => d.categoryId,
+          ActionItemDraft d => d.linkedCategoryId,
+          NoteDraft() => null,
+        };
+        // An unmatched #word is the likeliest name for a new category.
+        final typed = selected != null
+            ? null
+            : draft.tokens
+                      .where(
+                        (t) => t.kind == TokenKind.tag && t.value != 'bill',
+                      )
+                      .firstOrNull
+                      ?.value
+                  as String?;
+        final picked = await showCategoryPicker(
           context,
           title: CaptureStrings.category,
-          selected: switch (draft) {
-            TransactionDraft d => d.categoryId,
-            ActionItemDraft d => d.linkedCategoryId,
-            NoteDraft() => null,
-          },
+          selected: selected,
+          initialQuery: typed ?? '',
           options: [
             for (final c in lookups.categories)
-              if (!c.isArchived && c.kind == kind)
-                (value: c.id, label: c.name, dotColor: c.color),
+              if (!c.isArchived && c.kind == kind) c,
           ],
+          onCreate: (name) async =>
+              (await ref
+                      .read(categoryRepositoryProvider)
+                      .create(newCategoryInput(name, kind, lookups.categories)))
+                  .id,
         );
         if (picked != null) _categoryId = picked;
       case CaptureField.when:

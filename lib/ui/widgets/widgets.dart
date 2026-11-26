@@ -7,6 +7,7 @@ export 'empty_state.dart';
 export 'p_budget_bar.dart';
 export 'p_button.dart';
 export 'p_capture_bar.dart';
+export 'p_category_picker.dart';
 export 'p_chip.dart';
 export 'p_confirm_row.dart';
 export 'p_icon.dart';

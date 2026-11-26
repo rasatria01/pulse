@@ -16,6 +16,7 @@ import '../../ui/strings.dart';
 import '../../ui/widgets/common.dart';
 import '../../ui/widgets/widgets.dart';
 import 'budget_sheet.dart';
+import 'category_sheet.dart';
 import 'finance_strings.dart';
 import 'rule_sheet.dart';
 import 'summary_entry.dart';
@@ -56,6 +57,11 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
   Future<void> _openBudget([String? categoryId]) => showPSheet<void>(
     context: _root,
     builder: (context) => BudgetSheet(categoryId: categoryId),
+  );
+
+  Future<void> _openCategory([Category? category]) => showPSheet<void>(
+    context: _root,
+    builder: (context) => CategorySheet(category: category),
   );
 
   Future<void> _openRule([RecurringRule? rule]) => showPSheet<void>(
@@ -207,6 +213,51 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
             },
           ),
           button(FinanceStrings.addBudget, _openBudget),
+          const SliverToBoxAdapter(
+            child: PSectionHeader(FinanceStrings.categories),
+          ),
+          for (final (kind, label) in const [
+            (CategoryKind.outcome, FinanceStrings.spendingCategories),
+            (CategoryKind.income, FinanceStrings.incomeCategories),
+          ])
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: MelaSpace.s4,
+                  vertical: MelaSpace.s2,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: MelaSpace.s2,
+                  children: [
+                    Text(
+                      label,
+                      style: MelaText.captionStrong.copyWith(
+                        color: ShadTheme.of(context)
+                            .colorScheme
+                            .mutedForeground,
+                      ),
+                    ),
+                    Wrap(
+                      spacing: MelaSpace.s2,
+                      runSpacing: MelaSpace.s2,
+                      children: [
+                        for (final c in categories.values)
+                          if (c.kind == kind && !c.isArchived)
+                            PChip(
+                              key: ValueKey('category-${kind.name}-${c.slug}'),
+                              field: label,
+                              label: c.name,
+                              dotColor: c.color,
+                              onPressed: () => _openCategory(c),
+                            ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          button(FinanceStrings.addCategory, _openCategory),
           const SliverToBoxAdapter(
             child: PSectionHeader(FinanceStrings.recurring),
           ),

@@ -31,6 +31,12 @@ abstract final class MelaStrings {
   static const wallets = 'Wallets';
   static const financialPulse = 'Financial pulse';
   static const capReached = 'Cap reached';
+  static const findCategory = 'Find or add a category';
+  static String addCategory(String name) => 'Add “$name”';
+  static const categoryNameError = 'Use letters or digits in the name.';
+  static String categoryTaken(String slug) =>
+      '#$slug is already a category, maybe an archived one. Try another name.';
+  static const saveFailed = 'Couldn’t save. Try again.';
 
   // App shell and the placeholder screens.
   static const today = 'Today';
