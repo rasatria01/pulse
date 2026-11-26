@@ -11,20 +11,25 @@ import '../db/db_errors.dart';
 import '../mappers/wallet_mapper.dart';
 import 'input_checks.dart';
 
-/// Balance per wallet, always derived (D10). Aggregates before joining so each
-/// side uses its wallet index; the PRD's OR join cannot.
+/// Balance per wallet, always derived (D10). The transactions are summed in one
+/// pass by (from, to) pair, then split into the two sides. NOT INDEXED because
+/// every row is read, and going through an index costs more than the table.
 String _balances(String filter) =>
     '''
+WITH p AS MATERIALIZED (
+  SELECT wallet_id, to_wallet_id,
+         SUM(CASE type WHEN 'INCOME' THEN amount ELSE -amount END) AS own,
+         SUM(amount) AS moved
+    FROM transactions NOT INDEXED WHERE is_deleted = 0
+   GROUP BY wallet_id, to_wallet_id
+)
 SELECT w.*, w.initial_balance + COALESCE(m.delta, 0) AS balance
 FROM wallets w
 LEFT JOIN (
   SELECT wallet_id, SUM(delta) AS delta FROM (
-    SELECT wallet_id,
-           CASE type WHEN 'INCOME' THEN amount ELSE -amount END AS delta
-      FROM transactions WHERE is_deleted = 0
+    SELECT wallet_id, own AS delta FROM p
     UNION ALL
-    SELECT to_wallet_id, amount
-      FROM transactions WHERE to_wallet_id IS NOT NULL AND is_deleted = 0
+    SELECT to_wallet_id, moved FROM p WHERE to_wallet_id IS NOT NULL
   ) GROUP BY wallet_id
 ) m ON m.wallet_id = w.id
 WHERE w.is_deleted = 0 $filter
