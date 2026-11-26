@@ -12,6 +12,7 @@ abstract final class Routes {
   static const newNoteId = 'new';
   static const dailyNotePrefix = 'daily-'; // + 'YYYY-MM-DD'
   static const finance = '/finance';
+  static const financeSummary = '/finance/summary';
   static const search = '/search';
   static const settings = '/settings';
   static const gallery = '/gallery';

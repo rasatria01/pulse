@@ -1,9 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shad/shad.dart';
 
 import '../../app/di.dart';
 import '../../core/local_date.dart';
+import '../../core/routes.dart';
 import '../../domain/entities/budget.dart';
 import '../../domain/entities/category.dart';
 import '../../domain/entities/recurring_rule.dart';
@@ -16,6 +18,7 @@ import '../../ui/widgets/widgets.dart';
 import 'budget_sheet.dart';
 import 'finance_strings.dart';
 import 'rule_sheet.dart';
+import 'summary_entry.dart';
 import 'transaction_sheet.dart';
 import 'wallet_sheet.dart';
 
@@ -131,6 +134,9 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
       ],
       child: CustomScrollView(
         slivers: [
+          SliverToBoxAdapter(
+            child: SummaryEntry(onTap: () => context.go(Routes.financeSummary)),
+          ),
           const SliverToBoxAdapter(
             child: PSectionHeader(FinanceStrings.wallets),
           ),

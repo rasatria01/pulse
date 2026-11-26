@@ -98,6 +98,38 @@ abstract final class FinanceStrings {
   static String next(String day) => 'Next $day';
   static String everyN(int n, String unit) => 'Every $n $unit';
 
+  static const summary = 'Summary';
+  static String monthSummary(String month) => '$month summary';
+  static const previousMonth = 'Previous month';
+  static const nextMonth = 'Next month';
+  static const spending = 'Spending';
+  static const income = 'Income';
+  static const byCategory = 'Spending by category';
+  static const lastSixMonths = '6 months';
+  static const walletsToday = 'Wallets today';
+  static const total = 'Total';
+  static const otherCategories = 'Other';
+  static const noRecords = 'No income or spending this month';
+  static const noSpending = 'No spending this month';
+  static String leftOver(String amount) => 'Left over $amount';
+  static String overIncome(String amount) => 'Spent $amount more than income';
+  static const evenWithIncome = 'Spending equals income';
+  static String moreThan(String amount, String month) =>
+      'Spent $amount more than in $month';
+  static String lessThan(String amount, String month) =>
+      'Spent $amount less than in $month';
+  static String sameAs(String month) => 'Same spending as $month';
+  static String moreThanByNow(String amount, String month) =>
+      'Spent $amount more than by this point in $month';
+  static String lessThanByNow(String amount, String month) =>
+      'Spent $amount less than by this point in $month';
+  static String sameByNow(String month) =>
+      'Same spending as by this point in $month';
+  static String highest(String amount) => 'Highest: $amount';
+  static String percent(int value) => value == 0 ? '<1%' : '$value%';
+  static String monthBars(String month, String income, String spent) =>
+      '$month: income $income, spending $spent';
+
   /// In the order of MelaIdentity.all.
   static const colourNames = [
     'Slate',

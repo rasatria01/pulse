@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../core/routes.dart';
 import '../features/calendar/calendar_screen.dart';
 import '../features/finance/finance_screen.dart';
+import '../features/finance/summary_screen.dart';
 import '../features/notes/note_editor_screen.dart';
 import '../features/notes/notes_screen.dart';
 import '../features/search/search_screen.dart';
@@ -52,7 +53,20 @@ GoRouter _router(GlobalKey<NavigatorState> root) => GoRouter(
         _branch(Routes.tasks, (context, state) => const TasksScreen()),
         _branch(Routes.calendar, (context, state) => const CalendarScreen()),
         _notes(root),
-        _branch(Routes.finance, (context, state) => const FinanceScreen()),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.finance,
+              builder: (context, state) => const FinanceScreen(),
+              routes: [
+                GoRoute(
+                  path: 'summary',
+                  builder: (context, state) => const SummaryScreen(),
+                ),
+              ],
+            ),
+          ],
+        ),
       ],
     ),
     GoRoute(

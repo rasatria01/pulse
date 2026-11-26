@@ -251,6 +251,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ),
         hint(MelaStrings.tagline),
+        hint(SettingsStrings.version),
       ],
     );
 

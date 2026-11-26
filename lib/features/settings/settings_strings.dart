@@ -2,6 +2,9 @@
 abstract final class SettingsStrings {
   static const appearance = 'Appearance';
   static const about = 'About';
+
+  /// Keep equal to pubspec.yaml; test/tool/update_safety_test.dart checks.
+  static const version = 'Version 1.1';
   static const themeSystem = 'System';
   static const themeLight = 'Light';
   static const themeDark = 'Dark';

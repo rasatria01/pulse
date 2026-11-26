@@ -311,7 +311,17 @@ void main() {
       expect(find.byKey(const ValueKey('wallet-gopay')), findsOneWidget);
       expect(tester.takeException(), isNull);
 
-      // Edit the expense, then delete it and undo.
+      // Edit the expense, then delete it and undo. The list is lazy.
+      await tester.scrollUntilVisible(
+        find.text('lunch'),
+        100,
+        scrollable: find
+            .descendant(
+              of: find.byType(CustomScrollView),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
       await _tap(tester, find.text('lunch'));
       expect(find.byType(TransactionSheet), findsOneWidget);
       expect(tester.takeException(), isNull);

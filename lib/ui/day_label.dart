@@ -19,8 +19,12 @@ String dayLabel(LocalDate day, LocalDate today) =>
       0 => MelaStrings.today,
       1 => MelaStrings.tomorrow,
       -1 => MelaStrings.yesterday,
-      _ => _format(day.year == today.year ? 'd MMM' : 'd MMM y', _date(day)),
+      _ => dateLabel(day, today),
     };
+
+/// "26 Nov", with the year if it is not this one. For ranges.
+String dateLabel(LocalDate day, LocalDate today) =>
+    _format(day.year == today.year ? 'd MMM' : 'd MMM y', _date(day));
 
 /// A day heading, with the weekday: "Sen, 30 Nov" or "Today · Rab, 25 Nov".
 String weekdayLabel(LocalDate day, LocalDate today) {
@@ -44,3 +48,4 @@ String dateTimeLabel(DateTime instant) =>
 String monthYearLabel(DateTime month) => _format('MMMM y', month);
 String monthLabel(DateTime month) => _format('MMMM', month);
 String weekdayShort(DateTime day) => _format('EEE', day);
+String monthShort(DateTime month) => _format('MMM', month);

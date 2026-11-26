@@ -6,11 +6,13 @@ import '../core/rupiah.dart';
 import '../data/repositories/budget_period.dart';
 import '../domain/entities/budget.dart';
 import '../domain/entities/recurring_rule.dart';
+import '../domain/entities/transaction.dart';
 import '../domain/repositories/settings_repository.dart';
 import '../domain/services/committed.dart';
 import '../domain/services/recurring_engine_impl.dart';
 import 'di.dart';
 
+export '../domain/services/finance_summary.dart';
 export '../domain/services/recurring_engine.dart';
 export '../domain/services/recurring_rule_service.dart';
 
@@ -70,6 +72,47 @@ final budgetStatusesProvider = StreamProvider<List<BudgetStatus>>((ref) {
   final budgets = ref.watch(budgetRepositoryProvider);
   return _inPeriod(ref, (p) => budgets.watchMonth(p.month));
 });
+
+final _startDayProvider = StreamProvider<String?>(
+  (ref) => ref
+      .watch(settingsRepositoryProvider)
+      .watch(SettingKeys.budgetMonthStartDay),
+);
+
+SummaryPeriod _summaryPeriod(LocalMonth month, String? startDay) {
+  final (from, to) = budgetPeriod(month, startDay);
+  return (month: month, from: from, to: to);
+}
+
+typedef MonthSummary = ({SummaryPeriod period, FinanceSummary summary});
+
+/// The budget period [month] and the five before it.
+final financeSummaryProvider = StreamProvider.autoDispose
+    .family<MonthSummary, LocalMonth>((ref, month) {
+      final today = ref.watch(todayProvider);
+      final startDay = ref.watch(_startDayProvider);
+      if (startDay.hasError) return Stream.error(startDay.error!);
+      if (!startDay.hasValue) return Stream.multi((_) {});
+      final periods = [
+        for (var i = 5; i >= 0; i--)
+          _summaryPeriod(month.addMonths(-i), startDay.value),
+      ];
+      return ref
+          .watch(transactionRepositoryProvider)
+          .watchRange(periods.first.from, periods.last.to)
+          .map(
+            (List<Transaction> transactions) => (
+              period: periods.last,
+              summary: summarize(transactions, periods, today),
+            ),
+          );
+    });
+
+/// The categories with a cap in budget period [month].
+final monthBudgetsProvider = StreamProvider.autoDispose
+    .family<List<BudgetStatus>, LocalMonth>(
+      (ref, month) => ref.watch(budgetRepositoryProvider).watchMonth(month),
+    );
 
 final _spentBeforeTodayProvider = StreamProvider<Rupiah>((ref) {
   final today = ref.watch(todayProvider);

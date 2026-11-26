@@ -32,8 +32,8 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // This machine's debug key. Installed copies only accept updates
+            // signed with the same one; see README "Updating without losing data".
             signingConfig = signingConfigs.getByName("debug")
         }
     }

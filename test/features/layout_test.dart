@@ -247,6 +247,7 @@ void main() {
           Routes.calendar,
           Routes.notes,
           Routes.finance,
+          Routes.financeSummary,
         ]) {
           await screen(route);
         }
