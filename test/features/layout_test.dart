@@ -313,6 +313,7 @@ void main() {
           'occurrence': const OccurrenceSheet(
             title: _long,
             amount: _huge,
+            type: AmountType.income,
             walletName: _long,
           ),
           'bill': BillSheet(

@@ -61,14 +61,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _export({required bool save, bool json = false}) => _run(
-    SettingsStrings.backupFailed,
+    json ? SettingsStrings.jsonFailed : SettingsStrings.backupFailed,
     () async {
       final gateway = ref.read(backupGatewayProvider);
       final path = json
           ? await gateway.exportJson()
           : await gateway.exportSqlite();
       if (save) {
-        return await gateway.saveAs(path) ? SettingsStrings.backupSaved : null;
+        if (!await gateway.saveAs(path)) return null;
+        return json ? SettingsStrings.jsonSaved : SettingsStrings.backupSaved;
       }
       await gateway.share(path);
       return null;

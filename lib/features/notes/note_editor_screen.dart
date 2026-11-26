@@ -307,7 +307,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     try {
       await notes.softDelete(id);
     } on AppFailure {
-      _toast(NotesStrings.saveFailed);
+      _toast(NotesStrings.deleteFailed);
       return;
     }
     _gone = true;

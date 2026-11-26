@@ -8,7 +8,7 @@ abstract final class FinanceStrings {
   static const showArchived = 'Show archived';
   static const hideArchived = 'Hide archived';
   static const showOlder = 'Show older';
-  static const loadError = 'Couldn’t load your money.';
+  static const loadError = 'Couldn’t load your money. Reopen MelaTime.';
 
   static const name = 'Name';
   static const handle = 'Handle';
@@ -37,7 +37,8 @@ abstract final class FinanceStrings {
   static const handleError = 'Use letters, digits, _ or - in a handle.';
   static const balanceError = 'Write the balance as 50000, 50k or -50000.';
   static const saveFailed = 'Couldn’t save. Try again.';
-  static String handleTaken(String slug) => '@$slug is already used.';
+  static String handleTaken(String slug) =>
+      '@$slug is already used. Pick another handle.';
 
   static const editTransaction = 'Edit transaction';
   static const newTransfer = 'New transfer';
@@ -53,10 +54,11 @@ abstract final class FinanceStrings {
   static const timeError = 'Write the time as 14:30.';
   static const delete = 'Delete';
   static const confirmDelete = 'Confirm delete';
-  static const deleted = 'Deleted transaction';
+  static String deleted(String what, String wallet) =>
+      'Deleted $what from $wallet';
   static const amountError = 'Enter an amount above 0, such as 35000.';
   static const walletError = 'Pick a wallet.';
-  static const transferError = 'A transfer needs two different wallets.';
+  static const transferError = 'Both wallets are the same. Pick another.';
 
   static const budgets = 'Budgets';
   static const addBudget = 'Add budget';
@@ -87,7 +89,8 @@ abstract final class FinanceStrings {
   static const pause = 'Pause';
   static const resume = 'Resume';
   static const intervalError = 'Repeat every 1 to 999.';
-  static const endError = 'The end date is before the start date.';
+  static const endError =
+      'End date is before the start date. Pick a later one.';
   static const days = 'days';
   static const weeks = 'weeks';
   static const months = 'months';

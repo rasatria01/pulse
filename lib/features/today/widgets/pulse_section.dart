@@ -8,7 +8,7 @@ import '../../../core/routes.dart';
 import '../../../ui/strings.dart';
 import '../../../ui/widgets/widgets.dart';
 
-const _loadError = 'Couldn’t load your balances.';
+const _loadError = 'Couldn’t load your balances. Reopen MelaTime.';
 
 /// Financial pulse. Returns a sliver.
 class PulseSection extends ConsumerWidget {

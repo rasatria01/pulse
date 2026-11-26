@@ -32,11 +32,13 @@ class OccurrenceSheet extends StatefulWidget {
     super.key,
     required this.title,
     required this.amount,
+    required this.type,
     required this.walletName,
   });
 
   final String title;
   final Rupiah amount;
+  final AmountType type;
   final String walletName;
 
   @override
@@ -96,7 +98,8 @@ class _OccurrenceSheetState extends State<OccurrenceSheet> {
               onChanged: (_) => setState(() {}),
             ),
           ),
-          if (value != null) AmountText(value, size: AmountSize.lg),
+          if (value != null)
+            AmountText(value, type: widget.type, size: AmountSize.lg),
           Text(PlannerStrings.fromWallet(widget.walletName)),
         ],
       ),

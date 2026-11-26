@@ -217,7 +217,7 @@ class _CaptureSheetState extends ConsumerState<CaptureSheet> {
             ? CaptureStrings.quoted(d.description)
             : d.type == TxnType.transfer
             ? CaptureStrings.aTransfer
-            : formatRupiah(Rupiah(d.amount!)),
+            : formatAmount(Rupiah(d.amount!), AmountType.of(d.type)),
         name(d.type == TxnType.transfer ? d.toWalletId : d.walletId),
       ),
       ActionItemDraft d => CaptureStrings.savedTask(d.title),

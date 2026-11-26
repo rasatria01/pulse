@@ -170,8 +170,10 @@ void main() {
     final done = await all();
     expect(done.map((i) => i.status), everyElement(ActionStatus.done));
     expect(done.map((i) => i.completedAt), everyElement(isNotNull));
-    expect(done.first.billStatus, isNull);
-    expect(done.last.billStatus, BillStatus.pending);
+    // By title: items made in the same millisecond come back in any order.
+    ActionItem named(String title) => done.singleWhere((i) => i.title == title);
+    expect(named('Buy milk').billStatus, isNull);
+    expect(named('Internet').billStatus, BillStatus.pending);
   });
 
   test('a #bill line that is new and ticked is pending', () async {

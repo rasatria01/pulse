@@ -12,6 +12,8 @@ import '../core/rupiah.dart';
 import '../domain/entities/action_item.dart';
 import '../domain/entities/category.dart';
 import '../domain/entities/recurring_occurrence.dart';
+import '../domain/entities/transaction.dart';
+import '../ui/day_label.dart';
 import '../ui/planner/bill_sheet.dart';
 import '../ui/planner/item_sheet.dart';
 import '../ui/planner/occurrence_sheet.dart';
@@ -144,7 +146,11 @@ class PlannerFlows {
     if (slot == null) return;
     await _items.schedule(item.id, slot.start, end: slot.end);
     _snack(
-      PlannerStrings.scheduled(item.title),
+      PlannerStrings.scheduled(
+        item.title,
+        '${dayLabel(LocalDate.fromDateTime(slot.start.toLocal()), _today)} '
+        '${timeLabel(slot.start)}',
+      ),
       () => _items.edit(
         item.id,
         ActionItemInput(
@@ -179,6 +185,7 @@ class PlannerFlows {
           builder: (_) => OccurrenceSheet(
             title: pending.rule.name,
             amount: pending.rule.amount,
+            type: AmountType.of(pending.rule.type),
             walletName: wallet,
           ),
         );
@@ -207,7 +214,12 @@ class PlannerFlows {
     }
     final wallet = await _walletName(pending.rule.walletId);
     _snack(
-      PlannerStrings.recorded(formatRupiah(amount), wallet),
+      PlannerStrings.recorded(
+        pending.rule.name,
+        formatAmount(amount, AmountType.of(pending.rule.type)),
+        wallet,
+        income: pending.rule.type == TxnType.income,
+      ),
       () => engine.reopenOccurrence(id, transactionId: transactionId),
     );
   }
@@ -287,7 +299,11 @@ class PlannerFlows {
     await _bills.confirm(item.id, draft);
     final wallet = await _walletName(draft.walletId);
     _snack(
-      PlannerStrings.recorded(formatRupiah(draft.amount!), wallet),
+      PlannerStrings.recorded(
+        item.title,
+        formatAmount(draft.amount!, AmountType.outcome),
+        wallet,
+      ),
       () async {
         await _items.reopen(item.id, deleteTransaction: true);
         if (pending) await _bills.defer(item.id);

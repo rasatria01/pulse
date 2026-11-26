@@ -367,7 +367,10 @@ void main() {
       );
       await fill('Name', 'GoPay');
       await _tap(tester, _button(MelaStrings.save));
-      expect(find.text('@gopay is already used.'), findsOneWidget);
+      expect(
+        find.text('@gopay is already used. Pick another handle.'),
+        findsOneWidget,
+      );
       await fill('Name', 'Savings');
       await fill('Starting balance', '-5k');
       await _tap(tester, _button(MelaStrings.save));

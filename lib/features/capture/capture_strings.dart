@@ -37,10 +37,11 @@ abstract final class CaptureStrings {
       'That amount doesn’t work. Tap the chip to fix it.';
   static const hintMissingAmount = 'Add an amount. Tap the chip to enter one.';
   static const hintNoWallet = 'No wallet picked. Tap the chip to pick one.';
-  static const hintSameWallet = 'A transfer needs two different wallets.';
+  static const hintSameWallet =
+      'Both wallets are the same. Tap a chip to change one.';
   static const hintEmptyTitle = 'Add a title to save.';
   static const saveFailed = 'Couldn’t save. Try again.';
-  static const undoFailed = 'Couldn’t undo.';
+  static const undoFailed = 'Couldn’t undo. Delete the entry instead.';
 
   static String unknownWallet(String typed) =>
       '$typed isn’t a wallet. Tap the chip to pick one.';
@@ -53,6 +54,6 @@ abstract final class CaptureStrings {
   static const aTransfer = 'transfer';
   static String quoted(String title) => '“$title”';
   static String savedTo(String what, String wallet) => 'Saved $what to $wallet';
-  static String savedTask(String title) => 'Saved task ${quoted(title)}';
-  static String savedNote(String title) => 'Saved note ${quoted(title)}';
+  static String savedTask(String title) => 'Saved ${quoted(title)} to Tasks';
+  static String savedNote(String title) => 'Saved ${quoted(title)} to Notes';
 }

@@ -123,6 +123,7 @@ class PTimelineItem extends StatelessWidget {
                           : null,
                       child: Text(
                         start ?? MelaStrings.due,
+                        semanticsLabel: now ? MelaStrings.now(start!) : null,
                         style: MelaText.caption.copyWith(
                           color: now ? colors.onTurmeric : colors.inkSubtle,
                           fontFeatures: tabular,

@@ -67,9 +67,18 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
       builder: (context) => TransactionSheet(transaction: transaction),
     );
     if (deleted != true || transaction == null || !mounted) return;
+    final wallet = [
+      for (final b in ref.read(walletBalancesProvider).value ?? const [])
+        if (b.wallet.id == transaction.walletId) b.wallet.name,
+    ].join();
     showPSnackbar(
       context,
-      message: FinanceStrings.deleted,
+      message: FinanceStrings.deleted(
+        transaction.description.isEmpty
+            ? formatRupiah(transaction.amount)
+            : '“${transaction.description}”',
+        wallet,
+      ),
       onUndo: () => repository.undelete(transaction.id),
     );
   }

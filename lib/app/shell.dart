@@ -95,7 +95,21 @@ class _Tab extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: MelaSize.icon, color: color),
+            // A filled pill, so the selected tab doesn't rest on hue alone.
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: MelaSpace.s3),
+              decoration: selected
+                  ? BoxDecoration(
+                      color: colors.primary,
+                      borderRadius: BorderRadius.circular(MelaRadius.full),
+                    )
+                  : null,
+              child: Icon(
+                icon,
+                size: MelaSize.icon,
+                color: selected ? colors.primaryForeground : color,
+              ),
+            ),
             Text(
               label,
               maxLines: 1,

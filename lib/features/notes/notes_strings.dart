@@ -1,5 +1,5 @@
 abstract final class NotesStrings {
-  static const newNote = 'New note';
+  static const newNote = 'Add note';
   static const note = 'Note';
   static const untitled = 'Untitled';
   static const todayScratchpad = 'Today’s scratchpad';
@@ -13,7 +13,8 @@ abstract final class NotesStrings {
   static const edit = 'Edit';
   static const delete = 'Delete note';
   static const deleted = 'Deleted note';
-  static const notFound = 'This note is gone';
+  static const notFound = 'This note was deleted. Go back to Notes.';
+  static const deleteFailed = 'Couldn’t delete the note. Try again.';
   static const saveFailed = 'Couldn’t save the note. Try again.';
   static const syncFailed =
       'Saved, but the checklist didn’t sync. Edit the note to retry.';

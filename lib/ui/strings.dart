@@ -4,6 +4,7 @@ abstract final class MelaStrings {
   static const appName = 'MelaTime';
   static const tagline = 'Menata laku, setiap waktu.';
   static const save = 'Save';
+  static String now(String time) => 'Now or next · $time';
   static const tomorrow = 'Tomorrow';
   static const yesterday = 'Yesterday';
   static const confirm = 'Confirm';
@@ -23,7 +24,8 @@ abstract final class MelaStrings {
   static const parsedChips = 'What MelaTime read';
   static const error = 'error';
   static const safeToSpend = 'Safe to spend today';
-  static const setBudget = 'Set a budget to see safe-to-spend';
+  static const setBudget =
+      'No budget yet. Add one in Finance to see safe-to-spend.';
   static const spentToday = 'Spent today';
   static const liquidBalance = 'Liquid balance';
   static const wallets = 'Wallets';

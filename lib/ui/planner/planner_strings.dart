@@ -46,7 +46,7 @@ abstract final class PlannerStrings {
   static const needsRecurringAmount = 'Add an amount above 0.';
   static const archivedRuleWallet =
       'That wallet is archived. Change the wallet on the recurring rule.';
-  static const failed = 'Couldn’t save. Try again.';
+  static const failed = 'Couldn’t make that change. Try again.';
 
   static String fromWallet(String wallet) => 'Wallet: $wallet';
   static String skippedOccurrence(String name) => 'Skipped “$name”';
@@ -54,10 +54,16 @@ abstract final class PlannerStrings {
       'A payment of $amount is recorded for this bill.';
   static String completed(String title) => 'Completed “$title”';
   static String deleted(String title) => 'Deleted “$title”';
-  static String scheduled(String title) => 'Scheduled “$title”';
-  static String recorded(String amount, String wallet) =>
-      'Recorded $amount from $wallet';
-  static String deferred(String title) => '“$title” needs confirmation';
+  static String scheduled(String title, String when) =>
+      'Scheduled “$title” for $when';
+  static String recorded(
+    String title,
+    String amount,
+    String wallet, {
+    bool income = false,
+  }) => 'Recorded “$title”, $amount ${income ? 'to' : 'from'} $wallet';
+  static String deferred(String title) =>
+      'Moved “$title” to Needs confirmation';
   static String skipped(String title) => 'Skipped payment for “$title”';
   static String minutes(int n) => '$n min';
   static String hours(int n) => '$n h';

@@ -18,6 +18,8 @@ abstract final class SettingsStrings {
   static const shareBackup = 'Share backup';
   static const saveBackup = 'Save backup';
   static const backupSaved = 'Backup saved';
+  static const jsonSaved = 'JSON copy saved';
+  static const jsonFailed = 'Couldn’t export the JSON copy. Try again.';
   static const backupFailed = 'Couldn’t export the backup. Try again.';
   static const saveFailed = 'Couldn’t save the setting. Try again.';
 
@@ -40,7 +42,7 @@ abstract final class SettingsStrings {
   static const restoring = 'Restoring…';
   static const restored = 'Backup restored';
   static const restoreFailed =
-      'Couldn’t restore the backup. Your data is unchanged.';
+      'Couldn’t restore, so your data is unchanged. Try again.';
   static const readFailed = 'Couldn’t read that file. Choose another.';
   static const refusedNotPulse =
       'That isn’t a MelaTime backup. Choose another file.';
@@ -50,7 +52,7 @@ abstract final class SettingsStrings {
   static const refusedDamaged =
       'That backup is damaged or incomplete. Choose another file.';
   static const refusedSchema =
-      'That file has been changed outside MelaTime, so it was refused.';
+      'That file was changed outside MelaTime. Choose another file.';
   static const unknownDate = 'Export date unknown';
   static String exportedOn(String date) => 'Exported $date';
   static String rows(int count) => count == 1 ? '1 row' : '$count rows';
