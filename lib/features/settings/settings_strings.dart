@@ -16,13 +16,13 @@ abstract final class SettingsStrings {
   static const backupHint =
       'A copy of all your data as one SQLite file. It is not encrypted.';
   static const shareBackup = 'Share backup';
-  static const saveBackup = 'Save to device';
+  static const saveBackup = 'Save backup';
   static const backupSaved = 'Backup saved';
-  static const backupFailed = 'Could not export the backup';
-  static const saveFailed = 'Could not save the setting';
+  static const backupFailed = 'Couldn’t export the backup. Try again.';
+  static const saveFailed = 'Couldn’t save the setting. Try again.';
 
   static const jsonHint =
-      'A readable JSON copy for other tools. It can\'t be restored, and it is '
+      'A readable JSON copy for other tools. It can’t be restored, and it is '
       'not encrypted.';
   static const shareJson = 'Share JSON';
   static const saveJson = 'Save JSON';
@@ -30,23 +30,25 @@ abstract final class SettingsStrings {
   static const restore = 'Restore';
   static const restoreHint =
       'Replace everything in MelaTime with a SQLite backup.';
-  static const chooseBackup = 'Choose backup file';
+  static const chooseBackup = 'Choose file';
   static const restoreTitle = 'Restore this backup?';
   static const restoreWarning =
       'Everything in MelaTime now will be replaced. A copy of the current data is '
       'kept on this device until the next restore.';
-  static const restoreConfirm = 'Replace my data';
+  static const restoreConfirm = 'Replace data';
   static const cancel = 'Cancel';
   static const restoring = 'Restoring…';
   static const restored = 'Backup restored';
   static const restoreFailed =
-      'Could not restore the backup. Your data is unchanged.';
-  static const readFailed = 'Could not read that file';
-  static const refusedNotPulse = 'That file is not a MelaTime backup.';
+      'Couldn’t restore the backup. Your data is unchanged.';
+  static const readFailed = 'Couldn’t read that file. Choose another.';
+  static const refusedNotPulse =
+      'That isn’t a MelaTime backup. Choose another file.';
   static const refusedNewer =
       'That backup was made by a newer version of MelaTime. Update the app, then '
       'restore it.';
-  static const refusedDamaged = 'That backup is damaged or incomplete.';
+  static const refusedDamaged =
+      'That backup is damaged or incomplete. Choose another file.';
   static const refusedSchema =
       'That file has been changed outside MelaTime, so it was refused.';
   static const unknownDate = 'Export date unknown';

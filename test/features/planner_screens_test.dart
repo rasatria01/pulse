@@ -298,7 +298,7 @@ void main() {
       expect(find.text('Dentist'), findsNothing);
       expect(find.text(MelaStrings.noEvents), findsOneWidget);
       await _tap(tester, find.bySemanticsLabel('View: Week'));
-      expect(find.text('Mon 23 Nov'), findsOneWidget);
+      expect(find.text('Sen, 23 Nov'), findsOneWidget);
       expect(find.text('Dentist'), findsOneWidget);
 
       // Tapping a row opens the editor with its values.

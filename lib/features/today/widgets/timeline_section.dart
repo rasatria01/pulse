@@ -29,6 +29,7 @@ class TimelineSection extends ConsumerWidget {
             child: EmptyState(
               icon: LucideIcons.clock,
               title: MelaStrings.noTimeline,
+              body: MelaStrings.noTimelineBody,
             ),
           ),
         // Timed first, earliest first; then the Due lane (PRD F2).

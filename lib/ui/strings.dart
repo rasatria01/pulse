@@ -4,6 +4,8 @@ abstract final class MelaStrings {
   static const appName = 'MelaTime';
   static const tagline = 'Menata laku, setiap waktu.';
   static const save = 'Save';
+  static const tomorrow = 'Tomorrow';
+  static const yesterday = 'Yesterday';
   static const confirm = 'Confirm';
   static const edit = 'Edit';
   static const skip = 'Skip';
@@ -49,7 +51,11 @@ abstract final class MelaStrings {
   static const settingsEmpty = 'No settings yet';
   static const noPulse = 'No money recorded yet';
   static const noTimeline = 'Nothing scheduled today';
-  static const noInbox = 'Inbox is clear';
+  static const noInbox = 'Nothing in the inbox';
+  static const noTimelineBody =
+      'Add a time to a task and it shows up here, earliest first.';
+  static const noInboxBody =
+      'Overdue, high priority and due today tasks show up here.';
   static const noScratchpad = 'Nothing written today';
   static const captureEmpty = 'Quick capture is not ready yet';
 

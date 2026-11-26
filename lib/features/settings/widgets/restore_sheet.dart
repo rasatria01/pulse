@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 
 import '../../../domain/services/backup_gateway.dart';
 import '../../../ui/widgets/widgets.dart';
+import '../../../ui/day_label.dart';
 import '../settings_strings.dart';
 
 String refusalMessage(String refusal) => switch (refusal) {
@@ -45,10 +45,7 @@ class RestoreSheet extends StatelessWidget {
               Text(
                 exported == null
                     ? SettingsStrings.unknownDate
-                    : SettingsStrings.exportedOn(
-                        DateFormat('d MMM yyyy, HH:mm')
-                            .format(exported.toLocal()),
-                      ),
+                    : SettingsStrings.exportedOn(dateTimeLabel(exported)),
                 style: MelaText.bodyStrong,
               ),
               for (final MapEntry(key: table, value: name)

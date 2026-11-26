@@ -108,6 +108,9 @@ class _DateTimeSheetState extends State<_DateTimeSheet> {
             selected: _day,
             initialMonth: _day,
             weekStartsOn: DateTime.monday,
+            formatMonthYear: monthYearLabel,
+            formatMonth: monthLabel,
+            formatWeekday: weekdayShort,
             allowDeselection: false,
             onChanged: (day) {
               if (day != null) setState(() => _day = day);

@@ -4,6 +4,7 @@ import 'package:shad/shad.dart';
 import '../../core/local_date.dart';
 import '../tokens.dart';
 import '../widgets/p_chip.dart';
+import '../day_label.dart';
 import 'planner_format.dart';
 import 'planner_strings.dart';
 
@@ -148,6 +149,9 @@ class _PDateFieldState extends State<PDateField> {
                     (value ?? today).month,
                   ),
                   weekStartsOn: DateTime.monday,
+                  formatMonthYear: monthYearLabel,
+                  formatMonth: monthLabel,
+                  formatWeekday: weekdayShort,
                   allowDeselection: false,
                   // Two digits at 1.3x text need a touch-sized cell.
                   dayButtonSize: MelaSize.touch,

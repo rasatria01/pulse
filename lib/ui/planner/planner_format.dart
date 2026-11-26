@@ -1,24 +1,8 @@
-import 'package:intl/intl.dart';
-
-import '../../core/local_date.dart';
 import '../../domain/entities/action_item.dart';
 import '../../domain/entities/tag.dart';
 import 'planner_strings.dart';
 
-/// "Today", "Tomorrow", "Yesterday", "28 Nov", or "28 Nov 2027".
-String dayLabel(LocalDate day, LocalDate today) =>
-    switch (today.daysUntil(day)) {
-      0 => PlannerStrings.today,
-      1 => PlannerStrings.tomorrow,
-      -1 => PlannerStrings.yesterday,
-      _ => DateFormat(
-        day.year == today.year ? 'd MMM' : 'd MMM y',
-      ).format(DateTime(day.year, day.month, day.day)),
-    };
-
-/// Local 24-hour time of a UTC instant.
-String timeLabel(DateTime instant) =>
-    DateFormat('HH:mm').format(instant.toLocal());
+export '../day_label.dart' show dayLabel, timeLabel, weekdayLabel;
 
 /// "30 min", "1 h", "1 h 30 min", "1 day".
 String spanLabel(int minutes) {

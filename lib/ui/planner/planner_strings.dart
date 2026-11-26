@@ -46,7 +46,7 @@ abstract final class PlannerStrings {
   static const needsRecurringAmount = 'Add an amount above 0.';
   static const archivedRuleWallet =
       'That wallet is archived. Change the wallet on the recurring rule.';
-  static const failed = 'That didn\'t save. Try again.';
+  static const failed = 'Couldn’t save. Try again.';
 
   static String fromWallet(String wallet) => 'Wallet: $wallet';
   static String skippedOccurrence(String name) => 'Skipped “$name”';

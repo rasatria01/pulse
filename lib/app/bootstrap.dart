@@ -3,10 +3,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import '../data/db/app_database.dart';
 import '../data/db/connection.dart';
 import '../features/settings/controllers/settings_providers.dart';
+import '../ui/day_label.dart';
 import 'app.dart';
 import 'di.dart';
 import 'restart.dart';
@@ -18,6 +20,7 @@ Future<void> bootstrap({
   bool? restored,
   List<Override> overrides = const [], // for tests
 }) async {
+  await initializeDateFormatting(dateLocale);
   final db = open();
   // Drift opens lazily; create or migrate before the first frame.
   await db.customSelect('SELECT 1').get();

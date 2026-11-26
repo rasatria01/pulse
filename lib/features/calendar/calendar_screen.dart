@@ -34,9 +34,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final first = _week ? day.addDays(-((day.weekday - weekStart) % 7)) : day;
     final days = [for (var i = 0; i < (_week ? 7 : 1); i++) first.addDays(i)];
     final step = _week ? 7 : 1;
-    String long(LocalDate d) =>
-        '${DateFormat('EEE').format(DateTime(d.year, d.month, d.day))} '
-        '${dayLabel(d, today)}';
+    String long(LocalDate d) => weekdayLabel(d, today);
 
     return PScreen(
       title: MelaStrings.calendar,

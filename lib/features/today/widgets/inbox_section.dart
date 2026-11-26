@@ -29,6 +29,7 @@ class InboxSection extends ConsumerWidget {
             child: EmptyState(
               icon: LucideIcons.inbox,
               title: MelaStrings.noInbox,
+              body: MelaStrings.noInboxBody,
             ),
           ),
         SliverList.builder(
