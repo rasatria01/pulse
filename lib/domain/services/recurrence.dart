@@ -19,3 +19,16 @@ LocalDate advanceOccurrence(RecurringRule rule, LocalDate from) {
       return LocalMonth(from.year + n, start.month).day(start.day);
   }
 }
+
+/// The first date of the series through [from] that is not before [day].
+LocalDate firstOccurrenceOnOrAfter(
+  RecurringRule rule,
+  LocalDate day, {
+  required LocalDate from,
+}) {
+  var date = from;
+  while (date.isBefore(day)) {
+    date = advanceOccurrence(rule, date);
+  }
+  return date;
+}

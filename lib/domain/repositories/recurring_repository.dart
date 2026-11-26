@@ -5,6 +5,12 @@ import '../entities/recurring_rule.dart';
 abstract interface class RecurringRepository {
   Stream<List<RecurringRule>> watchRules();
   Stream<List<PendingOccurrence>> watchPending();
+
+  /// Occurrences dated in [from, to], resolved ones included.
+  Stream<List<PendingOccurrence>> watchOccurrences(
+    LocalDate from,
+    LocalDate to,
+  );
   Future<List<RecurringRule>> dueOnOrBefore(LocalDate day);
   Future<RecurringRule?> find(String id);
   Future<void> softDelete(String id);

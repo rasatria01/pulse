@@ -81,6 +81,26 @@ final class DriftActionItemRepository implements ActionItemRepository {
   );
 
   @override
+  Stream<List<ActionItem>> watchCommitted(
+    LocalDate from,
+    LocalDate to, {
+    required DateTime doneSince,
+  }) => _watch(
+    'a.linked_amount IS NOT NULL '
+    "AND (a.status = 'open' OR (a.status = 'done' AND a.completed_at >= ?)) "
+    'AND (a.due_date BETWEEN ? AND ? '
+    'OR (a.scheduled_start >= ? AND a.scheduled_start < ?))',
+    [
+      doneSince.millisecondsSinceEpoch,
+      from.toIso(),
+      to.toIso(),
+      from.startUtc().millisecondsSinceEpoch,
+      to.addDays(1).startUtc().millisecondsSinceEpoch,
+    ],
+    orderBy: 'a.created_at, a.id',
+  );
+
+  @override
   Future<ActionItem?> find(String id) => guard(() async {
     final row = await _query('a.id = ?', [id]).getSingleOrNull();
     return row == null ? null : _entity(row);

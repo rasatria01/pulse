@@ -58,6 +58,43 @@ abstract final class FinanceStrings {
   static const walletError = 'Pick a wallet.';
   static const transferError = 'A transfer needs two different wallets.';
 
+  static const budgets = 'Budgets';
+  static const addBudget = 'Add budget';
+  static const editBudget = 'Budget cap';
+  static const monthlyCap = 'Monthly cap';
+  static const removeCap = 'Remove cap';
+  static const capNote =
+      'Applies from this budget month on. Earlier months keep their cap.';
+  static const capError = 'Enter a cap above 0, such as 1500000.';
+  static const categoryError = 'Pick a category.';
+
+  static const recurring = 'Recurring';
+  static const addRecurring = 'Add recurring';
+  static const editRecurring = 'Recurring rule';
+  static const repeats = 'Repeats';
+  static const every = 'Every';
+  static const daily = 'Daily';
+  static const weekly = 'Weekly';
+  static const monthly = 'Monthly';
+  static const yearly = 'Yearly';
+  static const startDate = 'Starts';
+  static const endDate = 'Ends';
+  static const whenDue = 'When due';
+  static const remind = 'Ask me';
+  static const autoPost = 'Post automatically';
+  static const paused = 'Paused';
+  static const ended = 'Ended';
+  static const pause = 'Pause';
+  static const resume = 'Resume';
+  static const intervalError = 'Repeat every 1 to 999.';
+  static const endError = 'The end date is before the start date.';
+  static const days = 'days';
+  static const weeks = 'weeks';
+  static const months = 'months';
+  static const years = 'years';
+  static String next(String day) => 'Next $day';
+  static String everyN(int n, String unit) => 'Every $n $unit';
+
   /// In the order of PulseIdentity.all.
   static const colourNames = [
     'Slate',

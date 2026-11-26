@@ -26,10 +26,10 @@ class PulseSection extends ConsumerWidget {
           if (value != null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: PulseSpace.s4),
-              // Safe-to-spend arrives with budgets.
               child: PulseCard(
                 liquid: value.liquid,
                 todaySpend: value.todaySpend,
+                safeToSpend: value.safeToSpend?.perDay,
                 showBudgetHint: true,
                 wallets: [
                   for (final w in value.wallets)

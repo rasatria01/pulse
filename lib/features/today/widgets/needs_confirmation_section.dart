@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/di.dart';
 import '../../../core/local_date.dart';
 import '../../../domain/entities/action_item.dart';
+import '../../../domain/entities/recurring_occurrence.dart';
 import '../../../ui/planner/planner_format.dart';
 import '../../../ui/strings.dart';
 import '../../../ui/widgets/widgets.dart';
@@ -32,6 +33,10 @@ class NeedsConfirmationSection extends ConsumerWidget {
       }
       return fallback;
     }
+
+    // A rule posts to its own wallet or not at all: no fallback.
+    String? ruleWalletName(String id) =>
+        wallets.where((b) => b.wallet.id == id).firstOrNull?.wallet.name;
 
     String? billMeta(ActionItem item) {
       final done = item.completedAt;
@@ -67,12 +72,8 @@ class NeedsConfirmationSection extends ConsumerWidget {
         SliverList.builder(
           itemCount: occurrences.length,
           itemBuilder: (context, i) {
-            final (:occurrence, :rule) = (
-              occurrence: occurrences[i].occurrence,
-              rule: occurrences[i].rule,
-            );
-            // Wave 3 replaces this hook (see PlannerFlows.recurringNotReady).
-            void later() => PlannerFlows.of(context).recurringNotReady();
+            final pending = occurrences[i];
+            final PendingOccurrence(:occurrence, :rule) = pending;
             return PConfirmRow(
               key: ValueKey(occurrence.id),
               title: rule.name,
@@ -80,12 +81,13 @@ class NeedsConfirmationSection extends ConsumerWidget {
               amount: rule.amount,
               type: AmountType.of(rule.type),
               meta: [
-                ?walletName(rule.walletId),
+                ?ruleWalletName(rule.walletId),
                 dayLabel(occurrence.occurrenceDate, today),
               ].join(' · '),
-              onConfirm: later,
-              onEdit: later,
-              onSkip: later,
+              onConfirm: () =>
+                  PlannerFlows.of(context).confirmOccurrence(pending),
+              onEdit: () => PlannerFlows.of(context).editOccurrence(pending),
+              onSkip: () => PlannerFlows.of(context).skipOccurrence(pending),
             );
           },
         ),

@@ -7,6 +7,7 @@ import '../domain/entities/category.dart';
 import '../domain/entities/wallet.dart';
 import '../domain/services/capture_service.dart';
 import '../domain/services/default_capture_service.dart';
+import '../domain/services/safe_to_spend_calculator.dart';
 import '../domain/services/today_pulse.dart';
 import 'di.dart';
 
@@ -49,12 +50,21 @@ final todayPulseProvider = Provider<AsyncValue<TodayPulse>>((ref) {
   final wallets = ref.watch(walletBalancesProvider);
   final liquid = ref.watch(_liquidProvider);
   final spend = ref.watch(_todaySpendProvider);
-  for (final part in <AsyncValue<Object?>>[wallets, liquid, spend]) {
+  final outlook = ref.watch(budgetOutlookProvider);
+  for (final part in <AsyncValue<Object?>>[wallets, liquid, spend, outlook]) {
     if (part.hasError) return AsyncError(part.error!, part.stackTrace!);
     if (!part.hasValue) return const AsyncLoading();
   }
+  final budget = outlook.requireValue;
   return AsyncData(
     TodayPulse(
+      safeToSpend: const DefaultSafeToSpendCalculator().compute(
+        monthCaps: budget.monthCaps,
+        spentBeforeToday: budget.spentBeforeToday,
+        committed: budget.committed,
+        daysLeft: budget.daysLeft,
+        spentToday: spend.requireValue,
+      ),
       liquid: liquid.requireValue,
       todaySpend: spend.requireValue,
       wallets: [
