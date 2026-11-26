@@ -86,6 +86,27 @@ void main() {
     });
   });
 
+  test('a ticked-off bill counts until it is recorded or skipped', () async {
+    Future<void> tick(String title, BillStatus status, {int due = -3}) async {
+      final item = await bill(title, due: due);
+      await h.items.update(
+        item.id,
+        ActionItemPatch(
+          status: ActionStatus.done,
+          completedAt: (value: today.addDays(-2).startUtc()),
+          billStatus: (value: status),
+        ),
+      );
+    }
+
+    await tick('unrecorded', BillStatus.pending);
+    await tick('unrecorded, due next period', BillStatus.pending, due: 40);
+    await tick('recorded', BillStatus.recorded);
+    await tick('skipped', BillStatus.skipped);
+
+    expect(await committed(), {'unrecorded', 'unrecorded, due next period'});
+  });
+
   test('a reopened bill whose earlier payment was kept is not owed', () async {
     final earlier = await bill('paid yesterday', due: -1);
     final todays = await bill('paid today');

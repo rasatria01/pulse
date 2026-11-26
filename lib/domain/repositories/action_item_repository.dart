@@ -10,7 +10,8 @@ abstract interface class ActionItemRepository {
 
   /// Items with an amount, owed by [to] (overdue ones included), that are open
   /// or were completed at or after [doneSince], and not paid before [from]:
-  /// safe-to-spend's committed bills.
+  /// safe-to-spend's committed bills. Bills pending confirmation are included
+  /// whatever their status date or due date.
   Stream<List<ActionItem>> watchCommitted(
     LocalDate from,
     LocalDate to, {

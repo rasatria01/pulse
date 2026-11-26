@@ -83,6 +83,7 @@ final class DriftActionItemRepository implements ActionItemRepository {
   // No lower bound on the due date: an overdue bill is still owed. A past start
   // makes one overdue only without a due date. A payment made before [from] is
   // already in what was spent, so a reopened bill that kept it is not owed again.
+  // A bill ticked off but not recorded (pending) is owed whatever its dates.
   @override
   Stream<List<ActionItem>> watchCommitted(
     LocalDate from,
@@ -90,9 +91,10 @@ final class DriftActionItemRepository implements ActionItemRepository {
     required DateTime doneSince,
   }) => _watch(
     'a.linked_amount IS NOT NULL '
-    "AND (a.status = 'open' OR (a.status = 'done' AND a.completed_at >= ?)) "
+    "AND (a.bill_status = 'pending' OR ("
+    "(a.status = 'open' OR (a.status = 'done' AND a.completed_at >= ?)) "
     'AND (a.due_date <= ? OR (a.scheduled_start < ? '
-    'AND (a.due_date IS NULL OR a.scheduled_start >= ?))) '
+    'AND (a.due_date IS NULL OR a.scheduled_start >= ?))))) '
     'AND NOT EXISTS (SELECT 1 FROM transactions p '
     'WHERE p.source_action_item_id = a.id AND p.is_deleted = 0 '
     'AND p.occurred_on < ?)',
