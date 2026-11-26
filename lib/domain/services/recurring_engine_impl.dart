@@ -150,24 +150,37 @@ class DefaultRecurringEngine implements RecurringEngine {
     if (found == null) {
       throw const ConflictFailure('occurrence is not pending');
     }
-    return _post(
+    final transactionId = await _post(
       found.rule,
       occurrenceId,
       found.occurrence.occurrenceDate,
       amount ?? found.rule.amount,
     );
+    await _remind(found.rule.id);
+    return transactionId;
   }
 
   @override
-  Future<void> skipPending(String occurrenceId) =>
-      _rules.resolveOccurrence(occurrenceId, OccurrenceStatus.skipped);
+  Future<void> skipPending(String occurrenceId) async => _remind(
+    await _rules.resolveOccurrence(occurrenceId, OccurrenceStatus.skipped),
+  );
 
   @override
-  Future<void> reopenOccurrence(String occurrenceId, {String? transactionId}) =>
-      _unitOfWork.run(() async {
-        if (transactionId != null) {
-          await _transactions.softDelete(transactionId);
-        }
-        await _rules.resolveOccurrence(occurrenceId, OccurrenceStatus.pending);
-      });
+  Future<void> reopenOccurrence(
+    String occurrenceId, {
+    String? transactionId,
+  }) async => _remind(
+    await _unitOfWork.run(() async {
+      if (transactionId != null) {
+        await _transactions.softDelete(transactionId);
+      }
+      return _rules.resolveOccurrence(occurrenceId, OccurrenceStatus.pending);
+    }),
+  );
+
+  /// Today's alarm follows its occurrence. Outside the transaction.
+  Future<void> _remind(String ruleId) => quietly(() async {
+    final rule = await _rules.find(ruleId);
+    if (rule != null) await _reminders.scheduleRule(rule);
+  });
 }

@@ -8,8 +8,9 @@ abstract interface class ActionItemRepository {
   Stream<List<ActionItem>> watchTasks(TaskFilter filter);
   Stream<List<ActionItem>> watchPendingBills();
 
-  /// Items with an amount, due or starting in [from, to], that are open or were
-  /// completed at or after [doneSince]: safe-to-spend's committed bills.
+  /// Items with an amount, owed by [to] (overdue ones included), that are open
+  /// or were completed at or after [doneSince], and not paid before [from]:
+  /// safe-to-spend's committed bills.
   Stream<List<ActionItem>> watchCommitted(
     LocalDate from,
     LocalDate to, {

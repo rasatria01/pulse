@@ -23,7 +23,9 @@ abstract interface class RecurringRepository {
     LocalDate date, {
     String? transactionId,
   });
-  Future<void> resolveOccurrence(
+
+  /// Returns the rule's id.
+  Future<String> resolveOccurrence(
     String occurrenceId,
     OccurrenceStatus status, {
     String? transactionId,

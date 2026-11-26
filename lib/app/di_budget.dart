@@ -95,6 +95,10 @@ final _windowOccurrencesProvider = StreamProvider((ref) {
   return _inPeriod(ref, (p) => recurring.watchOccurrences(today, p.to));
 });
 
+final _unconfirmedProvider = StreamProvider(
+  (ref) => ref.watch(recurringRepositoryProvider).watchPending(),
+);
+
 /// Everything safe-to-spend needs apart from today's spend (PRD 9.4).
 typedef BudgetOutlook = ({
   Rupiah monthCaps,
@@ -111,6 +115,7 @@ final budgetOutlookProvider = Provider<AsyncValue<BudgetOutlook>>((ref) {
   final bills = ref.watch(_committedBillsProvider);
   final occurrences = ref.watch(_windowOccurrencesProvider);
   final rules = ref.watch(recurringRulesProvider);
+  final pending = ref.watch(_unconfirmedProvider);
   for (final part in <AsyncValue<Object?>>[
     period,
     statuses,
@@ -118,6 +123,7 @@ final budgetOutlookProvider = Provider<AsyncValue<BudgetOutlook>>((ref) {
     bills,
     occurrences,
     rules,
+    pending,
   ]) {
     if (part.hasError) return AsyncError(part.error!, part.stackTrace!);
     if (!part.hasValue) return const AsyncLoading();
@@ -129,6 +135,7 @@ final budgetOutlookProvider = Provider<AsyncValue<BudgetOutlook>>((ref) {
     committed: committedAmount(
       bills: bills.requireValue,
       occurrences: occurrences.requireValue,
+      pending: pending.requireValue,
       rules: rules.requireValue,
       today: today,
       periodEnd: end,

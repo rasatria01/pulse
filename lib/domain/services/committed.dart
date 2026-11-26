@@ -6,15 +6,18 @@ import '../entities/recurring_rule.dart';
 import '../entities/transaction.dart';
 import 'recurrence.dart';
 
-/// C of PRD 9.4 as it stood at the start of [today]: bills plus outcome rules'
-/// occurrences dated in [today, periodEnd].
+/// C of PRD 9.4 as it stood at the start of [today]: bills, outcome rules'
+/// occurrences dated in [today, periodEnd], and older ones still unconfirmed.
 ///
-/// [bills] is ActionItemRepository.watchCommitted and [occurrences] is
-/// RecurringRepository.watchOccurrences over that window. An occurrence resolved
-/// today still counts, so confirming it does not move today's target.
+/// [bills] is ActionItemRepository.watchCommitted, [occurrences] is
+/// RecurringRepository.watchOccurrences over that window and [pending] is
+/// watchPending. An occurrence dated today or later and resolved today still
+/// counts, so confirming it does not move today's target. Confirming an older
+/// one moves it to what was spent before today.
 Rupiah committedAmount({
   required List<ActionItem> bills,
   required List<PendingOccurrence> occurrences,
+  required List<PendingOccurrence> pending,
   required List<RecurringRule> rules,
   required LocalDate today,
   required LocalDate periodEnd,
@@ -24,7 +27,10 @@ Rupiah committedAmount({
     total += bill.linkedAmount ?? Rupiah.zero;
   }
   final counted = <(String, LocalDate)>{};
-  for (final found in occurrences) {
+  final overdue = pending.where(
+    (p) => p.occurrence.occurrenceDate.isBefore(today),
+  );
+  for (final found in [...overdue, ...occurrences]) {
     if (found.rule.type != TxnType.outcome) continue;
     counted.add((found.rule.id, found.occurrence.occurrenceDate));
     total += found.rule.amount;

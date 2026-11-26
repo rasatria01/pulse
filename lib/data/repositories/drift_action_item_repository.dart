@@ -80,6 +80,9 @@ final class DriftActionItemRepository implements ActionItemRepository {
     orderBy: 'a.completed_at, a.created_at, a.id',
   );
 
+  // No lower bound on the due date: an overdue bill is still owed. A past start
+  // makes one overdue only without a due date. A payment made before [from] is
+  // already in what was spent, so a reopened bill that kept it is not owed again.
   @override
   Stream<List<ActionItem>> watchCommitted(
     LocalDate from,
@@ -88,16 +91,20 @@ final class DriftActionItemRepository implements ActionItemRepository {
   }) => _watch(
     'a.linked_amount IS NOT NULL '
     "AND (a.status = 'open' OR (a.status = 'done' AND a.completed_at >= ?)) "
-    'AND (a.due_date BETWEEN ? AND ? '
-    'OR (a.scheduled_start >= ? AND a.scheduled_start < ?))',
+    'AND (a.due_date <= ? OR (a.scheduled_start < ? '
+    'AND (a.due_date IS NULL OR a.scheduled_start >= ?))) '
+    'AND NOT EXISTS (SELECT 1 FROM transactions p '
+    'WHERE p.source_action_item_id = a.id AND p.is_deleted = 0 '
+    'AND p.occurred_on < ?)',
     [
       doneSince.millisecondsSinceEpoch,
-      from.toIso(),
       to.toIso(),
-      from.startUtc().millisecondsSinceEpoch,
       to.addDays(1).startUtc().millisecondsSinceEpoch,
+      from.startUtc().millisecondsSinceEpoch,
+      from.toIso(),
     ],
     orderBy: 'a.created_at, a.id',
+    alsoReads: {_db.transactions},
   );
 
   @override
@@ -227,10 +234,12 @@ final class DriftActionItemRepository implements ActionItemRepository {
     String where,
     List<Object> args, {
     required String orderBy,
+    Set<ResultSetImplementation<dynamic, dynamic>> alsoReads = const {},
   }) => _query(
     where,
     args,
     orderBy: orderBy,
+    alsoReads: alsoReads,
   ).watch().map((rows) => rows.map(_entity).toList()).guarded();
 
   /// [args] fill the placeholders of [where], then those of [orderBy].
@@ -239,12 +248,13 @@ final class DriftActionItemRepository implements ActionItemRepository {
     List<Object> args, {
     String orderBy = 'a.created_at, a.id',
     bool includeDeleted = false,
+    Set<ResultSetImplementation<dynamic, dynamic>> alsoReads = const {},
   }) => _db.customSelect(
     'SELECT a.*, ${tagIdsColumn('action_item', 'a')} FROM action_items a '
     'WHERE ${includeDeleted ? '' : 'a.is_deleted = 0 AND '}$where '
     'ORDER BY $orderBy',
     variables: [for (final arg in args) Variable<Object>(arg)],
-    readsFrom: {_db.actionItems, _db.taggings, _db.tags},
+    readsFrom: {_db.actionItems, _db.taggings, _db.tags, ...alsoReads},
   );
 
   ActionItem _entity(QueryRow row) =>

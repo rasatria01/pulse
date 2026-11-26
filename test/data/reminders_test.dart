@@ -8,6 +8,7 @@ import 'package:pulse/domain/entities/action_item.dart';
 import 'package:pulse/domain/entities/recurring_rule.dart';
 import 'package:pulse/domain/entities/transaction.dart';
 import 'package:pulse/domain/repositories/settings_repository.dart';
+import 'package:pulse/domain/services/recurring_engine_impl.dart';
 
 import 'support.dart';
 
@@ -194,6 +195,112 @@ void main() {
       expect(platform.alarms.keys, unorderedEquals([itemId, ruleId]));
       expect(platform.alarms[itemId]!.at, DateTime(2026, 11, 25, 19).toUtc());
       expect(platform.alarms[ruleId]!.title, 'Rent');
+    });
+
+    group("a rule's due day, opened before the reminder time", () {
+      // FixedClock is 2026-11-25; 19:00 is still ahead of it.
+      final tonight = DateTime(2026, 11, 25, 19).toUtc();
+      final nextNight = DateTime(2026, 11, 26, 19).toUtc();
+
+      late DefaultRecurringEngine engine;
+
+      setUp(() async {
+        await h.settings.put(SettingKeys.dueReminderTime, '19:00');
+        engine = DefaultRecurringEngine(
+          rules: h.recurring,
+          transactions: h.transactions,
+          reminders: scheduler,
+          unitOfWork: h.unitOfWork,
+        );
+      });
+
+      Future<String> rule({bool autoPost = false, LocalDate? end}) async =>
+          (await h.recurring.create(
+            RecurringRuleInput(
+              name: 'Rent',
+              type: TxnType.outcome,
+              amount: const Rupiah(1000),
+              walletId: (await h.cash()).id,
+              freq: RecurFreq.daily,
+              startDate: today,
+              nextDueDate: today,
+              endDate: end,
+              autoPost: autoPost,
+            ),
+          )).id;
+
+      Map<int, DateTime> alarms() => {
+        for (final MapEntry(:key, :value) in platform.alarms.entries)
+          key: value.at,
+      };
+
+      Future<int> notifId(String ruleId) async =>
+          (await h.recurring.find(ruleId))!.notifId!;
+
+      Future<String> pendingId() async =>
+          (await h.recurring.watchPending().first).single.occurrence.id;
+
+      test('today still rings and tomorrow is kept, across resync and '
+          'reboot', () async {
+        final id = await rule();
+        await engine.catchUp(today);
+        final n = await notifId(id);
+        final both = {-n: tonight, n: nextNight};
+        expect(alarms(), both);
+
+        await scheduler.resyncAll();
+        expect(alarms(), both);
+        // Nothing scheduled any more, as after a cleared alarm store.
+        platform.alarms.clear();
+        await scheduler.resyncAll();
+        expect(alarms(), both);
+      });
+
+      test('the last occurrence of an ended rule still rings', () async {
+        final id = await rule(end: today);
+        await engine.catchUp(today);
+        expect(alarms(), {-await notifId(id): tonight});
+      });
+
+      test('skip or confirm silences it; undo brings it back', () async {
+        final id = await rule();
+        await engine.catchUp(today);
+        final n = await notifId(id);
+        final occurrence = await pendingId();
+
+        await engine.skipPending(occurrence);
+        expect(alarms(), {n: nextNight});
+        await scheduler.resyncAll();
+        expect(alarms(), {n: nextNight});
+
+        await engine.reopenOccurrence(occurrence);
+        expect(alarms(), {-n: tonight, n: nextNight});
+
+        await engine.postPending(occurrence);
+        expect(alarms(), {n: nextNight});
+      });
+
+      test('an auto-posted occurrence stays silent', () async {
+        final id = await rule(autoPost: true);
+        await engine.catchUp(today);
+        await scheduler.resyncAll();
+        expect(alarms(), {await notifId(id): nextNight});
+      });
+
+      test('pause and delete cancel both', () async {
+        final id = await rule();
+        await engine.catchUp(today);
+        final n = await notifId(id);
+        await h.recurring.update(id, const RecurringRulePatch(isPaused: true));
+        await scheduler.scheduleRule((await h.recurring.find(id))!);
+        expect(platform.alarms, isEmpty);
+
+        await h.recurring.update(id, const RecurringRulePatch(isPaused: false));
+        await scheduler.resyncAll();
+        expect(platform.alarms, hasLength(2));
+        await scheduler.cancel(n);
+        expect(platform.alarms, isEmpty);
+      });
     });
 
     test('works inside a caller transaction while a resync runs', () async {

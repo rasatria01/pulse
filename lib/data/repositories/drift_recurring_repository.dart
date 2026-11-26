@@ -230,7 +230,7 @@ final class DriftRecurringRepository implements RecurringRepository {
   /// Only a pending occurrence can be posted or skipped, so a second confirm
   /// cannot post twice. Run it in the same UnitOfWork as the transaction.
   @override
-  Future<void> resolveOccurrence(
+  Future<String> resolveOccurrence(
     String occurrenceId,
     OccurrenceStatus status, {
     String? transactionId,
@@ -255,6 +255,7 @@ final class DriftRecurringRepository implements RecurringRepository {
           updatedAt: Value(_now),
         ),
       );
+      return row.ruleId;
     }),
   );
 

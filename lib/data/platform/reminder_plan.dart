@@ -1,6 +1,7 @@
 // When a reminder fires, and whether one is wanted at all (PRD F4, 9.3). Pure.
 import '../../core/local_date.dart';
 import '../../domain/entities/action_item.dart';
+import '../../domain/entities/recurring_occurrence.dart';
 import '../../domain/entities/recurring_rule.dart';
 
 typedef TimeOfDayHm = ({int hour, int minute});
@@ -42,6 +43,21 @@ DateTime? ruleReminderAt(
     return null;
   }
   return _ifFuture(_localAt(rule.nextDueDate, dueTime), nowUtc);
+}
+
+/// A pending occurrence still rings at [dueTime] on its own day: catch-up moves
+/// the rule on to the next date as soon as the app is opened. Posted (by hand or
+/// auto-post) and skipped ones leave nothing to do, so they stay silent.
+DateTime? occurrenceReminderAt(
+  PendingOccurrence found, {
+  required DateTime nowUtc,
+  required TimeOfDayHm dueTime,
+}) {
+  final occurrence = found.occurrence;
+  if (found.rule.isPaused || occurrence.status != OccurrenceStatus.pending) {
+    return null;
+  }
+  return _ifFuture(_localAt(occurrence.occurrenceDate, dueTime), nowUtc);
 }
 
 /// Wall time on [day] in the device timezone, as a UTC instant.

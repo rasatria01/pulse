@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../core/clock.dart';
 import '../../domain/entities/action_item.dart';
+import '../../domain/entities/recurring_occurrence.dart';
 import '../../domain/entities/recurring_rule.dart';
 import '../../domain/repositories/action_item_repository.dart';
 import '../../domain/repositories/recurring_repository.dart';
@@ -23,6 +24,9 @@ const _maxAlarms = 400;
 
 /// Reminders as local notifications. A failure is logged and swallowed: it must
 /// not fail the save or the bill that asked for the reminder.
+///
+/// A rule can need two alarms: its next date at notifId, and today's still
+/// pending occurrence at -notifId (ids come from a positive counter).
 final class LocalNotificationsScheduler implements ReminderScheduler {
   LocalNotificationsScheduler({
     required this.platform,
@@ -66,20 +70,38 @@ final class LocalNotificationsScheduler implements ReminderScheduler {
   Future<void> scheduleRule(RecurringRule rule) {
     _changes++;
     return _safely(() async {
-      final alarm = _ruleAlarm(rule, await _dueTime());
-      if (alarm == null) {
-        final id = rule.notifId;
-        if (id != null) await platform.cancel(id);
-        return;
+      final dueTime = await _dueTime();
+      final next = _ruleAlarm(rule, dueTime);
+      final found = (await _todaysOccurrences())
+          .where((o) => o.rule.id == rule.id)
+          .firstOrNull;
+      final today = found == null ? null : _occurrenceAlarm(found, dueTime);
+      var id = rule.notifId;
+      if (next != null || today != null) id ??= await _assignRuleId(rule.id);
+      if (id == null) return;
+      if (today != null) {
+        await _set(-id, today);
+      } else if (rule.isPaused ||
+          found?.occurrence.status != OccurrenceStatus.pending) {
+        // Still pending with its time past: leave what is on screen.
+        await platform.cancel(-id);
       }
-      await _set(rule.notifId ?? await _assignRuleId(rule.id), alarm);
+      if (next != null) {
+        await _set(id, next);
+      } else {
+        await platform.cancel(id);
+      }
     });
   }
 
   @override
   Future<void> cancel(int notifId) {
     _changes++;
-    return _safely(() => platform.cancel(notifId));
+    return _safely(() async {
+      await platform.cancel(notifId);
+      // A rule's alarm for today; nothing for an item.
+      await platform.cancel(-notifId);
+    });
   }
 
   @override
@@ -103,20 +125,25 @@ final class LocalNotificationsScheduler implements ReminderScheduler {
   /// Makes the pending alarms match the database.
   Future<void> _resyncOnce() async {
     final dueTime = await _dueTime();
-    final wanted = <(_Alarm, int?, Future<int?> Function())>[
+    // The last field is the id's sign: -1 for today's pending occurrence.
+    final wanted = <(_Alarm, int?, Future<int?> Function(), int)>[
       for (final item in await items.withFutureReminders(clock.nowUtc()))
         if (_itemAlarm(item, dueTime) case final alarm?)
-          (alarm, item.notifId, () => _assignItemId(item.id)),
+          (alarm, item.notifId, () => _assignItemId(item.id), 1),
       for (final rule in await rules.watchRules().first)
         if (_ruleAlarm(rule, dueTime) case final alarm?)
-          (alarm, rule.notifId, () => _assignRuleId(rule.id)),
+          (alarm, rule.notifId, () => _assignRuleId(rule.id), 1),
+      for (final found in await _todaysOccurrences())
+        if (_occurrenceAlarm(found, dueTime) case final alarm?)
+          (alarm, found.rule.notifId, () => _assignRuleId(found.rule.id), -1),
     ]..sort((a, b) => a.$1.at.compareTo(b.$1.at));
 
     final kept = <int>{};
-    for (final (alarm, notifId, assign) in wanted.take(_maxAlarms)) {
+    for (final (alarm, notifId, assign, sign) in wanted.take(_maxAlarms)) {
       await _safely(() async {
-        final id = notifId ?? await assign();
-        if (id == null) return;
+        final assigned = notifId ?? await assign();
+        if (assigned == null) return;
+        final id = assigned * sign;
         kept.add(id);
         await _set(id, alarm);
       });
@@ -148,6 +175,22 @@ final class LocalNotificationsScheduler implements ReminderScheduler {
     return at == null
         ? null
         : (at: at, title: rule.name, body: copy.recurringDue);
+  }
+
+  Future<List<PendingOccurrence>> _todaysOccurrences() {
+    final today = clock.today();
+    return rules.watchOccurrences(today, today).first;
+  }
+
+  _Alarm? _occurrenceAlarm(PendingOccurrence found, TimeOfDayHm dueTime) {
+    final at = occurrenceReminderAt(
+      found,
+      nowUtc: clock.nowUtc(),
+      dueTime: dueTime,
+    );
+    return at == null
+        ? null
+        : (at: at, title: found.rule.name, body: copy.recurringDue);
   }
 
   Future<void> _set(int? id, _Alarm alarm) async {
