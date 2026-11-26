@@ -129,6 +129,47 @@ final searchRepositoryProvider = Provider<SearchRepository>(
   (ref) => DriftSearchRepository(ref.watch(appDatabaseProvider)),
 );
 
+/// The current instant, refreshed as each minute starts and on resume, for
+/// "happening now" marks on an open screen.
+final nowMinuteProvider =
+    NotifierProvider.autoDispose<NowMinuteNotifier, DateTime>(
+      NowMinuteNotifier.new,
+    );
+
+class NowMinuteNotifier extends Notifier<DateTime> {
+  Timer? _timer;
+
+  @override
+  DateTime build() {
+    final clock = ref.watch(clockProvider);
+    // A timer does not run reliably while the app is in the background.
+    final lifecycle = AppLifecycleListener(onResume: refresh);
+    ref.onDispose(() {
+      _timer?.cancel();
+      lifecycle.dispose();
+    });
+    final now = clock.nowUtc();
+    _arm(now);
+    return now;
+  }
+
+  void refresh() {
+    final now = ref.read(clockProvider).nowUtc();
+    state = now;
+    _arm(now);
+  }
+
+  void _arm(DateTime now) {
+    _timer?.cancel();
+    final into = Duration(
+      seconds: now.second,
+      milliseconds: now.millisecond,
+      microseconds: now.microsecond,
+    );
+    _timer = Timer(const Duration(minutes: 1) - into, refresh);
+  }
+}
+
 /// The local calendar day. Day-scoped providers watch this, so an open screen
 /// rolls over at midnight.
 final todayProvider = NotifierProvider<TodayNotifier, LocalDate>(

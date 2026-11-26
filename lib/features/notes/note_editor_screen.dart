@@ -281,7 +281,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 
   void _apply(MarkdownAction action) {
     _focus.requestFocus();
-    _controller.value = applyMarkdown(_controller.value, action);
+    _controller.value = applyMarkdown(
+      outsideBlockIds(_controller.value),
+      action,
+    );
   }
 
   Future<void> _togglePreview() async {
@@ -341,6 +344,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                 key: const ValueKey('note-body'),
                 controller: _controller,
                 focusNode: _focus,
+                inputFormatters: [BlockIdGuard()],
                 autofocus: _noteId == null,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,

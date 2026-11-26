@@ -94,17 +94,63 @@ class DefaultNoteTaskSync implements NoteTaskSync {
         ))
           item.sourceBlockId!: item,
       };
-      final taken = {...known.keys, for (final l in lines) ?l.blockId};
-      // The line still being typed keeps its item, whatever it looks like now.
+      // The line still being typed keeps its item, whatever it looks like now,
+      // and so does a line that only an unclosed fence has hidden.
       final present = <String>{
         if (skipLine != null) ...blockIdsIn(body.split('\n')[skipLine]),
+        ...blockIdsInOpenFence(body),
       };
       var out = body;
+      final checked = {for (final l in lines) l.index: l.checked};
+      for (final MapEntry(key: index, value: found) in damagedBlockIds(
+        body,
+        known.keys.toSet(),
+      ).entries) {
+        if (index == skipLine) {
+          present.add(found.blockId);
+          continue;
+        }
+        out = rewriteChecklistLine(
+          out,
+          index,
+          checked: checked[index]!,
+          title: found.title,
+          blockId: found.blockId,
+        );
+      }
 
-      for (final line in lines) {
-        if (line.index == skipLine) continue;
+      final repaired = parseChecklist(out);
+      final taken = {...known.keys, for (final l in repaired) ?l.token};
+      // Copied lines share an id. It goes to the line that still looks like the
+      // item, not simply the first. While the copy being typed is one of them,
+      // none can be told apart yet.
+      final owner = <String, int>{};
+      final waiting = <String>{};
+      final shared = groupBy(
+        repaired.where((l) => l.token != null),
+        (l) => l.token!,
+      );
+      for (final MapEntry(key: id, value: copies) in shared.entries) {
+        if (copies.length > 1 && copies.any((l) => l.index == skipLine)) {
+          waiting.add(id);
+          continue;
+        }
+        final item = known[id];
+        owner[id] =
+            (copies.firstWhereOrNull(
+                      (l) =>
+                          l.title == item?.title &&
+                          l.checked == (item?.status == ActionStatus.done),
+                    ) ??
+                    copies.firstWhereOrNull((l) => l.title == item?.title) ??
+                    copies.first)
+                .index;
+      }
+
+      for (final line in repaired) {
+        if (line.index == skipLine || waiting.contains(line.token)) continue;
         var title = line.title;
-        var blockId = line.blockId;
+        var blockId = owner[line.token] == line.index ? line.token : null;
         final item = known[blockId];
         if (item != null) {
           final (updated, shown) = await _apply(item, line, context, tags);

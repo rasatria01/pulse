@@ -132,7 +132,7 @@ class _DayAgenda extends ConsumerWidget {
     final due = ref.watch(dueLaneProvider(day)).value;
     final timed = ref.watch(timelineProvider(day)).value;
     final tags = ref.watch(plannerTagsProvider).value ?? const [];
-    final now = ref.watch(clockProvider).nowUtc();
+    final now = ref.watch(nowMinuteProvider);
     final count = (due?.length ?? 0) + (timed?.length ?? 0);
     final loaded = due != null && timed != null;
     final colors = ShadTheme.of(context).colorScheme;

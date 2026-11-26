@@ -17,7 +17,7 @@ class TimelineSection extends ConsumerWidget {
     final due = ref.watch(dueLaneProvider(today)).value;
     final timed = ref.watch(timelineProvider(today)).value;
     final tags = ref.watch(plannerTagsProvider).value ?? const [];
-    final now = ref.watch(clockProvider).nowUtc();
+    final now = ref.watch(nowMinuteProvider);
     final count = (due?.length ?? 0) + (timed?.length ?? 0);
 
     return SliverMainAxisGroup(
