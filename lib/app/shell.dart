@@ -85,7 +85,7 @@ class _Tab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = ShadTheme.of(context).colorScheme;
-    final color = selected ? colors.foreground : colors.mutedForeground;
+    final color = selected ? colors.primary : colors.mutedForeground;
     return PTapTarget(
       label: label,
       selected: selected,

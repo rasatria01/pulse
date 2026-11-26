@@ -1,4 +1,4 @@
-// The "happening now" mark moves with the clock on an open screen.
+// The turmeric "now" mark moves with the clock on an open screen.
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,9 +27,7 @@ class _MovingClock implements Clock {
 }
 
 void main() {
-  testWidgets('a row becomes "now" when its start minute arrives', (
-    tester,
-  ) async {
+  testWidgets('the "now" mark moves on when an item is over', (tester) async {
     driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
     final clock = _MovingClock();
     final db = AppDatabase(
@@ -54,27 +52,34 @@ void main() {
     final container = ProviderScope.containerOf(
       tester.element(find.byType(MelaApp)),
     );
-    // Starts two minutes from now.
-    container
-        .read(actionItemRepositoryProvider)
-        .create(
-          ActionItemInput(
-            title: 'Standup',
-            scheduledStart: clock.nowUtc().add(const Duration(minutes: 2)),
-          ),
-        )
-        .ignore();
+    for (final (title, minutes) in [('Standup', 2), ('Review', 60)]) {
+      container
+          .read(actionItemRepositoryProvider)
+          .create(
+            ActionItemInput(
+              title: title,
+              scheduledStart: clock.nowUtc().add(Duration(minutes: minutes)),
+            ),
+          )
+          .ignore();
+    }
     for (var i = 0; i < 5; i++) {
       await tester.runAsync(() => Future<void>.delayed(Duration.zero));
       await tester.pumpAndSettle();
     }
 
-    bool now() => tester.widget<PTimelineItem>(find.byType(PTimelineItem)).now;
-    expect(now(), isFalse);
+    List<bool> now() => [
+      for (final row in tester.widgetList<PTimelineItem>(
+        find.byType(PTimelineItem),
+      ))
+        row.now,
+    ];
+    expect(now(), [true, false]);
 
-    clock.passed = const Duration(minutes: 2);
-    await tester.pump(const Duration(minutes: 2));
+    // Standup has no end, so it is over 30 minutes after it started.
+    clock.passed = const Duration(minutes: 32);
+    await tester.pump(const Duration(minutes: 32));
     await tester.pumpAndSettle();
-    expect(now(), isTrue);
+    expect(now(), [false, true]);
   });
 }

@@ -19,6 +19,7 @@ class TimelineSection extends ConsumerWidget {
     final tags = ref.watch(plannerTagsProvider).value ?? const [];
     final now = ref.watch(nowMinuteProvider);
     final count = (due?.length ?? 0) + (timed?.length ?? 0);
+    final nowId = nowItemId(timed ?? const [], now);
 
     return SliverMainAxisGroup(
       slivers: [
@@ -41,7 +42,7 @@ class TimelineSection extends ConsumerWidget {
               key: ValueKey((item.id, inDue)),
               item: item,
               tags: tags,
-              nowUtc: now,
+              now: !inDue && item.id == nowId,
               due: inDue,
               onOpen: () => PlannerFlows.of(context).open(item),
             );

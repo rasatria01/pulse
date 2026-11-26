@@ -31,7 +31,7 @@ class PTimelineItem extends StatelessWidget {
   /// Tags, reminder offset.
   final String? meta;
 
-  /// The current item: its time label turns ink.
+  /// The current or next item: a turmeric time badge, at most one per screen.
   final bool now;
   final VoidCallback? onPressed;
 
@@ -104,14 +104,30 @@ class PTimelineItem extends StatelessWidget {
             spacing: MelaSpace.s3,
             children: [
               SizedBox(
-                width: MediaQuery.textScalerOf(context).scale(44),
+                width: MediaQuery.textScalerOf(context).scale(48),
                 child: Padding(
                   padding: const EdgeInsets.only(top: MelaSpace.s2),
-                  child: Text(
-                    start ?? MelaStrings.due,
-                    style: MelaText.caption.copyWith(
-                      color: now ? colors.foreground : colors.inkSubtle,
-                      fontFeatures: tabular,
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      padding: now
+                          ? const EdgeInsets.symmetric(horizontal: MelaSpace.s1)
+                          : null,
+                      decoration: now
+                          ? BoxDecoration(
+                              color: colors.turmeric,
+                              borderRadius: BorderRadius.circular(
+                                MelaRadius.sm,
+                              ),
+                            )
+                          : null,
+                      child: Text(
+                        start ?? MelaStrings.due,
+                        style: MelaText.caption.copyWith(
+                          color: now ? colors.onTurmeric : colors.inkSubtle,
+                          fontFeatures: tabular,
+                        ),
+                      ),
                     ),
                   ),
                 ),
